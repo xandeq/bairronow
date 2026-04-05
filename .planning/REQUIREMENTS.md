@@ -158,27 +158,114 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-001 through AUTH-014 | — | Pending |
-| VER-001 through VER-012 | — | Pending |
-| FEED-001 through FEED-016 | — | Pending |
-| MKT-001 through MKT-013 | — | Pending |
-| MAP-001 through MAP-010 | — | Pending |
-| GRP-001 through GRP-009 | — | Pending |
-| INF-001 through INF-004 | — | Pending |
-| LGPD-01 through LGPD-05 | — | Pending |
-| SHAR-01 through SHAR-03 | — | Pending |
-| UXDS-01 through UXDS-03 | — | Pending |
-| NOTF-01 | — | Pending |
+| AUTH-001 | Phase 1 | Pending |
+| AUTH-002 | Phase 1 | Pending |
+| AUTH-003 | Phase 1 | Pending |
+| AUTH-004 | Phase 1 | Pending |
+| AUTH-005 | Phase 1 | Pending |
+| AUTH-006 | Phase 1 | Pending |
+| AUTH-007 | Phase 1 | Pending |
+| AUTH-008 | Phase 1 | Pending |
+| AUTH-009 | Phase 6 | Pending |
+| AUTH-010 | Phase 2 | Pending |
+| AUTH-011 | Phase 1 | Pending |
+| AUTH-012 | Phase 2 | Pending |
+| AUTH-013 | Phase 6 | Pending |
+| AUTH-014 | Phase 6 | Pending |
+| VER-001 | Phase 2 | Pending |
+| VER-002 | Phase 2 | Pending |
+| VER-003 | Phase 2 | Pending |
+| VER-004 | Phase 2 | Pending |
+| VER-005 | Phase 2 | Pending |
+| VER-006 | Phase 2 | Pending |
+| VER-007 | Phase 2 | Pending |
+| VER-008 | Phase 2 | Pending |
+| VER-009 | Phase 2 | Pending |
+| VER-010 | Phase 2 | Pending |
+| VER-011 | Phase 6 | Pending |
+| VER-012 | Phase 6 | Pending |
+| FEED-001 | Phase 3 | Pending |
+| FEED-002 | Phase 3 | Pending |
+| FEED-003 | Phase 3 | Pending |
+| FEED-004 | Phase 3 | Pending |
+| FEED-005 | Phase 3 | Pending |
+| FEED-006 | Phase 3 | Pending |
+| FEED-007 | Phase 3 | Pending |
+| FEED-008 | Phase 3 | Pending |
+| FEED-009 | Phase 3 | Pending |
+| FEED-010 | Phase 3 | Pending |
+| FEED-011 | Phase 3 | Pending |
+| FEED-012 | Phase 3 | Pending |
+| FEED-013 | Phase 3 | Pending |
+| FEED-014 | Phase 3 | Pending |
+| FEED-015 | Phase 3 | Pending |
+| FEED-016 | Phase 3 | Pending |
+| MKT-001 | Phase 4 | Pending |
+| MKT-002 | Phase 4 | Pending |
+| MKT-003 | Phase 4 | Pending |
+| MKT-004 | Phase 4 | Pending |
+| MKT-005 | Phase 4 | Pending |
+| MKT-006 | Phase 4 | Pending |
+| MKT-007 | Phase 4 | Pending |
+| MKT-008 | Phase 4 | Pending |
+| MKT-009 | Phase 4 | Pending |
+| MKT-010 | Phase 4 | Pending |
+| MKT-011 | Phase 4 | Pending |
+| MKT-012 | Phase 4 | Pending |
+| MKT-013 | Phase 4 | Pending |
+| MAP-001 | Phase 5 | Pending |
+| MAP-002 | Phase 5 | Pending |
+| MAP-003 | Phase 5 | Pending |
+| MAP-004 | Phase 5 | Pending |
+| MAP-005 | Phase 5 | Pending |
+| MAP-006 | Phase 5 | Pending |
+| MAP-007 | Phase 5 | Pending |
+| MAP-008 | Phase 5 | Pending |
+| MAP-009 | Phase 5 | Pending |
+| MAP-010 | Phase 5 | Pending |
+| GRP-001 | Phase 5 | Pending |
+| GRP-002 | Phase 5 | Pending |
+| GRP-003 | Phase 5 | Pending |
+| GRP-004 | Phase 5 | Pending |
+| GRP-005 | Phase 5 | Pending |
+| GRP-006 | Phase 5 | Pending |
+| GRP-007 | Phase 5 | Pending |
+| GRP-008 | Phase 5 | Pending |
+| GRP-009 | Phase 5 | Pending |
+| INF-001 | Phase 1 | Pending |
+| INF-002 | Phase 1 | Pending |
+| INF-003 | Phase 1 | Pending |
+| INF-004 | Phase 1 | Pending |
+| LGPD-01 | Phase 1 | Pending |
+| LGPD-02 | Phase 6 | Pending |
+| LGPD-03 | Phase 6 | Pending |
+| LGPD-04 | Phase 6 | Pending |
+| LGPD-05 | Phase 1 | Pending |
+| SHAR-01 | Phase 6 | Pending |
+| SHAR-02 | Phase 6 | Pending |
+| SHAR-03 | Phase 6 | Pending |
+| UXDS-01 | Phase 1 | Pending |
+| UXDS-02 | Phase 6 | Pending |
+| UXDS-03 | Phase 1 | Pending |
+| NOTF-01 | Phase 6 | Pending |
 
 **Coverage:**
 - Must have: 42
 - Should have: 22
 - Could have: 10
 - Nice to have: 4
-- **Total v1 requirements: 78**
-- Mapped to phases: 0
-- Unmapped: 78
+- **Total v1 requirements: 90** (corrected -- actual count of all requirement IDs)
+- Mapped to phases: 90
+- Unmapped: 0
+
+**By Phase:**
+- Phase 1 (Foundation + Auth): 17 requirements
+- Phase 2 (Verification + Neighborhoods): 12 requirements
+- Phase 3 (Feed + Posts): 16 requirements
+- Phase 4 (Marketplace + Chat): 13 requirements
+- Phase 5 (Map + Groups): 19 requirements
+- Phase 6 (Polish + Deploy): 13 requirements
 
 ---
 *Requirements defined: 2026-04-05*
-*Last updated: 2026-04-05 after user's detailed spec*
+*Last updated: 2026-04-05 after roadmap creation*
