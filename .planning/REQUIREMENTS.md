@@ -12,10 +12,10 @@
 - [ ] **AUTH-002** [Must]: Login with JWT (15min TTL) + refresh token (7 days, rotating, httpOnly cookie).
 - [ ] **AUTH-003** [Must]: Logout removes tokens and invalidates refresh token server-side. Option to logout all devices.
 - [ ] **AUTH-004** [Must]: Password reset via email with temporary link (1h TTL).
-- [ ] **AUTH-005** [Must]: All user input sanitized against XSS/injection. Parameterized queries via EF Core. HTML encoding on outputs.
-- [ ] **AUTH-006** [Must]: Rate limiting — 100 req/min authenticated, 20 req/min public (login, register). 429 with Retry-After header.
-- [ ] **AUTH-007** [Must]: CORS configured for authorized domains only. Credentials enabled. Explicit allowed headers.
-- [ ] **AUTH-008** [Must]: HTTPS/TLS on all endpoints. HTTP→HTTPS redirect. HSTS header.
+- [x] **AUTH-005** [Must]: All user input sanitized against XSS/injection. Parameterized queries via EF Core. HTML encoding on outputs.
+- [x] **AUTH-006** [Must]: Rate limiting — 100 req/min authenticated, 20 req/min public (login, register). 429 with Retry-After header.
+- [x] **AUTH-007** [Must]: CORS configured for authorized domains only. Credentials enabled. Explicit allowed headers.
+- [x] **AUTH-008** [Must]: HTTPS/TLS on all endpoints. HTTP→HTTPS redirect. HSTS header.
 - [ ] **AUTH-009** [Should]: 2FA for moderators/admins via TOTP (Google Authenticator, Authy). Backup codes on activation.
 - [ ] **AUTH-010** [Should]: Editable user profile — display name, profile photo, bio (160 chars), reference bairro.
 - [ ] **AUTH-011** [Should]: Account lockout after 5 failed login attempts (15min cooldown). Email notification.
@@ -100,10 +100,10 @@
 
 ### Infrastructure & Security (4)
 
-- [ ] **INF-001** [Must]: Audit logging — all admin/moderation actions logged: who, when, what, IP. 12-month retention.
-- [ ] **INF-002** [Must]: SignalR for real-time — new posts, notifications, verification status, marketplace chat.
-- [ ] **INF-003** [Must]: All secrets in environment variables. Zero hardcoded keys/connection strings.
-- [ ] **INF-004** [Must]: RESTful API versioned (/api/v1/) with OpenAPI/Swagger documentation. All endpoints with examples.
+- [x] **INF-001** [Must]: Audit logging — all admin/moderation actions logged: who, when, what, IP. 12-month retention.
+- [x] **INF-002** [Must]: SignalR for real-time — new posts, notifications, verification status, marketplace chat.
+- [x] **INF-003** [Must]: All secrets in environment variables. Zero hardcoded keys/connection strings.
+- [x] **INF-004** [Must]: RESTful API versioned (/api/v1/) with OpenAPI/Swagger documentation. All endpoints with examples.
 
 ### LGPD Compliance
 
@@ -162,10 +162,10 @@
 | AUTH-002 | Phase 1 | Pending |
 | AUTH-003 | Phase 1 | Pending |
 | AUTH-004 | Phase 1 | Pending |
-| AUTH-005 | Phase 1 | Pending |
-| AUTH-006 | Phase 1 | Pending |
-| AUTH-007 | Phase 1 | Pending |
-| AUTH-008 | Phase 1 | Pending |
+| AUTH-005 | Phase 1 | Complete |
+| AUTH-006 | Phase 1 | Complete |
+| AUTH-007 | Phase 1 | Complete |
+| AUTH-008 | Phase 1 | Complete |
 | AUTH-009 | Phase 6 | Pending |
 | AUTH-010 | Phase 2 | Pending |
 | AUTH-011 | Phase 1 | Pending |
@@ -232,10 +232,10 @@
 | GRP-007 | Phase 5 | Pending |
 | GRP-008 | Phase 5 | Pending |
 | GRP-009 | Phase 5 | Pending |
-| INF-001 | Phase 1 | Pending |
-| INF-002 | Phase 1 | Pending |
-| INF-003 | Phase 1 | Pending |
-| INF-004 | Phase 1 | Pending |
+| INF-001 | Phase 1 | Complete |
+| INF-002 | Phase 1 | Complete |
+| INF-003 | Phase 1 | Complete |
+| INF-004 | Phase 1 | Complete |
 | LGPD-01 | Phase 1 | Pending |
 | LGPD-02 | Phase 6 | Pending |
 | LGPD-03 | Phase 6 | Pending |
