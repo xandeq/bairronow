@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using NossoVizinho.Api.Data;
 using NossoVizinho.Api.Hubs;
 using NossoVizinho.Api.Middleware;
+using NossoVizinho.Api.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -129,6 +130,11 @@ try
 
     // FluentValidation
     builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+    // Auth Services
+    builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<IEmailService, EmailService>();
 
     var app = builder.Build();
 
