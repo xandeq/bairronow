@@ -1,0 +1,23 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.DotSettings.user
+
+## Node
+node_modules/
+.next/
+out/
+
+## Environment
+.env
+.env.local
+.env.*.local
+
+## OS
+Thumbs.db
+.DS_Store
