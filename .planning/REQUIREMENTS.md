@@ -111,7 +111,7 @@
 - [ ] **LGPD-02** [Should]: User can export personal data (JSON/ZIP download).
 - [ ] **LGPD-03** [Should]: User can request account deletion (anonymize data, remove PII).
 - [ ] **LGPD-04** [Should]: Verification documents have retention policy (delete after X days post-approval).
-- [ ] **LGPD-05** [Must]: Privacy policy page accessible from all screens.
+- [x] **LGPD-05** [Must]: Privacy policy page accessible from all screens.
 
 ### Sharing & Growth
 
@@ -121,9 +121,9 @@
 
 ### UX & Design
 
-- [ ] **UXDS-01** [Must]: Fully responsive mobile-first design (Tailwind CSS).
+- [x] **UXDS-01** [Must]: Fully responsive mobile-first design (Tailwind CSS).
 - [ ] **UXDS-02** [Should]: Dark mode support (toggle in settings).
-- [ ] **UXDS-03** [Must]: Portuguese (PT-BR) only — no i18n.
+- [x] **UXDS-03** [Must]: Portuguese (PT-BR) only — no i18n.
 
 ### Notifications
 
@@ -240,13 +240,13 @@
 | LGPD-02 | Phase 6 | Pending |
 | LGPD-03 | Phase 6 | Pending |
 | LGPD-04 | Phase 6 | Pending |
-| LGPD-05 | Phase 1 | Pending |
+| LGPD-05 | Phase 1 | Complete |
 | SHAR-01 | Phase 6 | Pending |
 | SHAR-02 | Phase 6 | Pending |
 | SHAR-03 | Phase 6 | Pending |
-| UXDS-01 | Phase 1 | Pending |
+| UXDS-01 | Phase 1 | Complete |
 | UXDS-02 | Phase 6 | Pending |
-| UXDS-03 | Phase 1 | Pending |
+| UXDS-03 | Phase 1 | Complete |
 | NOTF-01 | Phase 6 | Pending |
 
 **Coverage:**
