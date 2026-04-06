@@ -34,7 +34,7 @@ NossoVizinho delivers a neighborhood social network for Brazil in 6 phases: star
 Plans:
 - [x] 01-01-PLAN.md — Backend foundation: .NET 8 API scaffold, EF Core entities, middleware pipeline (CORS, rate limiting, Swagger, audit logging, SignalR hub)
 - [x] 01-02-PLAN.md — Frontend foundation: Next.js 15 static export, Tailwind, auth pages, privacy policy, Axios client, Zustand auth store
-- [ ] 01-03-PLAN.md — Auth implementation: JWT auth service, token rotation, registration, login, logout, password reset, account lockout, unit tests
+- [x] 01-03-PLAN.md — Auth implementation: JWT auth service, token rotation, registration, login, logout, password reset, account lockout, unit tests
 - [ ] 01-04-PLAN.md — Infrastructure provisioning + deploy: domain, DNS, cPanel, SmarterASP, cross-origin auth proof
 
 ### Phase 2: Verification + Neighborhoods

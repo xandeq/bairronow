@@ -8,17 +8,17 @@
 
 ### Authentication (14)
 
-- [ ] **AUTH-001** [Must]: User can sign up with email and password (min 8 chars, 1 upper, 1 number, 1 special). Email confirmation required.
-- [ ] **AUTH-002** [Must]: Login with JWT (15min TTL) + refresh token (7 days, rotating, httpOnly cookie).
-- [ ] **AUTH-003** [Must]: Logout removes tokens and invalidates refresh token server-side. Option to logout all devices.
-- [ ] **AUTH-004** [Must]: Password reset via email with temporary link (1h TTL).
+- [x] **AUTH-001** [Must]: User can sign up with email and password (min 8 chars, 1 upper, 1 number, 1 special). Email confirmation required.
+- [x] **AUTH-002** [Must]: Login with JWT (15min TTL) + refresh token (7 days, rotating, httpOnly cookie).
+- [x] **AUTH-003** [Must]: Logout removes tokens and invalidates refresh token server-side. Option to logout all devices.
+- [x] **AUTH-004** [Must]: Password reset via email with temporary link (1h TTL).
 - [x] **AUTH-005** [Must]: All user input sanitized against XSS/injection. Parameterized queries via EF Core. HTML encoding on outputs.
 - [x] **AUTH-006** [Must]: Rate limiting — 100 req/min authenticated, 20 req/min public (login, register). 429 with Retry-After header.
 - [x] **AUTH-007** [Must]: CORS configured for authorized domains only. Credentials enabled. Explicit allowed headers.
 - [x] **AUTH-008** [Must]: HTTPS/TLS on all endpoints. HTTP→HTTPS redirect. HSTS header.
 - [ ] **AUTH-009** [Should]: 2FA for moderators/admins via TOTP (Google Authenticator, Authy). Backup codes on activation.
 - [ ] **AUTH-010** [Should]: Editable user profile — display name, profile photo, bio (160 chars), reference bairro.
-- [ ] **AUTH-011** [Should]: Account lockout after 5 failed login attempts (15min cooldown). Email notification.
+- [x] **AUTH-011** [Should]: Account lockout after 5 failed login attempts (15min cooldown). Email notification.
 - [ ] **AUTH-012** [Should]: Terms of use + privacy policy acceptance at signup. Versioned. Re-acceptance on update.
 - [ ] **AUTH-013** [Could]: Social login via Google + Apple Sign-In (OAuth2). Link with existing account by email.
 - [ ] **AUTH-014** [Nice]: Magic link login — passwordless via email link (10min TTL, single-use).
@@ -107,7 +107,7 @@
 
 ### LGPD Compliance
 
-- [ ] **LGPD-01** [Must]: Privacy consent at signup (terms + data usage acceptance).
+- [x] **LGPD-01** [Must]: Privacy consent at signup (terms + data usage acceptance).
 - [ ] **LGPD-02** [Should]: User can export personal data (JSON/ZIP download).
 - [ ] **LGPD-03** [Should]: User can request account deletion (anonymize data, remove PII).
 - [ ] **LGPD-04** [Should]: Verification documents have retention policy (delete after X days post-approval).
@@ -158,17 +158,17 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-001 | Phase 1 | Pending |
-| AUTH-002 | Phase 1 | Pending |
-| AUTH-003 | Phase 1 | Pending |
-| AUTH-004 | Phase 1 | Pending |
+| AUTH-001 | Phase 1 | Complete |
+| AUTH-002 | Phase 1 | Complete |
+| AUTH-003 | Phase 1 | Complete |
+| AUTH-004 | Phase 1 | Complete |
 | AUTH-005 | Phase 1 | Complete |
 | AUTH-006 | Phase 1 | Complete |
 | AUTH-007 | Phase 1 | Complete |
 | AUTH-008 | Phase 1 | Complete |
 | AUTH-009 | Phase 6 | Pending |
 | AUTH-010 | Phase 2 | Pending |
-| AUTH-011 | Phase 1 | Pending |
+| AUTH-011 | Phase 1 | Complete |
 | AUTH-012 | Phase 2 | Pending |
 | AUTH-013 | Phase 6 | Pending |
 | AUTH-014 | Phase 6 | Pending |
@@ -236,7 +236,7 @@
 | INF-002 | Phase 1 | Complete |
 | INF-003 | Phase 1 | Complete |
 | INF-004 | Phase 1 | Complete |
-| LGPD-01 | Phase 1 | Pending |
+| LGPD-01 | Phase 1 | Complete |
 | LGPD-02 | Phase 6 | Pending |
 | LGPD-03 | Phase 6 | Pending |
 | LGPD-04 | Phase 6 | Pending |
