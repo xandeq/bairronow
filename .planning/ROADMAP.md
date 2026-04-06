@@ -27,14 +27,15 @@ NossoVizinho delivers a neighborhood social network for Brazil in 6 phases: star
   1. Domain nossovizinho.com.br registered at Registro.br and DNS configured via Cloudflare
   2. cPanel site provisioned on HostGator (WHM API) with Next.js static export deployed and serving
   3. .NET Core 8 API + SQL Server database provisioned on SmarterASP and responding
-  4. User can sign up on frontend and JWT + refresh token flow works across the cross-origin boundary (HostGator ↔ SmarterASP)
+  4. User can sign up on frontend and JWT + refresh token flow works across the cross-origin boundary (HostGator <> SmarterASP)
   5. API has CORS, rate limiting (429), HTTPS, Swagger docs at /api/v1/swagger, and audit logging
-**Plans**: TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 01-01: TBD (Infra provisioning: domain, cPanel, SmarterASP, DNS, SSL)
-- [ ] 01-02: TBD (Backend scaffolding: .NET Core 8 API, EF Core, SQL Server, JWT auth)
-- [ ] 01-03: TBD (Frontend scaffolding: Next.js 15 static export, Tailwind, auth flow, deploy)
+- [ ] 01-01-PLAN.md — Backend foundation: .NET 8 API scaffold, EF Core entities, middleware pipeline (CORS, rate limiting, Swagger, audit logging, SignalR hub)
+- [ ] 01-02-PLAN.md — Frontend foundation: Next.js 15 static export, Tailwind, auth pages, privacy policy, Axios client, Zustand auth store
+- [ ] 01-03-PLAN.md — Auth implementation: JWT auth service, token rotation, registration, login, logout, password reset, account lockout, unit tests
+- [ ] 01-04-PLAN.md — Infrastructure provisioning + deploy: domain, DNS, cPanel, SmarterASP, cross-origin auth proof
 
 ### Phase 2: Verification + Neighborhoods
 **Goal**: Users can verify their address and get assigned to a bairro, establishing the core trust layer
@@ -121,11 +122,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Auth | 0/3 | Not started | - |
+| 1. Foundation + Auth | 0/4 | Planning complete | - |
 | 2. Verification + Neighborhoods | 0/3 | Not started | - |
 | 3. Feed + Posts | 0/3 | Not started | - |
 | 4. Marketplace + Chat | 0/3 | Not started | - |
