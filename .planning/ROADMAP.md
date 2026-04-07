@@ -51,7 +51,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Backend: Bairro + Verification entities, CEP lookup (ViaCEP+BrasilAPI), verification + admin + profile APIs, EF migration, Vila Velha seed
-- [ ] 02-02-PLAN.md — Frontend (Next.js): onboarding flow (CEP/proof/pending), profile + VerifiedBadge, admin review queue, shared client extensions
+- [x] 02-02-PLAN.md — Frontend (Next.js): onboarding flow (CEP/proof/pending), profile + VerifiedBadge, admin review queue, shared client extensions
 - [ ] 02-03-PLAN.md — Mobile (Expo): same onboarding flow with image/PDF picker, status polling, profile + badge
 
 ### Phase 3: Feed + Posts
