@@ -97,7 +97,21 @@ try
             };
         });
 
-    builder.Services.AddAuthorization();
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("Admin", policy =>
+            policy.RequireAuthenticatedUser().RequireClaim("is_admin", "true"));
+    });
+
+    // Verification / bairro / CEP services
+    builder.Services.AddMemoryCache();
+    builder.Services.AddHttpClient<ICepLookupService, CepLookupService>(client =>
+    {
+        client.Timeout = TimeSpan.FromSeconds(5);
+    });
+    builder.Services.AddScoped<IBairroService, BairroService>();
+    builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+    builder.Services.AddScoped<IVerificationService, VerificationService>();
 
     // SignalR
     builder.Services.AddSignalR();
