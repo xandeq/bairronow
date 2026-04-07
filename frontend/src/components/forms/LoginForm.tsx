@@ -8,6 +8,8 @@ import { useState } from "react";
 import api from "@/lib/api";
 import { useAuthStore } from "@/lib/auth";
 import type { AuthResponse } from "@/types/auth";
+import FormField from "@/components/ui/FormField";
+import Button from "@/components/ui/Button";
 
 const loginSchema = z.object({
   email: z.string().email("E-mail invalido"),
@@ -50,63 +52,40 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          E-mail
-        </label>
-        <input
-          id="email"
-          type="email"
-          {...register("email")}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
-          placeholder="seu@email.com"
-        />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Senha
-        </label>
-        <input
-          id="password"
-          type="password"
-          {...register("password")}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
-        />
-        {errors.password && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.password.message}
-          </p>
-        )}
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <FormField
+        label="E-mail"
+        type="email"
+        placeholder="seu@email.com"
+        error={errors.email?.message}
+        {...register("email")}
+      />
+      <FormField
+        label="Senha"
+        type="password"
+        error={errors.password?.message}
+        {...register("password")}
+      />
 
       {serverError && (
-        <p className="text-sm text-red-600">{serverError}</p>
+        <p className="text-sm text-danger font-semibold">{serverError}</p>
       )}
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full py-2 px-4 bg-green-700 text-white rounded-lg font-medium hover:bg-green-800 transition-colors disabled:opacity-50"
-      >
-        {isLoading ? "Entrando..." : "Entrar"}
-      </button>
+      <Button type="submit" loading={isLoading} fullWidth>
+        Entrar
+      </Button>
 
-      <div className="flex justify-between text-sm">
-        <Link href="/forgot-password/" className="text-green-700 hover:underline">
+      <div className="flex justify-between text-sm font-semibold">
+        <Link
+          href="/forgot-password/"
+          className="text-primary hover:text-primary-hover transition-colors"
+        >
           Esqueceu a senha?
         </Link>
-        <Link href="/register/" className="text-green-700 hover:underline">
+        <Link
+          href="/register/"
+          className="text-primary hover:text-primary-hover transition-colors"
+        >
           Criar conta
         </Link>
       </div>

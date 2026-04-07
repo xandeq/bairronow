@@ -6,6 +6,8 @@ import { z } from "zod";
 import Link from "next/link";
 import { useState } from "react";
 import api from "@/lib/api";
+import FormField from "@/components/ui/FormField";
+import Button from "@/components/ui/Button";
 
 const registerSchema = z
   .object({
@@ -67,11 +69,14 @@ export default function RegisterForm() {
 
   if (success) {
     return (
-      <div className="text-center py-8">
-        <p className="text-green-700 font-medium">
+      <div className="text-center py-6 space-y-4">
+        <p className="text-secondary font-semibold text-lg">
           Verifique seu e-mail para confirmar sua conta.
         </p>
-        <Link href="/login/" className="text-green-700 hover:underline mt-4 inline-block">
+        <Link
+          href="/login/"
+          className="inline-block text-primary font-semibold hover:text-primary-hover"
+        >
           Voltar para login
         </Link>
       </div>
@@ -79,105 +84,66 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          E-mail
-        </label>
-        <input
-          id="email"
-          type="email"
-          {...register("email")}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
-          placeholder="seu@email.com"
-        />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-        )}
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <FormField
+        label="E-mail"
+        type="email"
+        placeholder="seu@email.com"
+        error={errors.email?.message}
+        {...register("email")}
+      />
+      <FormField
+        label="Senha"
+        type="password"
+        error={errors.password?.message}
+        {...register("password")}
+      />
+      <FormField
+        label="Confirmar senha"
+        type="password"
+        error={errors.confirmPassword?.message}
+        {...register("confirmPassword")}
+      />
 
-      <div>
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Senha
+      <div className="space-y-1.5">
+        <label className="flex items-start gap-2 text-sm text-fg/80 font-medium">
+          <input
+            type="checkbox"
+            {...register("acceptedPrivacyPolicy")}
+            className="mt-1 w-4 h-4 accent-primary"
+          />
+          <span>
+            Li e aceito a{" "}
+            <Link
+              href="/privacy-policy/"
+              className="text-primary font-semibold hover:text-primary-hover"
+              target="_blank"
+            >
+              Política de Privacidade
+            </Link>
+          </span>
         </label>
-        <input
-          id="password"
-          type="password"
-          {...register("password")}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
-        />
-        {errors.password && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.password.message}
+        {errors.acceptedPrivacyPolicy && (
+          <p className="text-sm text-danger font-medium">
+            {errors.acceptedPrivacyPolicy.message}
           </p>
         )}
       </div>
-
-      <div>
-        <label
-          htmlFor="confirmPassword"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Confirmar senha
-        </label>
-        <input
-          id="confirmPassword"
-          type="password"
-          {...register("confirmPassword")}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
-        />
-        {errors.confirmPassword && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.confirmPassword.message}
-          </p>
-        )}
-      </div>
-
-      <div className="flex items-start gap-2">
-        <input
-          id="acceptedPrivacyPolicy"
-          type="checkbox"
-          {...register("acceptedPrivacyPolicy")}
-          className="mt-1"
-        />
-        <label htmlFor="acceptedPrivacyPolicy" className="text-sm text-gray-700">
-          Li e aceito a{" "}
-          <Link
-            href="/privacy-policy/"
-            className="text-green-700 hover:underline"
-            target="_blank"
-          >
-            Politica de Privacidade
-          </Link>
-        </label>
-      </div>
-      {errors.acceptedPrivacyPolicy && (
-        <p className="text-sm text-red-600">
-          {errors.acceptedPrivacyPolicy.message}
-        </p>
-      )}
 
       {serverError && (
-        <p className="text-sm text-red-600">{serverError}</p>
+        <p className="text-sm text-danger font-semibold">{serverError}</p>
       )}
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full py-2 px-4 bg-green-700 text-white rounded-lg font-medium hover:bg-green-800 transition-colors disabled:opacity-50"
-      >
-        {isLoading ? "Criando conta..." : "Criar conta"}
-      </button>
+      <Button type="submit" loading={isLoading} fullWidth>
+        Criar conta
+      </Button>
 
-      <p className="text-center text-sm">
-        <Link href="/login/" className="text-green-700 hover:underline">
-          Ja tem conta? Entrar
+      <p className="text-center text-sm font-semibold">
+        <Link
+          href="/login/"
+          className="text-primary hover:text-primary-hover transition-colors"
+        >
+          Já tem conta? Entrar
         </Link>
       </p>
     </form>
