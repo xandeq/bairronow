@@ -5,7 +5,11 @@ import type {
   RegisterRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
-  CepAddress,
+  CepLookupResult,
+  VerificationStatusDto,
+  AdminVerificationListItem,
+  ProfileDto,
+  UpdateProfileRequest,
 } from '@bairronow/shared-types';
 
 export interface TokenStore {
@@ -68,20 +72,67 @@ export function createAuthApi(client: AxiosInstance) {
   };
 }
 
-export function createCepApi() {
-  const cep = axios.create({ baseURL: 'https://viacep.com.br/ws' });
+export function createCepApi(client: AxiosInstance) {
   return {
-    lookup: async (raw: string): Promise<CepAddress> => {
+    lookup: async (raw: string): Promise<CepLookupResult> => {
       const clean = raw.replace(/\D/g, '');
-      const { data } = await cep.get(`/${clean}/json/`);
-      if (data.erro) throw new Error('CEP nao encontrado');
-      return {
-        cep: data.cep,
-        logradouro: data.logradouro,
-        bairro: data.bairro,
-        localidade: data.localidade,
-        uf: data.uf,
-      };
+      const { data } = await client.get<CepLookupResult>('/api/v1/cep/' + clean);
+      return data;
+    },
+  };
+}
+
+export function createVerificationApi(client: AxiosInstance) {
+  return {
+    submit: async (formData: FormData): Promise<VerificationStatusDto> => {
+      const { data } = await client.post<VerificationStatusDto>(
+        '/api/v1/verification',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return data;
+    },
+    getMyStatus: async (): Promise<VerificationStatusDto> => {
+      const { data } = await client.get<VerificationStatusDto>('/api/v1/verification/me');
+      return data;
+    },
+  };
+}
+
+export function createProfileApi(client: AxiosInstance) {
+  return {
+    getMe: async (): Promise<ProfileDto> => {
+      const { data } = await client.get<ProfileDto>('/api/v1/profile/me');
+      return data;
+    },
+    updateMe: async (body: UpdateProfileRequest): Promise<ProfileDto> => {
+      const { data } = await client.put<ProfileDto>('/api/v1/profile/me', body);
+      return data;
+    },
+  };
+}
+
+export function createAdminVerificationApi(client: AxiosInstance) {
+  return {
+    listPending: async (
+      skip = 0,
+      take = 20
+    ): Promise<{ items: AdminVerificationListItem[]; total: number }> => {
+      const { data } = await client.get<{ items: AdminVerificationListItem[]; total: number }>(
+        '/api/v1/admin/verifications',
+        { params: { status: 'pending', skip, take } }
+      );
+      return data;
+    },
+    approve: async (id: number): Promise<void> => {
+      await client.post('/api/v1/admin/verifications/' + id + '/approve');
+    },
+    reject: async (id: number, reason: string): Promise<void> => {
+      await client.post('/api/v1/admin/verifications/' + id + '/reject', { reason });
+    },
+    getProofUrl: (id: number): string => {
+      const base = (client.defaults.baseURL || '').replace(/\/$/, '');
+      return base + '/api/v1/admin/verifications/' + id + '/proof';
     },
   };
 }

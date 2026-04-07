@@ -45,3 +45,15 @@ export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export const cepSchema = z
   .string()
   .regex(/^\d{5}-?\d{3}$/, 'CEP invalido (use 00000-000)');
+
+export const proofUploadSchema = z.object({
+  cep: cepSchema,
+  numero: z.string().max(20).optional(),
+});
+export type ProofUploadInput = z.infer<typeof proofUploadSchema>;
+
+export const updateProfileSchema = z.object({
+  displayName: z.string().min(1, 'Nome obrigatorio').max(80, 'Nome muito longo'),
+  bio: z.string().max(160, 'Bio deve ter no maximo 160 caracteres'),
+});
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
