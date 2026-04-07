@@ -15,7 +15,11 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bairronow.app"
+      "bundleIdentifier": "com.bairronow.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Precisamos acessar sua câmera para enviar comprovante de residência",
+        "NSPhotoLibraryUsageDescription": "Precisamos acessar suas fotos para enviar comprovante de residência"
+      }
     },
     "android": {
       "adaptiveIcon": {

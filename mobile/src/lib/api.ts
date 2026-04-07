@@ -1,5 +1,11 @@
 import Constants from 'expo-constants';
-import { createApiClient, createAuthApi, createCepApi } from '@bairronow/shared-api-client';
+import {
+  createApiClient,
+  createAuthApi,
+  createCepApi,
+  createVerificationApi,
+  createProfileApi,
+} from '@bairronow/shared-api-client';
 import { useAuthStore } from './auth-store';
 
 const baseURL =
@@ -16,3 +22,5 @@ export const apiClient = createApiClient({
 
 export const authApi = createAuthApi(apiClient);
 export const cepApi = createCepApi(apiClient);
+export const verificationApi = createVerificationApi(apiClient);
+export const profileApi = createProfileApi(apiClient);
