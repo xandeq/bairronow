@@ -1,75 +1,101 @@
-import FeedList from "@/components/features/feed/FeedList";
-import type { Post } from "@bairronow/shared-types";
+"use client";
 
-const stubPosts: Post[] = [
-  {
-    id: "1",
-    author: {
-      id: "u1",
-      name: "Mariana Silva",
-      bairro: "Praia da Costa",
-      verified: true,
-    },
-    content:
-      "Alguém sabe se a feira de domingo na Praça do Pelicano vai acontecer mesmo com a chuva? 🌧️",
-    createdAt: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
-    likeCount: 8,
-    commentCount: 3,
-  },
-  {
-    id: "2",
-    author: {
-      id: "u2",
-      name: "João Pedro",
-      bairro: "Itapoã",
-      verified: true,
-    },
-    content:
-      "Achei um cachorrinho perdido na rua Henrique Moscoso. Coleira azul, parece manso. Estou em casa, quem reconhecer me chame!",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-    likeCount: 24,
-    commentCount: 11,
-  },
-  {
-    id: "3",
-    author: {
-      id: "u3",
-      name: "Síndico Carlos",
-      bairro: "Edifício Atlântico",
-      verified: true,
-    },
-    content:
-      "Lembrete: assembleia condominial nesta quinta-feira às 19h no salão de festas. Pauta: reforma da fachada.",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-    likeCount: 4,
-    commentCount: 2,
-  },
-  {
-    id: "4",
-    author: {
-      id: "u4",
-      name: "Padaria do Zé",
-      bairro: "Centro",
-      verified: true,
-    },
-    content:
-      "Pão fresquinho saindo agora! Promoção: 12 pães franceses por R$ 8,00 até o fim da tarde. 🥖",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
-    likeCount: 31,
-    commentCount: 5,
-  },
-];
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import FeedHeader from "@/components/layouts/FeedHeader";
+import PostCard from "@/components/features/PostCard";
+import PostComposer from "@/components/features/PostComposer";
+import { useFeedStore } from "@/stores/feed-store";
+import { useAuthStore } from "@/lib/auth";
 
 export default function FeedPage() {
+  const router = useRouter();
+  const items = useFeedStore((s) => s.items);
+  const loading = useFeedStore((s) => s.loading);
+  const hasMore = useFeedStore((s) => s.hasMore);
+  const error = useFeedStore((s) => s.error);
+  const loadFirst = useFeedStore((s) => s.loadFirst);
+  const loadMore = useFeedStore((s) => s.loadMore);
+
+  const [composerOpen, setComposerOpen] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  // bairro guard + initial load
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const u = useAuthStore.getState().user;
+      const bairroId = u?.bairroId ?? null;
+      if (!bairroId) {
+        router.replace("/onboarding/cep/");
+        return;
+      }
+      loadFirst(bairroId);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [router, loadFirst]);
+
+  const onIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const u = useAuthStore.getState().user;
+      const bairroId = u?.bairroId ?? null;
+      if (!bairroId) return;
+      if (entries[0]?.isIntersecting && hasMore && !loading) {
+        loadMore(bairroId);
+      }
+    },
+    [hasMore, loading, loadMore]
+  );
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(onIntersect, { rootMargin: "200px" });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [onIntersect]);
+
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-3xl font-extrabold text-fg">Feed do bairro</h1>
-        <p className="text-fg/60 font-medium">
-          O que está acontecendo perto de você
-        </p>
-      </header>
-      <FeedList posts={stubPosts} />
+    <div className="space-y-4">
+      <FeedHeader />
+
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => setComposerOpen(true)}
+          className="bg-green-700 hover:bg-green-800 text-white rounded-md px-4 py-2 font-semibold"
+        >
+          Novo post
+        </button>
+      </div>
+
+      {error && (
+        <p className="text-sm text-red-600 font-semibold">{error}</p>
+      )}
+
+      {items.length === 0 && !loading ? (
+        <div className="bg-white rounded-lg shadow p-8 text-center">
+          <p className="text-fg/60 font-medium">
+            Nenhum post ainda no seu bairro.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {items.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      )}
+
+      {loading && (
+        <p className="text-center text-fg/60 font-medium">Carregando...</p>
+      )}
+
+      <div ref={sentinelRef} aria-hidden className="h-4" />
+
+      <PostComposer
+        open={composerOpen}
+        onClose={() => setComposerOpen(false)}
+      />
     </div>
   );
 }
