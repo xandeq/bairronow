@@ -1,4 +1,10 @@
 import axios from 'axios';
+import {
+  createCepApi,
+  createVerificationApi,
+  createProfileApi,
+  createAdminVerificationApi,
+} from '@bairronow/shared-api-client';
 import { useAuthStore } from './auth';
 
 const api = axios.create({
@@ -31,5 +37,10 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const cepApi = createCepApi(api);
+export const verificationApi = createVerificationApi(api);
+export const profileApi = createProfileApi(api);
+export const adminVerificationApi = createAdminVerificationApi(api);
 
 export default api;

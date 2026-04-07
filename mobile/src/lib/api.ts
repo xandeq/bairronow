@@ -15,4 +15,4 @@ export const apiClient = createApiClient({
 });
 
 export const authApi = createAuthApi(apiClient);
-export const cepApi = createCepApi();
+export const cepApi = createCepApi(apiClient);
