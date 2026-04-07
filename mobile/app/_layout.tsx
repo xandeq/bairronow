@@ -13,6 +13,7 @@ export default function RootLayout() {
         <Stack.Screen name="proof-upload" options={{ title: 'Comprovante' }} />
         <Stack.Screen name="pending" options={{ title: 'Verificação' }} />
         <Stack.Screen name="feed" options={{ title: 'Bairro' }} />
+        <Stack.Screen name="profile" options={{ title: 'Meu perfil' }} />
       </Stack>
     </>
   );
