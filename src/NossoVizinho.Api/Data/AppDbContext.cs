@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NossoVizinho.Api.Models.Entities;
+using NossoVizinho.Api.Models.Enums;
 
 namespace NossoVizinho.Api.Data;
 
@@ -12,6 +13,12 @@ public class AppDbContext : DbContext
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Bairro> Bairros => Set<Bairro>();
     public DbSet<Verification> Verifications => Set<Verification>();
+    public DbSet<Post> Posts => Set<Post>();
+    public DbSet<PostImage> PostImages => Set<PostImage>();
+    public DbSet<Comment> Comments => Set<Comment>();
+    public DbSet<PostLike> PostLikes => Set<PostLike>();
+    public DbSet<Report> Reports => Set<Report>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -104,6 +111,112 @@ public class AppDbContext : DbContext
                 .HasForeignKey(e => e.BairroId)
                 .OnDelete(DeleteBehavior.SetNull);
             entity.HasQueryFilter(v => !v.IsDeleted);
+        });
+
+        // Post
+        modelBuilder.Entity<Post>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Body).IsRequired().HasMaxLength(2000);
+            entity.Property(e => e.Category).HasConversion<string>().HasMaxLength(20);
+            entity.Property(e => e.IsFlagged).HasDefaultValue(false);
+            entity.Property(e => e.IsPublished).HasDefaultValue(true);
+            entity.Property(e => e.RestrictedToVerified).HasDefaultValue(false);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Author)
+                .WithMany()
+                .HasForeignKey(e => e.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Bairro)
+                .WithMany()
+                .HasForeignKey(e => e.BairroId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.BairroId, e.CreatedAt });
+            entity.HasIndex(e => e.Body);
+            entity.HasQueryFilter(p => p.DeletedAt == null);
+        });
+
+        // PostImage
+        modelBuilder.Entity<PostImage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Url).IsRequired().HasMaxLength(500);
+            entity.HasOne(e => e.Post)
+                .WithMany(p => p.Images)
+                .HasForeignKey(e => e.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => new { e.PostId, e.Order }).IsUnique();
+        });
+
+        // Comment
+        modelBuilder.Entity<Comment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Body).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Post)
+                .WithMany(p => p.Comments)
+                .HasForeignKey(e => e.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Author)
+                .WithMany()
+                .HasForeignKey(e => e.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.ParentComment)
+                .WithMany(c => c.Replies)
+                .HasForeignKey(e => e.ParentCommentId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => e.PostId);
+            entity.HasQueryFilter(c => c.DeletedAt == null);
+        });
+
+        // PostLike
+        modelBuilder.Entity<PostLike>(entity =>
+        {
+            entity.HasKey(e => new { e.PostId, e.UserId });
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Post)
+                .WithMany(p => p.Likes)
+                .HasForeignKey(e => e.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Report
+        modelBuilder.Entity<Report>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.TargetType).IsRequired().HasMaxLength(16);
+            entity.Property(e => e.Reason).HasConversion<string>().HasMaxLength(20);
+            entity.Property(e => e.Note).HasMaxLength(500);
+            entity.Property(e => e.Status).IsRequired().HasMaxLength(16).HasDefaultValue("pending");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Reporter)
+                .WithMany()
+                .HasForeignKey(e => e.ReporterId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => e.Status);
+        });
+
+        // Notification
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Type).IsRequired().HasMaxLength(16);
+            entity.Property(e => e.IsRead).HasDefaultValue(false);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Actor)
+                .WithMany()
+                .HasForeignKey(e => e.ActorUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.UserId, e.IsRead });
         });
     }
 
