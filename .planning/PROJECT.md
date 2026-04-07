@@ -48,7 +48,7 @@ Verified neighbor discovery — users must be able to find and trust that the pe
 - **Verification**: CEP + uploaded proof document (utility bill). This is the core trust mechanism.
 - **Stack decided**: Next.js 15 frontend (HostGator cPanel), .NET Core 8 API (SmarterASP), SQL Server (SmarterASP), Cloudflare DNS.
 - **Infrastructure**: HostGator reseller (alexa084), SmarterASP existing account, Cloudflare account ready.
-- **Domain**: nossovizinho.com.br to be registered at Registro.br.
+- **Domain**: bairronow.com.br to be registered at Registro.br.
 
 ## Constraints
 
@@ -56,7 +56,7 @@ Verified neighbor discovery — users must be able to find and trust that the pe
 - **Hosting (Backend)**: SmarterASP — .NET Core 8, SQL Server, no Redis (use in-memory cache)
 - **Budget**: Free-tier infrastructure only — no Redis, no separate CDN beyond Cloudflare
 - **Timeline**: MVP in 1 week
-- **Domain**: Must register nossovizinho.com.br via Registro.br (Brazilian registry)
+- **Domain**: Must register bairronow.com.br via Registro.br (Brazilian registry)
 - **Security**: OWASP top 10, parametrized queries, XSS sanitization, CORS, HTTPS/TLS
 - **Credentials**: All secrets in ~/.claude/.secrets.env — never hardcoded
 - **Automation**: All provisioning via API/CLI — no manual portal logins

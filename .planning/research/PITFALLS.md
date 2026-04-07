@@ -19,10 +19,10 @@
 **Prevention:** Use short-lived tokens (15 min). Strip `access_token` from server logs. Configure `OnMessageReceived` event in JWT middleware to read from query string only for SignalR hub path.
 
 ### Pitfall 3: CORS Misconfiguration Between Domains
-**What goes wrong:** Frontend on `nossovizinho.com.br` (HostGator) calling API on `api.nossovizinho.com.br` (SmarterASP). Browsers block cross-origin requests if CORS is wrong. httpOnly cookies require `SameSite=None; Secure`.
+**What goes wrong:** Frontend on `bairronow.com.br` (HostGator) calling API on `api.bairronow.com.br` (SmarterASP). Browsers block cross-origin requests if CORS is wrong. httpOnly cookies require `SameSite=None; Secure`.
 **Why it happens:** Two different origins on different hosting providers.
 **Consequences:** Auth flow breaks, refresh tokens don't send.
-**Prevention:** Configure CORS explicitly in .NET: allow specific origin, allow credentials. Set cookie `SameSite=None; Secure; Domain=.nossovizinho.com.br`. Test in browser early.
+**Prevention:** Configure CORS explicitly in .NET: allow specific origin, allow credentials. Set cookie `SameSite=None; Secure; Domain=.bairronow.com.br`. Test in browser early.
 
 ### Pitfall 4: CEP Does Not Map 1:1 to Neighborhoods
 **What goes wrong:** A single CEP can span multiple bairros, or a bairro can have dozens of CEPs. Using CEP as neighborhood ID creates wrong groupings.

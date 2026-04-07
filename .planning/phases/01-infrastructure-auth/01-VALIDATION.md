@@ -41,7 +41,7 @@ created: 2026-04-05
 | 01-01-01 | 01 | 0 | INF-001 | manual | Domain registration via Registro.br | N/A | ⬜ pending |
 | 01-01-02 | 01 | 0 | INF-002 | manual | WHM API cPanel provisioning | N/A | ⬜ pending |
 | 01-01-03 | 01 | 0 | INF-003 | manual | SmarterASP provisioning | N/A | ⬜ pending |
-| 01-01-04 | 01 | 0 | INF-004 | integration | `curl -s https://nossovizinho.com.br` | ❌ W0 | ⬜ pending |
+| 01-01-04 | 01 | 0 | INF-004 | integration | `curl -s https://bairronow.com.br` | ❌ W0 | ⬜ pending |
 | 01-02-01 | 02 | 1 | AUTH-001 | unit | `dotnet test --filter "RegisterEndpoint"` | ❌ W0 | ⬜ pending |
 | 01-02-02 | 02 | 1 | AUTH-002 | unit | `dotnet test --filter "LoginEndpoint"` | ❌ W0 | ⬜ pending |
 | 01-02-03 | 02 | 1 | AUTH-003 | unit | `dotnet test --filter "JwtToken"` | ❌ W0 | ⬜ pending |
@@ -73,10 +73,10 @@ created: 2026-04-05
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| Domain registration | INF-001 | External service (Registro.br) | Verify via `dig nossovizinho.com.br` returns Cloudflare NS |
+| Domain registration | INF-001 | External service (Registro.br) | Verify via `dig bairronow.com.br` returns Cloudflare NS |
 | cPanel provisioning | INF-002 | WHM API call to shared hosting | Verify cPanel login works at provisioned URL |
 | SmarterASP setup | INF-003 | External service provisioning | Verify API responds at deployed URL |
-| HTTPS/SSL | INF-004 | Certificate provisioning | `curl -vI https://nossovizinho.com.br` shows valid cert |
+| HTTPS/SSL | INF-004 | Certificate provisioning | `curl -vI https://bairronow.com.br` shows valid cert |
 | Cross-origin auth | AUTH-003 | Requires both domains live | Browser test: login on frontend, verify cookie sent to API |
 
 ---

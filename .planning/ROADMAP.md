@@ -24,7 +24,7 @@ NossoVizinho delivers a neighborhood social network for Brazil in 6 phases: star
 **Depends on**: Nothing (first phase)
 **Requirements**: AUTH-001, AUTH-002, AUTH-003, AUTH-004, AUTH-005, AUTH-006, AUTH-007, AUTH-008, AUTH-011, INF-001, INF-002, INF-003, INF-004, UXDS-01, UXDS-03, LGPD-01, LGPD-05
 **Success Criteria** (what must be TRUE):
-  1. Domain nossovizinho.com.br registered at Registro.br and DNS configured via Cloudflare
+  1. Domain bairronow.com.br registered at Registro.br and DNS configured via Cloudflare
   2. cPanel site provisioned on HostGator (WHM API) with Next.js static export deployed and serving
   3. .NET Core 8 API + SQL Server database provisioned on SmarterASP and responding
   4. User can sign up on frontend and JWT + refresh token flow works across the cross-origin boundary (HostGator <> SmarterASP)
@@ -104,7 +104,7 @@ Plans:
 - [ ] 05-03: TBD
 
 ### Phase 6: Polish + Deploy
-**Goal**: Platform is LGPD-compliant, shareable, polished, and live on nossovizinho.com.br
+**Goal**: Platform is LGPD-compliant, shareable, polished, and live on bairronow.com.br
 **Depends on**: Phase 5
 **Requirements**: AUTH-009, AUTH-013, AUTH-014, VER-011, VER-012, LGPD-02, LGPD-03, LGPD-04, SHAR-01, SHAR-02, SHAR-03, UXDS-02, NOTF-01
 **Success Criteria** (what must be TRUE):

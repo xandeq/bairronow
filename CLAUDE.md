@@ -13,7 +13,7 @@ A neighborhood operating system for Brazil — a "Nextdoor brasileiro" where ver
 - **Hosting (Backend)**: SmarterASP — .NET Core 8, SQL Server, no Redis (use in-memory cache)
 - **Budget**: Free-tier infrastructure only — no Redis, no separate CDN beyond Cloudflare
 - **Timeline**: MVP in 1 week
-- **Domain**: Must register nossovizinho.com.br via Registro.br (Brazilian registry)
+- **Domain**: Must register bairronow.com.br via Registro.br (Brazilian registry)
 - **Security**: OWASP top 10, parametrized queries, XSS sanitization, CORS, HTTPS/TLS
 - **Credentials**: All secrets in ~/.claude/.secrets.env — never hardcoded
 - **Automation**: All provisioning via API/CLI — no manual portal logins

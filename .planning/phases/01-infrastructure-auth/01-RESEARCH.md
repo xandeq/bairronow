@@ -177,7 +177,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
-        policy.WithOrigins("https://nossovizinho.com.br", "https://www.nossovizinho.com.br")
+        policy.WithOrigins("https://bairronow.com.br", "https://www.bairronow.com.br")
               .AllowCredentials()  // MANDATORY for cookies
               .AllowAnyHeader()
               .AllowAnyMethod()
@@ -283,7 +283,7 @@ Log.Logger = new LoggerConfiguration()
 
 ### Pitfall 1: Third-Party Cookie Blocking
 **What goes wrong:** Modern browsers (Chrome 2024+, Firefox, Safari) block third-party cookies by default. Cross-domain httpOnly cookies silently fail.
-**Why it happens:** Frontend on nossovizinho.com.br, API on site4now.net -- different registrable domains.
+**Why it happens:** Frontend on bairronow.com.br, API on site4now.net -- different registrable domains.
 **How to avoid:** Use `SameSite=None; Secure; Partitioned` on cookies. Test in Chrome Incognito. Have a fallback plan: if cookies fail, store refresh token in memory and accept that page refresh = re-login.
 **Warning signs:** Login works but user gets logged out on page navigation or refresh. 401s on refresh endpoint.
 
@@ -454,7 +454,7 @@ export default nextConfig;
    - Recommendation: Deploy a minimal "hello world" .NET 8 API as the very first task to validate.
 
 3. **Registro.br domain availability**
-   - What we know: nossovizinho.com.br is the target domain.
+   - What we know: bairronow.com.br is the target domain.
    - What's unclear: Whether the domain is available.
    - Recommendation: Check availability first. If taken, have alternatives ready (meu-vizinho.com.br, vizinhosaqui.com.br).
 

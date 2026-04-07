@@ -55,7 +55,7 @@ export default function PrivacyPolicyPage() {
           <p className="text-gray-700">
             Para exercer seus direitos ou tirar duvidas sobre esta politica,
             entre em contato pelo e-mail:{" "}
-            <span className="font-medium">privacidade@nossovizinho.com.br</span>
+            <span className="font-medium">privacidade@bairronow.com.br</span>
           </p>
         </section>
       </div>
