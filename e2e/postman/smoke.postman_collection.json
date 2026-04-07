@@ -1,0 +1,77 @@
+{
+  "info": {
+    "name": "BairroNow API Smoke",
+    "_postman_id": "b41r0n0w-smoke-0001",
+    "description": "Lightweight production smoke tests for the BairroNow API. Run with: newman run smoke.postman_collection.json --env-var baseUrl=https://api.bairronow.com.br",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.bairronow.com.br" }
+  ],
+  "item": [
+    {
+      "name": "GET /health",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('status ok', function () { pm.expect(pm.response.json().status).to.eql('ok'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /api/v1/cep/29101010 (Praia da Costa)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/cep/29101010",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "cep", "29101010"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('body contains Praia da Costa', function () { pm.expect(pm.response.text()).to.include('Praia da Costa'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /api/v1/cep/00000000 (not found)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/cep/00000000",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "cep", "00000000"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 404', function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
