@@ -46,7 +46,7 @@
 - [x] **FEED-004** [Must]: Comments on posts. 1-level threading (reply to comment). Max 500 chars. Edit/delete own.
 - [x] **FEED-005** [Must]: Like/reaction on posts. Toggle on/off. Visible counter. "Who liked" list accessible.
 - [x] **FEED-006** [Must]: Edit post within 30min. Soft delete anytime. "Edited" indicator visible.
-- [ ] **FEED-007** [Must]: Full-text search in bairro posts. Filter by category, date, author. Relevance-sorted results.
+- [x] **FEED-007** [Must]: Full-text search in bairro posts. Filter by category, date, author. Relevance-sorted results.
 - [x] **FEED-008** [Must]: Report posts/comments — categories: spam, offensive, discrimination, misinformation, other. Moderation queue.
 - [x] **FEED-009** [Must]: Proactive moderation — auto-filter offensive words (admin-customizable list). Flagged posts go to review before publishing.
 - [x] **FEED-010** [Should]: Activity notifications — push + in-app for: comment on your post, like, mention, reply.
@@ -190,7 +190,7 @@
 | FEED-004 | Phase 3 | Complete |
 | FEED-005 | Phase 3 | Complete |
 | FEED-006 | Phase 3 | Complete |
-| FEED-007 | Phase 3 | Pending |
+| FEED-007 | Phase 3 | Complete |
 | FEED-008 | Phase 3 | Complete |
 | FEED-009 | Phase 3 | Complete |
 | FEED-010 | Phase 3 | Complete |
