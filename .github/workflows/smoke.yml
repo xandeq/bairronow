@@ -9,6 +9,7 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Frontend
         run: curl -fsSL -o /dev/null https://bairronow.com.br/login/
       - name: API health
@@ -18,3 +19,11 @@ jobs:
           echo "$body" | grep -q '"status":"ok"'
       - name: API swagger
         run: curl -fsSL -o /dev/null https://api.bairronow.com.br/swagger/index.html
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install newman
+        run: npm install -g newman
+      - name: Run newman API smoke collection
+        run: newman run e2e/postman/smoke.postman_collection.json --env-var "baseUrl=https://api.bairronow.com.br"
