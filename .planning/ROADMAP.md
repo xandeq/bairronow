@@ -10,7 +10,7 @@ NossoVizinho delivers a neighborhood social network for Brazil in 6 phases: star
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Foundation + Auth** - Both projects scaffolded, CORS proven, JWT auth working end-to-end
+- [x] **Phase 1: Foundation + Auth** - Both projects scaffolded, CORS proven, JWT auth working end-to-end (completed 2026-04-07)
 - [ ] **Phase 2: Verification + Neighborhoods** - CEP lookup, proof upload, admin review, bairro assignment
 - [ ] **Phase 3: Feed + Posts** - Neighborhood-scoped feed with posts, comments, likes, search, moderation
 - [ ] **Phase 4: Marketplace + Chat** - Listings, search, private 1:1 chat, reporting
@@ -29,13 +29,13 @@ NossoVizinho delivers a neighborhood social network for Brazil in 6 phases: star
   3. .NET Core 8 API + SQL Server database provisioned on SmarterASP and responding
   4. User can sign up on frontend and JWT + refresh token flow works across the cross-origin boundary (HostGator <> SmarterASP)
   5. API has CORS, rate limiting (429), HTTPS, Swagger docs at /api/v1/swagger, and audit logging
-**Plans:** 4 plans
+**Plans:** 4/4 plans complete
 
 Plans:
 - [x] 01-01-PLAN.md — Backend foundation: .NET 8 API scaffold, EF Core entities, middleware pipeline (CORS, rate limiting, Swagger, audit logging, SignalR hub)
 - [x] 01-02-PLAN.md — Frontend foundation: Next.js 15 static export, Tailwind, auth pages, privacy policy, Axios client, Zustand auth store
 - [x] 01-03-PLAN.md — Auth implementation: JWT auth service, token rotation, registration, login, logout, password reset, account lockout, unit tests
-- [ ] 01-04-PLAN.md — Infrastructure provisioning + deploy: domain, DNS, cPanel, SmarterASP, cross-origin auth proof
+- [x] 01-04-PLAN.md — Infrastructure provisioning + deploy: domain, DNS, cPanel, SmarterASP, cross-origin auth proof
 
 ### Phase 2: Verification + Neighborhoods
 **Goal**: Users can verify their address and get assigned to a bairro, establishing the core trust layer
@@ -126,7 +126,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Auth | 0/4 | Planning complete | - |
+| 1. Foundation + Auth | 4/4 | Complete   | 2026-04-07 |
 | 2. Verification + Neighborhoods | 0/3 | Not started | - |
 | 3. Feed + Posts | 0/3 | Not started | - |
 | 4. Marketplace + Chat | 0/3 | Not started | - |

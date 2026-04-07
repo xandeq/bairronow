@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-04-06T10:45:02.939Z"
+stopped_at: 01-04 awaiting human verify (Cloudflare SSL=Flexible + browser test)
+last_updated: "2026-04-07T10:46:11.924Z"
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -48,6 +48,7 @@ Plan: 4 of 4
 | Phase 01-infrastructure-auth P02 | 5min | 2 tasks | 16 files |
 | Phase 01 P01 | 7m | 3 tasks | 12 files |
 | Phase 01 P03 | 6min | 3 tasks | 19 files |
+| Phase 01-infrastructure-auth P04 | 25m | 1 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Pinned Swashbuckle to v6.x for .NET 8 OpenApi compatibility
 - [Phase 01]: SHA256 for refresh token storage (fast lookup vs BCrypt per-row scan)
 - [Phase 01]: Partitioned cookie attribute via Set-Cookie header workaround for .NET 8
+- [Phase 01-infrastructure-auth]: Cloudflare proxied CNAME for api subdomain + Flexible SSL for mtempurl origin (no per-domain cert on SmarterASP)
 
 ### Pending Todos
 
@@ -72,9 +74,10 @@ None yet.
 - Phase 1: Must prove CORS + cookie auth between HostGator and SmarterASP early -- if this fails, architecture needs rethinking
 - Phase 2: CEP-to-bairro normalization needs real Vila Velha data validation
 - Phase 3: SmarterASP file upload size limits need web.config testing
+- 01-04: Cloudflare SSL mode must be set to Flexible for api.bairronow.com.br (token lacks Zone Settings:Edit)
 
 ## Session Continuity
 
-Last session: 2026-04-06T10:45:02.936Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-04-07T10:46:04.168Z
+Stopped at: 01-04 awaiting human verify (Cloudflare SSL=Flexible + browser test)
 Resume file: None
