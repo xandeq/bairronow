@@ -118,11 +118,14 @@ export function createAdminVerificationApi(client: AxiosInstance) {
       skip = 0,
       take = 20
     ): Promise<{ items: AdminVerificationListItem[]; total: number }> => {
-      const { data } = await client.get<{ items: AdminVerificationListItem[]; total: number }>(
-        '/api/v1/admin/verifications',
-        { params: { status: 'pending', skip, take } }
-      );
-      return data;
+      const { data } = await client.get<
+        AdminVerificationListItem[] | { items: AdminVerificationListItem[]; total: number }
+      >('/api/v1/admin/verifications', { params: { status: 'pending', skip, take } });
+      // API currently returns a bare array; tolerate both shapes.
+      if (Array.isArray(data)) {
+        return { items: data, total: data.length };
+      }
+      return { items: data.items ?? [], total: data.total ?? 0 };
     },
     approve: async (id: number): Promise<void> => {
       await client.post('/api/v1/admin/verifications/' + id + '/approve');
