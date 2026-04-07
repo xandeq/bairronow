@@ -128,7 +128,9 @@ export function createAdminVerificationApi(client: AxiosInstance) {
       return { items: data.items ?? [], total: data.total ?? 0 };
     },
     approve: async (id: number): Promise<void> => {
-      await client.post('/api/v1/admin/verifications/' + id + '/approve');
+      // Send explicit empty JSON body so IIS sets Content-Length and does
+      // not reject the request with HTTP 411 "Length Required".
+      await client.post('/api/v1/admin/verifications/' + id + '/approve', {});
     },
     reject: async (id: number, reason: string): Promise<void> => {
       await client.post('/api/v1/admin/verifications/' + id + '/reject', { reason });
