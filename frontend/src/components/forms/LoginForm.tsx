@@ -5,7 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 import { useState } from "react";
-import api from "@/lib/api";
+import { useRouter } from "next/navigation";
+import api, { profileApi } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth";
 import type { AuthResponse } from "@bairronow/shared-types";
 import FormField from "@/components/ui/FormField";
@@ -19,6 +20,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,6 +43,17 @@ export default function LoginForm() {
       useAuthStore
         .getState()
         .login(response.data.accessToken, response.data.user);
+
+      // Decide destination based on verification status.
+      // Default to onboarding; if profile says verified, go straight to feed.
+      let destination = "/cep-lookup/";
+      try {
+        const profile = await profileApi.getMe();
+        if (profile.isVerified) destination = "/feed/";
+      } catch {
+        // ignore — fall back to onboarding
+      }
+      router.replace(destination);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { error?: string } } };
       setServerError(
