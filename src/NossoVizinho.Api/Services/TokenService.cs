@@ -27,8 +27,12 @@ public class TokenService : ITokenService
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new("is_admin", user.IsAdmin ? "true" : "false")
+            new("is_admin", user.IsAdmin ? "true" : "false"),
+            new("is_verified", user.IsVerified ? "true" : "false")
         };
+
+        if (user.BairroId.HasValue)
+            claims.Add(new Claim("bairro_id", user.BairroId.Value.ToString()));
 
         if (!string.IsNullOrEmpty(user.DisplayName))
             claims.Add(new Claim("name", user.DisplayName));

@@ -77,6 +77,21 @@ try
                     QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                     QueueLimit = 0
                 }));
+
+        options.AddPolicy("feed-write", context =>
+            RateLimitPartition.GetSlidingWindowLimiter(
+                context.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                    ?? context.User?.Identity?.Name
+                    ?? context.Connection.RemoteIpAddress?.ToString()
+                    ?? "anonymous",
+                _ => new SlidingWindowRateLimiterOptions
+                {
+                    PermitLimit = 10,
+                    Window = TimeSpan.FromMinutes(1),
+                    SegmentsPerWindow = 6,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 0
+                }));
     });
 
     // JWT Authentication
@@ -101,6 +116,8 @@ try
     {
         options.AddPolicy("Admin", policy =>
             policy.RequireAuthenticatedUser().RequireClaim("is_admin", "true"));
+        options.AddPolicy("VerifiedOnly", policy =>
+            policy.RequireAuthenticatedUser().RequireClaim("is_verified", "true"));
     });
 
     // Verification / bairro / CEP services
@@ -112,6 +129,15 @@ try
     builder.Services.AddScoped<IBairroService, BairroService>();
     builder.Services.AddScoped<IFileStorageService, FileStorageService>();
     builder.Services.AddScoped<IVerificationService, VerificationService>();
+
+    // Feed services
+    builder.Services.AddSingleton<IOffensiveWordFilter, OffensiveWordFilter>();
+    builder.Services.AddScoped<IFeedQueryService, FeedQueryService>();
+    builder.Services.AddScoped<IPostService, PostService>();
+    builder.Services.AddScoped<ICommentService, CommentService>();
+    builder.Services.AddScoped<ILikeService, LikeService>();
+    builder.Services.AddScoped<IModerationService, ModerationService>();
+    builder.Services.AddScoped<INotificationService, NotificationService>();
 
     // SignalR
     builder.Services.AddSignalR();
