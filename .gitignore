@@ -23,4 +23,5 @@ out/
 Thumbs.db
 .DS_Store
 .playwright-mcp/
-*.png
+/cp-screen.png
+/smarterasp-login.png
