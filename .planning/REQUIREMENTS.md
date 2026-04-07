@@ -17,24 +17,24 @@
 - [x] **AUTH-007** [Must]: CORS configured for authorized domains only. Credentials enabled. Explicit allowed headers.
 - [x] **AUTH-008** [Must]: HTTPS/TLS on all endpoints. HTTP→HTTPS redirect. HSTS header.
 - [ ] **AUTH-009** [Should]: 2FA for moderators/admins via TOTP (Google Authenticator, Authy). Backup codes on activation.
-- [ ] **AUTH-010** [Should]: Editable user profile — display name, profile photo, bio (160 chars), reference bairro.
+- [x] **AUTH-010** [Should]: Editable user profile — display name, profile photo, bio (160 chars), reference bairro.
 - [x] **AUTH-011** [Should]: Account lockout after 5 failed login attempts (15min cooldown). Email notification.
-- [ ] **AUTH-012** [Should]: Terms of use + privacy policy acceptance at signup. Versioned. Re-acceptance on update.
+- [x] **AUTH-012** [Should]: Terms of use + privacy policy acceptance at signup. Versioned. Re-acceptance on update.
 - [ ] **AUTH-013** [Could]: Social login via Google + Apple Sign-In (OAuth2). Link with existing account by email.
 - [ ] **AUTH-014** [Nice]: Magic link login — passwordless via email link (10min TTL, single-use).
 
 ### Verification (12)
 
-- [ ] **VER-001** [Must]: CEP lookup via ViaCEP API with address autocomplete. Real-time validation. Manual input fallback.
-- [ ] **VER-002** [Must]: Upload proof of residence (utility bill image/PDF). Max 5MB. Type + size validation. Secure storage.
-- [ ] **VER-003** [Must]: Admin review queue — view document, CEP, user data. Actions: approve, reject (with reason), request resubmit.
-- [ ] **VER-004** [Must]: Verified neighbor badge on profile and all posts/comments. Badge irremovable by user.
-- [ ] **VER-005** [Must]: User-to-bairro association derived from CEP. Bairro determines visible feed and map.
-- [ ] **VER-006** [Must]: Neighborhood as aggregate root (DDD). Contains references to members, posts, marketplace items. Business rules encapsulated.
-- [ ] **VER-007** [Should]: Re-verification every 12 months. 30-day grace period. Badge removed if not re-verified.
-- [ ] **VER-008** [Should]: Basic fraud detection — same document used by multiple users, CEP/IP geolocation mismatch, abnormal signup volume at same address.
-- [ ] **VER-009** [Should]: Real-time verification status — sent, in review, approved, rejected. Push/email on each change.
-- [ ] **VER-010** [Should]: Soft delete for verification data. Data marked, not physically removed.
+- [x] **VER-001** [Must]: CEP lookup via ViaCEP API with address autocomplete. Real-time validation. Manual input fallback.
+- [x] **VER-002** [Must]: Upload proof of residence (utility bill image/PDF). Max 5MB. Type + size validation. Secure storage.
+- [x] **VER-003** [Must]: Admin review queue — view document, CEP, user data. Actions: approve, reject (with reason), request resubmit.
+- [x] **VER-004** [Must]: Verified neighbor badge on profile and all posts/comments. Badge irremovable by user.
+- [x] **VER-005** [Must]: User-to-bairro association derived from CEP. Bairro determines visible feed and map.
+- [x] **VER-006** [Must]: Neighborhood as aggregate root (DDD). Contains references to members, posts, marketplace items. Business rules encapsulated.
+- [x] **VER-007** [Should]: Re-verification every 12 months. 30-day grace period. Badge removed if not re-verified.
+- [x] **VER-008** [Should]: Basic fraud detection — same document used by multiple users, CEP/IP geolocation mismatch, abnormal signup volume at same address.
+- [x] **VER-009** [Should]: Real-time verification status — sent, in review, approved, rejected. Push/email on each change.
+- [x] **VER-010** [Should]: Soft delete for verification data. Data marked, not physically removed.
 - [ ] **VER-011** [Could]: OCR on proof documents — auto-extract name, address, date. Pre-validation before manual review.
 - [ ] **VER-012** [Could]: Neighbor vouching — 2 verified neighbors vouch for new user as equivalent to proof document.
 
@@ -167,21 +167,21 @@
 | AUTH-007 | Phase 1 | Complete |
 | AUTH-008 | Phase 1 | Complete |
 | AUTH-009 | Phase 6 | Pending |
-| AUTH-010 | Phase 2 | Pending |
+| AUTH-010 | Phase 2 | Complete |
 | AUTH-011 | Phase 1 | Complete |
-| AUTH-012 | Phase 2 | Pending |
+| AUTH-012 | Phase 2 | Complete |
 | AUTH-013 | Phase 6 | Pending |
 | AUTH-014 | Phase 6 | Pending |
-| VER-001 | Phase 2 | Pending |
-| VER-002 | Phase 2 | Pending |
-| VER-003 | Phase 2 | Pending |
-| VER-004 | Phase 2 | Pending |
-| VER-005 | Phase 2 | Pending |
-| VER-006 | Phase 2 | Pending |
-| VER-007 | Phase 2 | Pending |
-| VER-008 | Phase 2 | Pending |
-| VER-009 | Phase 2 | Pending |
-| VER-010 | Phase 2 | Pending |
+| VER-001 | Phase 2 | Complete |
+| VER-002 | Phase 2 | Complete |
+| VER-003 | Phase 2 | Complete |
+| VER-004 | Phase 2 | Complete |
+| VER-005 | Phase 2 | Complete |
+| VER-006 | Phase 2 | Complete |
+| VER-007 | Phase 2 | Complete |
+| VER-008 | Phase 2 | Complete |
+| VER-009 | Phase 2 | Complete |
+| VER-010 | Phase 2 | Complete |
 | VER-011 | Phase 6 | Pending |
 | VER-012 | Phase 6 | Pending |
 | FEED-001 | Phase 3 | Pending |

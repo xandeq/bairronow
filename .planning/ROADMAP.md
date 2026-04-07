@@ -47,12 +47,12 @@ Plans:
   3. Admin can review pending verifications and approve/reject with reasons
   4. Verified users display a badge on their profile, and profiles show display name, photo, bio, and bairro
   5. Fraud detection flags duplicate documents and suspicious patterns
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [x] 02-01-PLAN.md — Backend: Bairro + Verification entities, CEP lookup (ViaCEP+BrasilAPI), verification + admin + profile APIs, EF migration, Vila Velha seed
+- [ ] 02-02-PLAN.md — Frontend (Next.js): onboarding flow (CEP/proof/pending), profile + VerifiedBadge, admin review queue, shared client extensions
+- [ ] 02-03-PLAN.md — Mobile (Expo): same onboarding flow with image/PDF picker, status polling, profile + badge
 
 ### Phase 3: Feed + Posts
 **Goal**: Verified neighbors can post, comment, like, search, and engage in their bairro feed
