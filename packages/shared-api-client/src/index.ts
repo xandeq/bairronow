@@ -142,4 +142,7 @@ export function createAdminVerificationApi(client: AxiosInstance) {
   };
 }
 
+export { createFeedClient } from './feed';
+export type { FeedClient, ListFeedParams, ResolveReportParams } from './feed';
+
 export type { AxiosInstance };

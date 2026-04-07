@@ -107,3 +107,33 @@ export interface LikeToggleResult {
   liked: boolean;
   count: number;
 }
+
+// ----------------------------------------------------------------------------
+// Legacy stub types — kept for compatibility with pre-Phase-03 placeholder
+// pages (marketplace, profile stub, old FeedList/PostCard). These will be
+// removed once those screens are rewritten against the real DTOs above.
+// ----------------------------------------------------------------------------
+
+export interface Author {
+  id: string;
+  name: string;
+  bairro: string;
+  verified: boolean;
+}
+
+export interface Post {
+  id: string;
+  author: Author;
+  content: string;
+  createdAt: string;
+  likeCount: number;
+  commentCount: number;
+}
+
+export interface Listing {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl?: string;
+  seller: Author;
+}

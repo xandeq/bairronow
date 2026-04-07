@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export * from './feed';
+
 export const emailSchema = z.string().email('E-mail invalido');
 export const passwordSchema = z.string().min(8, 'Senha deve ter no minimo 8 caracteres');
 
