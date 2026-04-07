@@ -10,6 +10,8 @@ public class AppDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<Bairro> Bairros => Set<Bairro>();
+    public DbSet<Verification> Verifications => Set<Verification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,6 +25,15 @@ public class AppDbContext : DbContext
             entity.HasIndex(e => e.Email).IsUnique();
             entity.Property(e => e.PasswordHash).IsRequired();
             entity.Property(e => e.DisplayName).HasMaxLength(100);
+            entity.Property(e => e.PhotoUrl).HasMaxLength(500);
+            entity.Property(e => e.Bio).HasMaxLength(160);
+            entity.Property(e => e.IsVerified).HasDefaultValue(false);
+            entity.Property(e => e.IsAdmin).HasDefaultValue(false);
+            entity.Property(e => e.AcceptedTermsVersion).HasMaxLength(20);
+            entity.HasOne(e => e.Bairro)
+                .WithMany()
+                .HasForeignKey(e => e.BairroId)
+                .OnDelete(DeleteBehavior.SetNull);
             entity.Property(e => e.EmailConfirmed).HasDefaultValue(false);
             entity.Property(e => e.FailedLoginAttempts).HasDefaultValue(0);
             entity.Property(e => e.AcceptedPrivacyPolicyVersion).HasDefaultValue(1);
@@ -56,6 +67,43 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Details).HasMaxLength(2000);
             entity.Property(e => e.Timestamp).HasDefaultValueSql("GETUTCDATE()");
             entity.HasIndex(e => e.Timestamp);
+        });
+
+        // Bairro
+        modelBuilder.Entity<Bairro>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Nome).IsRequired().HasMaxLength(120);
+            entity.Property(e => e.Cidade).IsRequired().HasMaxLength(120);
+            entity.Property(e => e.Uf).IsRequired().HasMaxLength(2);
+            entity.Property(e => e.Slug).IsRequired().HasMaxLength(140);
+            entity.HasIndex(e => e.Slug).IsUnique();
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+        });
+
+        // Verification
+        modelBuilder.Entity<Verification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Cep).IsRequired().HasMaxLength(9);
+            entity.Property(e => e.Logradouro).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Numero).HasMaxLength(20);
+            entity.Property(e => e.ProofFilePath).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.ProofSha256).IsRequired().HasMaxLength(64);
+            entity.HasIndex(e => e.ProofSha256);
+            entity.HasIndex(e => new { e.UserId, e.Status });
+            entity.Property(e => e.Status).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.RejectionReason).HasMaxLength(500);
+            entity.Property(e => e.SubmittedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Bairro)
+                .WithMany()
+                .HasForeignKey(e => e.BairroId)
+                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasQueryFilter(v => !v.IsDeleted);
         });
     }
 

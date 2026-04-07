@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NossoVizinho.Api.Data;
+using NossoVizinho.Api.Data.Seed;
 using NossoVizinho.Api.Hubs;
 using NossoVizinho.Api.Middleware;
 using NossoVizinho.Api.Services;
@@ -138,6 +139,25 @@ try
     builder.Services.AddScoped<IEmailService, EmailService>();
 
     var app = builder.Build();
+
+    // Apply migrations and seed Vila Velha bairros
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        try
+        {
+            db.Database.Migrate();
+            if (!db.Bairros.Any())
+            {
+                db.Bairros.AddRange(VilaVelhaBairros.All);
+                db.SaveChanges();
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Database migration/seed failed");
+        }
+    }
 
     // Middleware pipeline
     app.UseForwardedHeaders(new ForwardedHeadersOptions
