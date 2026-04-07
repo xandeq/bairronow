@@ -1,5 +1,6 @@
 using System.Text;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.HttpOverrides;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -139,9 +140,14 @@ try
     var app = builder.Build();
 
     // Middleware pipeline
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+        KnownNetworks = { },
+        KnownProxies = { }
+    });
     app.UseMiddleware<ExceptionHandlerMiddleware>();
-    app.UseHttpsRedirection();
-    app.UseHsts();
+    // HttpsRedirection disabled: Cloudflare terminates TLS at edge, origin runs HTTP
     app.UseCors("Frontend");
     app.UseAuthentication();
     app.UseAuthorization();
@@ -150,6 +156,8 @@ try
 
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NossoVizinho API v1"));
+
+    app.MapGet("/health", () => Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }));
 
     app.MapHub<NotificationHub>("/hubs/notifications");
     app.MapControllers();
