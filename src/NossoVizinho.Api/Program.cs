@@ -166,6 +166,22 @@ try
                 db.Bairros.AddRange(VilaVelhaBairros.All);
                 db.SaveChanges();
             }
+
+            // Optional admin promotion via env var BAIRRONOW_ADMIN_EMAIL.
+            // If set and a user with that email exists, ensure IsAdmin = true.
+            // Does NOT auto-create the user — register them via the normal flow first.
+            var adminEmail = Environment.GetEnvironmentVariable("BAIRRONOW_ADMIN_EMAIL");
+            if (!string.IsNullOrWhiteSpace(adminEmail))
+            {
+                var normalized = adminEmail.Trim().ToLowerInvariant();
+                var user = db.Users.FirstOrDefault(u => u.Email.ToLower() == normalized);
+                if (user != null && !user.IsAdmin)
+                {
+                    user.IsAdmin = true;
+                    db.SaveChanges();
+                    Log.Information("Promoted {Email} to admin via BAIRRONOW_ADMIN_EMAIL", normalized);
+                }
+            }
         }
         catch (Exception ex)
         {
