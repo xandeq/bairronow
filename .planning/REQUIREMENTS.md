@@ -40,16 +40,16 @@
 
 ### Feed & Posts (16)
 
-- [ ] **FEED-001** [Must]: Create text post (max 2000 chars, basic formatting). Mandatory categories: Dica, Alerta, Pergunta, Evento, Geral.
-- [ ] **FEED-002** [Must]: Post with up to 4 images. Auto-resize. Type validation (jpg, png, webp). Max 5MB each.
-- [ ] **FEED-003** [Must]: Neighborhood-scoped feed (only user's bairro). Reverse chronological. Infinite scroll pagination.
-- [ ] **FEED-004** [Must]: Comments on posts. 1-level threading (reply to comment). Max 500 chars. Edit/delete own.
-- [ ] **FEED-005** [Must]: Like/reaction on posts. Toggle on/off. Visible counter. "Who liked" list accessible.
-- [ ] **FEED-006** [Must]: Edit post within 30min. Soft delete anytime. "Edited" indicator visible.
+- [x] **FEED-001** [Must]: Create text post (max 2000 chars, basic formatting). Mandatory categories: Dica, Alerta, Pergunta, Evento, Geral.
+- [x] **FEED-002** [Must]: Post with up to 4 images. Auto-resize. Type validation (jpg, png, webp). Max 5MB each.
+- [x] **FEED-003** [Must]: Neighborhood-scoped feed (only user's bairro). Reverse chronological. Infinite scroll pagination.
+- [x] **FEED-004** [Must]: Comments on posts. 1-level threading (reply to comment). Max 500 chars. Edit/delete own.
+- [x] **FEED-005** [Must]: Like/reaction on posts. Toggle on/off. Visible counter. "Who liked" list accessible.
+- [x] **FEED-006** [Must]: Edit post within 30min. Soft delete anytime. "Edited" indicator visible.
 - [ ] **FEED-007** [Must]: Full-text search in bairro posts. Filter by category, date, author. Relevance-sorted results.
-- [ ] **FEED-008** [Must]: Report posts/comments — categories: spam, offensive, discrimination, misinformation, other. Moderation queue.
-- [ ] **FEED-009** [Must]: Proactive moderation — auto-filter offensive words (admin-customizable list). Flagged posts go to review before publishing.
-- [ ] **FEED-010** [Should]: Activity notifications — push + in-app for: comment on your post, like, mention, reply.
+- [x] **FEED-008** [Must]: Report posts/comments — categories: spam, offensive, discrimination, misinformation, other. Moderation queue.
+- [x] **FEED-009** [Must]: Proactive moderation — auto-filter offensive words (admin-customizable list). Flagged posts go to review before publishing.
+- [x] **FEED-010** [Should]: Activity notifications — push + in-app for: comment on your post, like, mention, reply.
 - [ ] **FEED-011** [Should]: Admin/mod can pin up to 3 posts at feed top. Differentiated visual.
 - [ ] **FEED-012** [Should]: Posts restricted to verified neighbors only (optional per post).
 - [ ] **FEED-013** [Should]: Simple polls — 2-4 options, single vote, real-time results, optional expiration.
@@ -184,16 +184,16 @@
 | VER-010 | Phase 2 | Complete |
 | VER-011 | Phase 6 | Pending |
 | VER-012 | Phase 6 | Pending |
-| FEED-001 | Phase 3 | Pending |
-| FEED-002 | Phase 3 | Pending |
-| FEED-003 | Phase 3 | Pending |
-| FEED-004 | Phase 3 | Pending |
-| FEED-005 | Phase 3 | Pending |
-| FEED-006 | Phase 3 | Pending |
+| FEED-001 | Phase 3 | Complete |
+| FEED-002 | Phase 3 | Complete |
+| FEED-003 | Phase 3 | Complete |
+| FEED-004 | Phase 3 | Complete |
+| FEED-005 | Phase 3 | Complete |
+| FEED-006 | Phase 3 | Complete |
 | FEED-007 | Phase 3 | Pending |
-| FEED-008 | Phase 3 | Pending |
-| FEED-009 | Phase 3 | Pending |
-| FEED-010 | Phase 3 | Pending |
+| FEED-008 | Phase 3 | Complete |
+| FEED-009 | Phase 3 | Complete |
+| FEED-010 | Phase 3 | Complete |
 | FEED-011 | Phase 3 | Pending |
 | FEED-012 | Phase 3 | Pending |
 | FEED-013 | Phase 3 | Pending |

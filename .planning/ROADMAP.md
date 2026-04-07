@@ -64,12 +64,11 @@ Plans:
   3. User can search posts by text, filter by category/date/author, and see relevance-sorted results
   4. Reported posts enter a moderation queue, and offensive-word filter auto-flags content before publishing
   5. User receives in-app notifications for comments, likes, and mentions on their posts
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [x] 03-01-PLAN.md — Backend (.NET 8): feed entities, posts/comments/likes/search/moderation/notifications API, offensive-word filter, SignalR notifications, xUnit tests
+- [ ] 03-02-PLAN.md — Frontend Web (Next.js): feed page, post composer with image compression, threaded comments, search, admin moderation, SignalR notification bell
 
 ### Phase 4: Marketplace + Chat
 **Goal**: Verified neighbors can buy/sell items locally with private chat and trusted seller profiles
