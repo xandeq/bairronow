@@ -1,4 +1,4 @@
-import type { CepAddress } from "@/types/onboarding";
+import type { CepAddress } from "@bairronow/shared-types";
 
 const sanitize = (cep: string) => cep.replace(/\D/g, "");
 

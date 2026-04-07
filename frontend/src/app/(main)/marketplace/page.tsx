@@ -1,5 +1,5 @@
 import ListingCard from "@/components/features/marketplace/ListingCard";
-import type { Listing } from "@/types/feed";
+import type { Listing } from "@bairronow/shared-types";
 
 const stubListings: Listing[] = [
   {

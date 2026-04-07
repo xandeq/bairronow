@@ -1,5 +1,5 @@
 import Card from "@/components/ui/Card";
-import type { Listing } from "@/types/feed";
+import type { Listing } from "@bairronow/shared-types";
 
 const formatBRL = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });

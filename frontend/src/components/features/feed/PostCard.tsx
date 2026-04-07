@@ -1,6 +1,6 @@
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
-import type { Post } from "@/types/feed";
+import type { Post } from "@bairronow/shared-types";
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();

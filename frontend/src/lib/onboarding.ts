@@ -4,7 +4,7 @@ import type {
   CepAddress,
   OnboardingStep,
   ProofStatus,
-} from "@/types/onboarding";
+} from "@bairronow/shared-types";
 
 interface OnboardingStore {
   step: OnboardingStep;

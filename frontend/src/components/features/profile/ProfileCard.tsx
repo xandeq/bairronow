@@ -1,6 +1,6 @@
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
-import type { Author } from "@/types/feed";
+import type { Author } from "@bairronow/shared-types";
 
 export default function ProfileCard({ user }: { user: Author }) {
   return (

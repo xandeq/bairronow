@@ -1,5 +1,5 @@
 import FeedList from "@/components/features/feed/FeedList";
-import type { Post } from "@/types/feed";
+import type { Post } from "@bairronow/shared-types";
 
 const stubPosts: Post[] = [
   {

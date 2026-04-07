@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { UserInfo } from '@/types/auth';
+import type { UserInfo } from '@bairronow/shared-types';
 
 interface AuthState {
   accessToken: string | null;

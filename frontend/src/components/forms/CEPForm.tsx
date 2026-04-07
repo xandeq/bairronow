@@ -7,7 +7,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { lookupCep, formatCep } from "@/lib/cep-service";
 import { useOnboardingStore } from "@/lib/onboarding";
-import type { CepAddress } from "@/types/onboarding";
+import type { CepAddress } from "@bairronow/shared-types";
 
 export default function CEPForm() {
   const router = useRouter();

@@ -1,5 +1,5 @@
 import PostCard from "./PostCard";
-import type { Post } from "@/types/feed";
+import type { Post } from "@bairronow/shared-types";
 
 export default function FeedList({ posts }: { posts: Post[] }) {
   if (posts.length === 0) {

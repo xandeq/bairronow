@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 import api from "@/lib/api";
 import { useAuthStore } from "@/lib/auth";
-import type { AuthResponse } from "@/types/auth";
+import type { AuthResponse } from "@bairronow/shared-types";
 import FormField from "@/components/ui/FormField";
 import Button from "@/components/ui/Button";
 
