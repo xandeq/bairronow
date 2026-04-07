@@ -1,0 +1,20 @@
+name: Production Smoke Test
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Frontend
+        run: curl -fsSL -o /dev/null https://bairronow.com.br/login/
+      - name: API health
+        run: |
+          body=$(curl -fsSL https://api.bairronow.com.br/health)
+          echo "$body"
+          echo "$body" | grep -q '"status":"ok"'
+      - name: API swagger
+        run: curl -fsSL -o /dev/null https://api.bairronow.com.br/swagger/index.html
