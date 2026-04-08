@@ -3,7 +3,7 @@ phase: 4
 slug: marketplace-chat
 status: draft
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-04-07
 updated: 2026-04-08
 ---
@@ -41,8 +41,8 @@ updated: 2026-04-08
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 04-01 T0 | 04-01 | 0 | All MKT-* | stub | `dotnet test --filter "FullyQualifiedName~Marketplace|FullyQualifiedName~Chat"` | Wave 0 creates | ⬜ |
-| 04-01 T0 | 04-01 | 0 | FTS sync lag | smoke | `FTS_SMOKE=1 dotnet test --filter FullTextSyncLag` | Wave 0 creates | ⬜ |
+| 04-01 T0 | 04-01 | 0 | All MKT-* | stub | `dotnet test --filter "FullyQualifiedName~Marketplace|FullyQualifiedName~Chat"` | ✅ created | ✅ |
+| 04-01 T0 | 04-01 | 0 | FTS sync lag | smoke | `FTS_SMOKE=1 dotnet test --filter FullTextSyncLag` | ✅ created | ✅ |
 | 04-01 T1 | 04-01 | 1 | MKT-001/005/006/011 entities + MKT-008 shared queue + D-24 categories | unit + migration | `dotnet ef database update` + `dotnet test --filter Marketplace.Entity` | Task 0 stubs | ⬜ |
 | 04-01 T2 | 04-01 | 1 | MKT-001, MKT-002, MKT-003, MKT-005, MKT-006, MKT-007, MKT-008, MKT-009, MKT-010, MKT-011 | integration | `dotnet test --filter "FullyQualifiedName~Marketplace|FullyQualifiedName~Ratings|FullyQualifiedName~Moderation.Listing"` | Task 0 stubs | ⬜ |
 | 04-01 T3 | 04-01 | 1 | MKT-004 | integration | `dotnet test --filter "FullyQualifiedName~Chat"` | Task 0 stubs | ⬜ |
