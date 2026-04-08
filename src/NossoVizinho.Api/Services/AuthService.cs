@@ -50,7 +50,7 @@ public class AuthService : IAuthService
         await _emailService.SendConfirmationEmailAsync(user.Email, user.EmailConfirmationToken);
 
         var accessToken = _tokenService.GenerateAccessToken(user);
-        var response = new AuthResponse(accessToken, new UserInfo(user.Id, user.Email, user.DisplayName, user.EmailConfirmed));
+        var response = new AuthResponse(accessToken, new UserInfo(user.Id, user.Email, user.DisplayName, user.EmailConfirmed, user.BairroId, user.IsVerified, user.IsAdmin));
         return (response, null);
     }
 
@@ -94,7 +94,7 @@ public class AuthService : IAuthService
         _db.RefreshTokens.Add(refreshToken);
         await _db.SaveChangesAsync();
 
-        var response = new AuthResponse(accessToken, new UserInfo(user.Id, user.Email, user.DisplayName, user.EmailConfirmed));
+        var response = new AuthResponse(accessToken, new UserInfo(user.Id, user.Email, user.DisplayName, user.EmailConfirmed, user.BairroId, user.IsVerified, user.IsAdmin));
         return (response, rawRefreshToken, null);
     }
 
@@ -148,7 +148,7 @@ public class AuthService : IAuthService
 
         var user = storedToken.User;
         var accessToken = _tokenService.GenerateAccessToken(user);
-        var response = new AuthResponse(accessToken, new UserInfo(user.Id, user.Email, user.DisplayName, user.EmailConfirmed));
+        var response = new AuthResponse(accessToken, new UserInfo(user.Id, user.Email, user.DisplayName, user.EmailConfirmed, user.BairroId, user.IsVerified, user.IsAdmin));
         return (response, rawNewToken, null);
     }
 
