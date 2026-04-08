@@ -12,6 +12,9 @@ using NossoVizinho.Api.Hubs;
 using NossoVizinho.Api.Middleware;
 using NossoVizinho.Api.Services;
 using Serilog;
+using Microsoft.Extensions.FileProviders;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Memory;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -139,6 +142,22 @@ try
     builder.Services.AddScoped<IModerationService, ModerationService>();
     builder.Services.AddScoped<INotificationService, NotificationService>();
 
+    // Phase 4 (04-01) Marketplace + Ratings services
+    builder.Services.AddScoped<IListingService, ListingService>();
+    builder.Services.AddScoped<IRatingService, RatingService>();
+    // builder.Services.AddScoped<IChatService, ChatService>(); // wired in Task 3
+
+    // RESEARCH §Pitfall 8: Use ArrayPool memory allocator with minimal pooling so the
+    // sequential photo pipeline doesn't retain large managed buffers between requests on
+    // shared hosting (SmarterASP single instance).
+    Configuration.Default.MemoryAllocator = MemoryAllocator.Create(new MemoryAllocatorOptions
+    {
+        AllocationLimitMegabytes = 64
+    });
+
+    // Phase 4 chat-send rate limiter (D-12 hub) — 30 messages/min per user
+    builder.Services.Configure<Microsoft.AspNetCore.RateLimiting.RateLimiterOptions>(opts => { });
+
     // SignalR
     builder.Services.AddSignalR();
 
@@ -229,6 +248,22 @@ try
     app.UseAuthorization();
     app.UseRateLimiter();
     app.UseMiddleware<AuditLoggingMiddleware>();
+
+    // Static files for uploaded marketplace + chat images.
+    // Cache-Control: public, max-age=31536000, immutable (Research Open Question 2)
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        OnPrepareResponse = ctx =>
+        {
+            var path = ctx.Context.Request.Path.Value ?? string.Empty;
+            if (path.StartsWith("/uploads/listings/", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("/uploads/chat/", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("/uploads/posts/", StringComparison.OrdinalIgnoreCase))
+            {
+                ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=31536000, immutable";
+            }
+        }
+    });
 
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NossoVizinho API v1"));

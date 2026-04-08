@@ -19,9 +19,13 @@ public class ModerationController : ControllerBase
     }
 
     [HttpGet("reports")]
-    public async Task<IActionResult> ListReports([FromQuery] int skip = 0, [FromQuery] int take = 20, CancellationToken ct = default)
+    public async Task<IActionResult> ListReports(
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 20,
+        [FromQuery] string? targetType = null,
+        CancellationToken ct = default)
     {
-        return Ok(await _moderation.ListPendingReportsAsync(skip, take, ct));
+        return Ok(await _moderation.ListPendingReportsAsync(skip, take, targetType, ct));
     }
 
     [HttpPost("reports/{id:int}/resolve")]

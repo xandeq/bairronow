@@ -50,12 +50,19 @@ public class ModerationService : IModerationService
         };
     }
 
-    public async Task<List<ReportDto>> ListPendingReportsAsync(int skip, int take, CancellationToken ct = default)
+    public Task<List<ReportDto>> ListPendingReportsAsync(int skip, int take, CancellationToken ct = default)
+        => ListPendingReportsAsync(skip, take, null, ct);
+
+    public async Task<List<ReportDto>> ListPendingReportsAsync(int skip, int take, string? targetType, CancellationToken ct = default)
     {
         take = Math.Clamp(take, 1, 100);
-        var reports = await _db.Reports.AsNoTracking()
+        var query = _db.Reports.AsNoTracking()
             .Include(r => r.Reporter)
-            .Where(r => r.Status == ReportStatus.Pending)
+            .Where(r => r.Status == ReportStatus.Pending);
+        if (!string.IsNullOrWhiteSpace(targetType))
+            query = query.Where(r => r.TargetType == targetType);
+
+        var reports = await query
             .OrderBy(r => r.CreatedAt)
             .Skip(skip)
             .Take(take)
@@ -90,6 +97,16 @@ public class ModerationService : IModerationService
             {
                 var comment = await _db.Comments.IgnoreQueryFilters().FirstOrDefaultAsync(c => c.Id == report.TargetId, ct);
                 if (comment != null) comment.DeletedAt = DateTime.UtcNow;
+            }
+            else if (report.TargetType == ReportTargetTypes.Listing)
+            {
+                // Phase 4 (04-01) D-21: shared moderation queue can soft-delete listings.
+                var listing = await _db.Listings.IgnoreQueryFilters().FirstOrDefaultAsync(l => l.Id == report.TargetId, ct);
+                if (listing != null)
+                {
+                    listing.DeletedAt = DateTime.UtcNow;
+                    listing.Status = ListingStatus.Removed;
+                }
             }
             report.Status = ReportStatus.Resolved;
         }
