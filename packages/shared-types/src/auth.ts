@@ -20,9 +20,9 @@ export interface UserInfo {
   email: string;
   displayName: string | null;
   emailConfirmed: boolean;
-  bairroId?: number | null;
-  isVerified?: boolean;
-  isAdmin?: boolean;
+  bairroId: number | null;
+  isVerified: boolean;
+  isAdmin: boolean;
 }
 
 export interface ForgotPasswordRequest {
