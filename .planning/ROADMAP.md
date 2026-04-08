@@ -79,12 +79,12 @@ Plans:
   2. Buyer can browse, search, and filter listings, then open a private 1:1 chat with the seller
   3. Seller can mark listings as sold, edit them, and see favorites count and ratings from past transactions
   4. Users can report suspicious listings and they enter a separate moderation queue
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [ ] 04-01-PLAN.md — Backend (.NET 8): listing CRUD + photo pipeline reuse, FTS, chat hub extension + persistence, shared moderation queue, favorites, ratings, EF migration, taxonomy seed
+- [ ] 04-02-PLAN.md — Web (Next.js): marketplace grid + filters, listing create/detail/edit, chat UI on existing SignalR, report flow, admin moderation + category toggle
+- [ ] 04-03-PLAN.md — Mobile (Expo): marketplace screens (reuse ProofPicker pattern), chat with forced-WebSocket SignalR for release builds
 
 ### Phase 5: Map + Groups
 **Goal**: Users can discover neighbors on a map and form community groups with dedicated feeds
