@@ -20,6 +20,15 @@ public class AppDbContext : DbContext
     public DbSet<Report> Reports => Set<Report>();
     public DbSet<Notification> Notifications => Set<Notification>();
 
+    // Phase 4 (04-01) Marketplace + Chat
+    public DbSet<Listing> Listings => Set<Listing>();
+    public DbSet<ListingPhoto> ListingPhotos => Set<ListingPhoto>();
+    public DbSet<ListingFavorite> ListingFavorites => Set<ListingFavorite>();
+    public DbSet<SellerRating> SellerRatings => Set<SellerRating>();
+    public DbSet<Conversation> Conversations => Set<Conversation>();
+    public DbSet<ConversationParticipant> ConversationParticipants => Set<ConversationParticipant>();
+    public DbSet<Message> Messages => Set<Message>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -217,6 +226,136 @@ public class AppDbContext : DbContext
                 .HasForeignKey(e => e.ActorUserId)
                 .OnDelete(DeleteBehavior.Restrict);
             entity.HasIndex(e => new { e.UserId, e.IsRead });
+        });
+
+        // ─── Phase 4: Listing ───
+        modelBuilder.Entity<Listing>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(120);
+            entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.Price).HasColumnType("decimal(12,2)");
+            entity.Property(e => e.CategoryCode).IsRequired().HasMaxLength(40);
+            entity.Property(e => e.SubcategoryCode).IsRequired().HasMaxLength(40);
+            entity.Property(e => e.Status).IsRequired().HasMaxLength(16).HasDefaultValue("active");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Seller)
+                .WithMany()
+                .HasForeignKey(e => e.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Bairro)
+                .WithMany()
+                .HasForeignKey(e => e.BairroId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.BairroId, e.Status, e.CreatedAt });
+            entity.HasIndex(e => e.SellerId);
+            entity.HasQueryFilter(l => l.DeletedAt == null);
+        });
+
+        // ─── ListingPhoto ───
+        modelBuilder.Entity<ListingPhoto>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.StoragePath).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.ThumbnailPath).IsRequired().HasMaxLength(500);
+            entity.HasOne(e => e.Listing)
+                .WithMany(l => l.Photos)
+                .HasForeignKey(e => e.ListingId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => new { e.ListingId, e.OrderIndex }).IsUnique();
+        });
+
+        // ─── ListingFavorite ───
+        modelBuilder.Entity<ListingFavorite>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.SnapshotPrice).HasColumnType("decimal(12,2)");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Listing)
+                .WithMany()
+                .HasForeignKey(e => e.ListingId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.ListingId, e.UserId }).IsUnique();
+        });
+
+        // ─── SellerRating ───
+        modelBuilder.Entity<SellerRating>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Comment).HasMaxLength(500);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Seller)
+                .WithMany()
+                .HasForeignKey(e => e.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Buyer)
+                .WithMany()
+                .HasForeignKey(e => e.BuyerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Listing)
+                .WithMany()
+                .HasForeignKey(e => e.ListingId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.SellerId, e.DeletedByAdminAt });
+            entity.HasIndex(e => new { e.BuyerId, e.ListingId }).IsUnique();
+        });
+
+        // ─── Conversation ───
+        modelBuilder.Entity<Conversation>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Listing)
+                .WithMany()
+                .HasForeignKey(e => e.ListingId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Buyer)
+                .WithMany()
+                .HasForeignKey(e => e.BuyerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Seller)
+                .WithMany()
+                .HasForeignKey(e => e.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.ListingId, e.BuyerId, e.SellerId }).IsUnique();
+            entity.HasIndex(e => e.LastMessageAt);
+        });
+
+        // ─── ConversationParticipant (composite key) ───
+        modelBuilder.Entity<ConversationParticipant>(entity =>
+        {
+            entity.HasKey(e => new { e.ConversationId, e.UserId });
+            entity.HasOne(e => e.Conversation)
+                .WithMany(c => c.Participants)
+                .HasForeignKey(e => e.ConversationId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.UserId, e.LastReadAt });
+        });
+
+        // ─── Message ───
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Text).HasMaxLength(2000);
+            entity.Property(e => e.ImagePath).HasMaxLength(500);
+            entity.Property(e => e.SentAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.Conversation)
+                .WithMany(c => c.Messages)
+                .HasForeignKey(e => e.ConversationId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Sender)
+                .WithMany()
+                .HasForeignKey(e => e.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.ConversationId, e.SentAt });
         });
     }
 

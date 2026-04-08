@@ -13,6 +13,8 @@ public static class ReportTargetTypes
 {
     public const string Post = "post";
     public const string Comment = "comment";
+    // Phase 4 (04-01): listing reports flow into the SAME Reports queue per D-21.
+    public const string Listing = "listing";
 }
 
 public class Report
