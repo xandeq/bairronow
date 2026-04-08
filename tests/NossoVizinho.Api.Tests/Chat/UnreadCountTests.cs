@@ -1,12 +1,36 @@
-using Xunit;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using NossoVizinho.Api.Models.DTOs;
+using NossoVizinho.Api.Models.Entities;
 
 namespace NossoVizinho.Api.Tests.Chat;
 
 public class UnreadCountTests
 {
-    [Fact(Skip = "Wave 0 stub - implemented in Task 3")]
-    public void Count_IgnoresSoftDeletedMessages() { }
+    [Fact]
+    public async Task Count_IgnoresSoftDeletedMessages()
+    {
+        var (svc, db, buyer, seller, listingId) = ChatTestBuilder.Build();
+        var conv = await svc.CreateOrGetAsync(buyer, new CreateConversationRequest { ListingId = listingId });
+        await svc.SendAsync(buyer, conv.Id, "m1", null);
+        var m2 = await svc.SendAsync(buyer, conv.Id, "m2", null);
+        // Soft-delete m2
+        var entity = await db.Messages.FirstAsync(m => m.Id == m2.Id);
+        entity.DeletedAt = DateTime.UtcNow;
+        await db.SaveChangesAsync();
 
-    [Fact(Skip = "Wave 0 stub - implemented in Task 3")]
-    public void Count_HonorsLastReadAt() { }
+        var unread = await svc.GetUnreadCountAsync(seller);
+        unread.Should().Be(1); // only m1 is counted
+    }
+
+    [Fact]
+    public async Task Count_HonorsLastReadAt()
+    {
+        var (svc, _, buyer, seller, listingId) = ChatTestBuilder.Build();
+        var conv = await svc.CreateOrGetAsync(buyer, new CreateConversationRequest { ListingId = listingId });
+        await svc.SendAsync(buyer, conv.Id, "msg", null);
+        (await svc.GetUnreadCountAsync(seller)).Should().Be(1);
+        await svc.MarkReadAsync(seller, conv.Id);
+        (await svc.GetUnreadCountAsync(seller)).Should().Be(0);
+    }
 }

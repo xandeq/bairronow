@@ -145,7 +145,7 @@ try
     // Phase 4 (04-01) Marketplace + Ratings services
     builder.Services.AddScoped<IListingService, ListingService>();
     builder.Services.AddScoped<IRatingService, RatingService>();
-    // builder.Services.AddScoped<IChatService, ChatService>(); // wired in Task 3
+    builder.Services.AddScoped<IChatService, ChatService>();
 
     // RESEARCH §Pitfall 8: Use ArrayPool memory allocator with minimal pooling so the
     // sequential photo pipeline doesn't retain large managed buffers between requests on

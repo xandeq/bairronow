@@ -1,9 +1,16 @@
-using Xunit;
+using FluentAssertions;
+using NossoVizinho.Api.Models.DTOs;
 
 namespace NossoVizinho.Api.Tests.Chat;
 
 public class ConversationRepositoryTests
 {
-    [Fact(Skip = "Wave 0 stub - implemented in Task 3")]
-    public void CreateOrGet_DedupesExistingConversation() { }
+    [Fact]
+    public async Task CreateOrGet_DedupesExistingConversation()
+    {
+        var (svc, _, buyer, seller, listingId) = ChatTestBuilder.Build();
+        var a = await svc.CreateOrGetAsync(buyer, new CreateConversationRequest { ListingId = listingId });
+        var b = await svc.CreateOrGetAsync(buyer, new CreateConversationRequest { ListingId = listingId });
+        b.Id.Should().Be(a.Id);
+    }
 }
