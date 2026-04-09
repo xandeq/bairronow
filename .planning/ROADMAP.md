@@ -82,7 +82,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Backend (.NET 8): listing CRUD + photo pipeline reuse, FTS, chat hub extension + persistence, shared moderation queue, favorites, ratings, EF migration, taxonomy seed
+- [x] 04-01-PLAN.md — Backend (.NET 8): listing CRUD + photo pipeline reuse, FTS, chat hub extension + persistence, shared moderation queue, favorites, ratings, EF migration, taxonomy seed
 - [ ] 04-02-PLAN.md — Web (Next.js): marketplace grid + filters, listing create/detail/edit, chat UI on existing SignalR, report flow, admin moderation + category toggle
 - [ ] 04-03-PLAN.md — Mobile (Expo): marketplace screens (reuse ProofPicker pattern), chat with forced-WebSocket SignalR for release builds
 
