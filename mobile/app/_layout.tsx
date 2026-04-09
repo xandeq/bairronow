@@ -14,6 +14,13 @@ export default function RootLayout() {
         <Stack.Screen name="pending" options={{ title: 'Verificação' }} />
         <Stack.Screen name="feed" options={{ title: 'Bairro' }} />
         <Stack.Screen name="profile" options={{ title: 'Meu perfil' }} />
+        <Stack.Screen name="marketplace/index" options={{ title: 'Marketplace' }} />
+        <Stack.Screen name="marketplace/new" options={{ title: 'Novo anúncio' }} />
+        <Stack.Screen name="marketplace/[id]" options={{ title: 'Anúncio' }} />
+        <Stack.Screen name="marketplace/edit/[id]" options={{ title: 'Editar anúncio' }} />
+        <Stack.Screen name="marketplace/search" options={{ title: 'Buscar' }} />
+        <Stack.Screen name="chat/index" options={{ title: 'Conversas' }} />
+        <Stack.Screen name="chat/[id]" options={{ title: 'Chat' }} />
       </Stack>
     </>
   );

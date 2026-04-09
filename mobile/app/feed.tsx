@@ -23,7 +23,9 @@ export default function Feed() {
         )}
         contentContainerStyle={{ padding: 16 }}
       />
-      <View style={{ padding: 16 }}>
+      <View style={{ padding: 16, gap: 8 }}>
+        <Button title="Marketplace" onPress={() => router.push('/marketplace')} />
+        <Button title="Conversas" variant="outline" onPress={() => router.push('/chat')} />
         <Button title="Sair" variant="outline" onPress={() => { logout(); router.replace('/'); }} />
       </View>
     </View>
