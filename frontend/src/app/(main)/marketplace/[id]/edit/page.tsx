@@ -1,0 +1,72 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import ListingForm from "@/components/features/marketplace/ListingForm";
+import { useAuthStore } from "@/lib/auth";
+import { getListing, updateListing } from "@/lib/api/marketplace";
+import type { ListingDto } from "@/lib/types/marketplace";
+
+export default function EditListingPage() {
+  const params = useParams<{ id: string }>();
+  const router = useRouter();
+  const user = useAuthStore((s) => s.user);
+  const listingId = Number(params?.id);
+
+  const [listing, setListing] = useState<ListingDto | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const data = await getListing(listingId);
+      setListing(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erro ao carregar");
+    } finally {
+      setLoading(false);
+    }
+  }, [listingId]);
+
+  useEffect(() => {
+    if (listingId) load();
+  }, [listingId, load]);
+
+  if (loading) return <p className="text-fg/60 font-medium">Carregando...</p>;
+  if (error || !listing)
+    return <p className="text-red-600 font-semibold">{error ?? "Não encontrado"}</p>;
+  if (user?.id !== listing.sellerId)
+    return (
+      <p className="text-red-600 font-semibold">
+        Você não tem permissão para editar este anúncio.
+      </p>
+    );
+
+  return (
+    <div className="space-y-5 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-extrabold text-fg">Editar anúncio</h1>
+      <ListingForm
+        mode="edit"
+        defaultValues={{
+          title: listing.title,
+          description: listing.description,
+          price: listing.price,
+          categoryCode: listing.categoryCode,
+          subcategoryCode: listing.subcategoryCode,
+          // photos kept on server; edit form requires new photos if user wants to replace
+          photos: [],
+        }}
+        onSubmit={async (values) => {
+          await updateListing(listing.id, {
+            title: values.title,
+            description: values.description,
+            price: values.price,
+            categoryCode: values.categoryCode,
+            subcategoryCode: values.subcategoryCode,
+          });
+          router.push(`/marketplace/${listing.id}/`);
+        }}
+      />
+    </div>
+  );
+}

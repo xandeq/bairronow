@@ -1,31 +1,63 @@
-import Card from "@/components/ui/Card";
-import type { Listing } from "@bairronow/shared-types";
+"use client";
 
-const formatBRL = (n: number) =>
-  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+import Link from "next/link";
+import type { ListingDto } from "@/lib/types/marketplace";
+import VerifiedBadge from "@/components/VerifiedBadge";
 
-export default function ListingCard({ listing }: { listing: Listing }) {
+const BRL = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+export interface ListingCardProps {
+  listing: ListingDto;
+}
+
+export default function ListingCard({ listing }: ListingCardProps) {
+  const cover = listing.photos?.[0];
+  const isSold = listing.status === "sold";
+
   return (
-    <Card interactive padding="sm">
-      <div className="aspect-square w-full bg-muted rounded-md mb-3 flex items-center justify-center text-fg/40 font-bold">
-        {listing.imageUrl ? (
+    <Link
+      href={`/marketplace/${listing.id}/`}
+      className="block rounded-lg border-2 border-border bg-bg overflow-hidden hover:shadow-md transition-shadow"
+    >
+      <div className="relative aspect-square w-full bg-muted">
+        {cover ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={listing.imageUrl}
+            src={cover.thumbnailUrl || cover.url}
             alt={listing.title}
-            className="w-full h-full object-cover rounded-md"
+            loading="lazy"
+            className="w-full h-full object-cover"
           />
         ) : (
-          "Sem imagem"
+          <div className="w-full h-full flex items-center justify-center text-fg/40 font-bold">
+            Sem imagem
+          </div>
+        )}
+        {isSold && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <span className="bg-red-600 text-white text-lg font-extrabold px-4 py-2 rounded-md border-2 border-white">
+              VENDIDO
+            </span>
+          </div>
         )}
       </div>
-      <h3 className="font-bold text-fg truncate">{listing.title}</h3>
-      <p className="text-primary font-extrabold text-lg">
-        {formatBRL(listing.price)}
-      </p>
-      <p className="text-xs text-fg/60 font-medium truncate">
-        {listing.seller.name} • {listing.seller.bairro}
-      </p>
-    </Card>
+      <div className="p-3 space-y-1">
+        <h3 className="font-bold text-fg text-sm line-clamp-2 min-h-[2.5rem]">
+          {listing.title}
+        </h3>
+        <p className="text-primary font-extrabold text-lg">
+          {BRL.format(listing.price)}
+        </p>
+        <div className="flex items-center gap-1 text-xs text-fg/60 font-medium">
+          <span className="truncate">{listing.sellerDisplayName}</span>
+          {listing.sellerIsVerified && (
+            <VerifiedBadge verified size="sm" />
+          )}
+        </div>
+      </div>
+    </Link>
   );
 }
