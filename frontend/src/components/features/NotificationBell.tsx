@@ -2,14 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { HubConnection } from "@microsoft/signalr";
 import type { NotificationDto } from "@bairronow/shared-types";
-import { createNotificationHub } from "@/lib/signalr";
+import { getHubConnection } from "@/lib/signalr";
 import { useNotificationStore } from "@/stores/notification-store";
-import { useAuthStore } from "@/lib/auth";
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 function notificationLabel(n: NotificationDto): string {
   const who = n.actor.displayName ?? "Alguém";
@@ -36,27 +31,34 @@ export default function NotificationBell() {
   const markRead = useNotificationStore((s) => s.markRead);
 
   useEffect(() => {
-    let hub: HubConnection | null = null;
     let mounted = true;
+    let cleanup: (() => void) | null = null;
 
     load();
 
-    hub = createNotificationHub({
-      baseUrl: API_BASE,
-      getAccessToken: () => useAuthStore.getState().accessToken,
-    });
-
-    hub.on("notification", (dto: NotificationDto) => {
-      if (mounted) prepend(dto);
-    });
-
-    hub.start().catch(() => {
-      // best-effort: hub down doesn't break the page
-    });
+    // Reuse the shared singleton hub — never open a second connection.
+    getHubConnection()
+      .then((hub) => {
+        if (!mounted) return;
+        const handler = (dto: NotificationDto) => {
+          if (mounted) prepend(dto);
+        };
+        hub.on("notification", handler);
+        cleanup = () => {
+          try {
+            hub.off("notification", handler);
+          } catch {
+            // best-effort
+          }
+        };
+      })
+      .catch(() => {
+        // best-effort: hub down doesn't break the page
+      });
 
     return () => {
       mounted = false;
-      hub?.stop().catch(() => undefined);
+      if (cleanup) cleanup();
     };
   }, [load, prepend]);
 
