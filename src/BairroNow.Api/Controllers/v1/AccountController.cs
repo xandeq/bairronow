@@ -1,0 +1,90 @@
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using BairroNow.Api.Services;
+
+namespace BairroNow.Api.Controllers.v1;
+
+[ApiController]
+[Route("api/v1/account")]
+[Authorize]
+public class AccountController : ControllerBase
+{
+    private readonly AccountService _accountService;
+
+    public AccountController(AccountService accountService)
+    {
+        _accountService = accountService;
+    }
+
+    /// <summary>
+    /// LGPD data export (D-20 through D-22). Rate limited to once per 24h.
+    /// </summary>
+    [HttpGet("export")]
+    [EnableRateLimiting("authenticated")]
+    public async Task<IActionResult> Export()
+    {
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
+
+        // Check rate limit: 24h between exports
+        var db = HttpContext.RequestServices.GetRequiredService<Data.AppDbContext>();
+        var user = await db.Users.FindAsync(userId.Value);
+        if (user?.LastExportAt != null && user.LastExportAt > DateTime.UtcNow.AddHours(-24))
+        {
+            return StatusCode(429, new { error = "Exportacao permitida apenas uma vez a cada 24 horas." });
+        }
+
+        var data = await _accountService.BuildExportAsync(userId.Value);
+        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        var bytes = Encoding.UTF8.GetBytes(json);
+
+        return File(bytes, "application/json", "bairronow-dados-pessoais.json");
+    }
+
+    /// <summary>
+    /// LGPD account deletion request (D-23 through D-26). 30-day grace period.
+    /// </summary>
+    [HttpPost("delete")]
+    [EnableRateLimiting("authenticated")]
+    public async Task<IActionResult> RequestDeletion()
+    {
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
+
+        await _accountService.RequestDeletionAsync(userId.Value);
+        var deletionDate = DateTime.UtcNow.AddDays(30);
+
+        return Ok(new
+        {
+            message = "Conta marcada para exclusao. Voce tem 30 dias para cancelar.",
+            deletionDate = deletionDate.ToString("yyyy-MM-dd")
+        });
+    }
+
+    /// <summary>
+    /// Cancel pending deletion within grace period.
+    /// </summary>
+    [HttpPost("delete/cancel")]
+    [EnableRateLimiting("authenticated")]
+    public async Task<IActionResult> CancelDeletion()
+    {
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
+
+        var cancelled = await _accountService.CancelDeletionAsync(userId.Value);
+        if (!cancelled)
+            return BadRequest(new { error = "Nao foi possivel cancelar. O periodo de carencia pode ter expirado." });
+
+        return Ok(new { message = "Exclusao cancelada. Sua conta esta ativa novamente." });
+    }
+
+    private Guid? GetUserId()
+    {
+        var sub = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
+        return Guid.TryParse(sub, out var id) ? id : (Guid?)null;
+    }
+}
