@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-bg: #ffffff;
   --color-fg: #111827;
@@ -33,4 +35,21 @@ body {
 
 * {
   box-shadow: none !important;
+}
+
+.dark {
+  --color-bg: #0f172a;
+  --color-fg: #f1f5f9;
+  --color-primary: #4ade80;
+  --color-primary-hover: #22c55e;
+  --color-secondary: #34d399;
+  --color-secondary-hover: #10b981;
+  --color-accent: #fbbf24;
+  --color-accent-hover: #f59e0b;
+  --color-muted: #1e293b;
+  --color-border: #334155;
+  --color-danger: #f87171;
+  --color-background: #0f172a;
+  --color-foreground: #f1f5f9;
+  --color-card: #1e293b;
 }
