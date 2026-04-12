@@ -1,11 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import type { ReportDto } from "@bairronow/shared-types";
+import type { ReportDto, ReportTargetType } from "@bairronow/shared-types";
 import FeedHeader from "@/components/layouts/FeedHeader";
 import { feedClient } from "@/lib/feed";
 import { useAuthStore } from "@/lib/auth";
+
+// Phase 4 Plan 02 Task 2: extended unified moderation queue — posts + comments + listings.
+// Shared queue per Phase 4 D-21 — same endpoint, discriminated by targetType.
+
+type TargetFilter = "all" | ReportTargetType;
+
+const TYPE_LABELS: Record<ReportTargetType, string> = {
+  post: "Post",
+  comment: "Comentário",
+  listing: "Anúncio",
+};
+
+const TYPE_BADGE: Record<ReportTargetType, string> = {
+  post: "bg-blue-100 text-blue-800 ring-blue-300",
+  comment: "bg-purple-100 text-purple-800 ring-purple-300",
+  listing: "bg-green-100 text-green-800 ring-green-300",
+};
 
 export default function ModerationPage() {
   const user = useAuthStore((s) => s.user);
@@ -15,12 +32,13 @@ export default function ModerationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [filter, setFilter] = useState<TargetFilter>("all");
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const items = await feedClient.listPendingReports(0, 50);
+      const items = await feedClient.listPendingReports(0, 100);
       setReports(items);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erro ao listar");
@@ -33,10 +51,15 @@ export default function ModerationPage() {
     if (isAdmin) load();
   }, [isAdmin, load]);
 
-  const handleResolve = async (
-    id: number,
-    action: "dismiss" | "remove"
-  ) => {
+  const filtered = useMemo(
+    () =>
+      filter === "all"
+        ? reports
+        : reports.filter((r) => r.targetType === filter),
+    [reports, filter]
+  );
+
+  const handleResolve = async (id: number, action: "dismiss" | "remove") => {
     setBusyId(id);
     try {
       await feedClient.resolveReport(id, action);
@@ -52,33 +75,52 @@ export default function ModerationPage() {
     return (
       <div className="space-y-4">
         <FeedHeader />
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-bg rounded-lg border-2 border-border p-6">
           <h1 className="text-xl font-extrabold text-fg">Acesso negado</h1>
-          <p className="text-fg/70 font-medium">
-            Você não tem permissão para acessar esta área.
-          </p>
         </div>
       </div>
     );
   }
+
+  const filters: Array<{ code: TargetFilter; label: string }> = [
+    { code: "all", label: "Todos" },
+    { code: "post", label: "Posts" },
+    { code: "comment", label: "Comentários" },
+    { code: "listing", label: "Anúncios" },
+  ];
 
   return (
     <div className="space-y-4">
       <FeedHeader />
       <h1 className="text-2xl font-extrabold text-fg">Moderação</h1>
 
+      <div className="flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <button
+            key={f.code}
+            type="button"
+            onClick={() => setFilter(f.code)}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold border-2 ${
+              filter === f.code
+                ? "bg-primary text-white border-primary"
+                : "bg-bg text-fg border-border"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
       {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
 
       {loading ? (
         <p className="text-fg/60 font-medium">Carregando...</p>
-      ) : reports.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-6">
-          <p className="text-fg/60 font-medium">
-            Nenhuma denúncia pendente.
-          </p>
+      ) : filtered.length === 0 ? (
+        <div className="bg-bg rounded-lg border-2 border-border p-6">
+          <p className="text-fg/60 font-medium">Nenhuma denúncia pendente.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <div className="overflow-x-auto bg-bg rounded-lg border-2 border-border">
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-left font-bold text-fg/70 border-b-2 border-gray-200">
@@ -91,13 +133,29 @@ export default function ModerationPage() {
               </tr>
             </thead>
             <tbody>
-              {reports.map((r) => (
+              {filtered.map((r) => (
                 <tr key={r.id} className="border-b border-gray-100">
-                  <td className="px-3 py-2 font-medium">{r.targetType}</td>
+                  <td className="px-3 py-2">
+                    <span
+                      className={`inline-block text-xs font-bold rounded-full px-2 py-0.5 ring-1 ${
+                        TYPE_BADGE[r.targetType] ??
+                        "bg-gray-100 text-gray-800 ring-gray-300"
+                      }`}
+                    >
+                      {TYPE_LABELS[r.targetType] ?? r.targetType}
+                    </span>
+                  </td>
                   <td className="px-3 py-2 font-medium">
                     {r.targetType === "post" ? (
                       <Link
                         href={`/feed/post/?id=${r.targetId}`}
+                        className="text-green-700 underline font-bold"
+                      >
+                        #{r.targetId}
+                      </Link>
+                    ) : r.targetType === "listing" ? (
+                      <Link
+                        href={`/marketplace/${r.targetId}/`}
                         className="text-green-700 underline font-bold"
                       >
                         #{r.targetId}
@@ -117,13 +175,13 @@ export default function ModerationPage() {
                         onClick={() => handleResolve(r.id, "remove")}
                         className="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded px-2 py-1 disabled:opacity-50"
                       >
-                        Remover conteúdo
+                        Remover
                       </button>
                       <button
                         type="button"
                         disabled={busyId === r.id}
                         onClick={() => handleResolve(r.id, "dismiss")}
-                        className="border-2 border-gray-300 text-fg text-xs font-semibold rounded px-2 py-1 disabled:opacity-50"
+                        className="border-2 border-border text-fg text-xs font-semibold rounded px-2 py-1 disabled:opacity-50"
                       >
                         Dispensar
                       </button>
