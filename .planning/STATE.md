@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-04-12T00:10:48.053Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-04-12T00:13:40.512Z"
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 13
-  completed_plans: 12
+  completed_plans: 13
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-04-05)
 ## Current Position
 
 Phase: 04 (marketplace-chat) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Plan: 2 of 3
 | Phase 03-feed-posts P03 | 4min | 2 tasks | 3 files |
 | Phase 04 P01 | ~13m | 4 tasks | 39 files |
 | Phase 04-marketplace-chat P03 | 35min | 3 tasks | 6 files |
+| Phase 04-marketplace-chat P02 | 45 | 3 tasks | 34 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 01-infrastructure-auth]: Cloudflare proxied CNAME for api subdomain + Flexible SSL for mtempurl origin (no per-domain cert on SmarterASP)
 - [Phase 04-marketplace-chat]: jest testEnvironment:node + minimal jest-setup.js polyfills avoids pnpm virtual store ESM incompatibility with react-native/jest/setup.js
 - [Phase 04-marketplace-chat]: jest.mock factory inline pattern (initialize mocks inside factory) avoids babel hoisting order issues with mock variable references
+- [Phase 04-marketplace-chat]: Server component wrapper pattern for dynamic routes in Next.js 16 static export: page.tsx (server, generateStaticParams) imports *Client.tsx (use client) — empty params array rejected, must return at least one placeholder path
+- [Phase 04-marketplace-chat]: Single SignalR HubConnection shared between Phase 3 NotificationBell and Phase 4 chat via getHubConnection() singleton — chat handlers registered once via _wiredHandlers flag in chatStore.connect()
 
 ### Pending Todos
 
@@ -87,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T00:10:48.050Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-04-12T00:13:40.509Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None
