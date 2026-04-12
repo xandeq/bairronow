@@ -49,9 +49,9 @@ updated: 2026-04-08
 | 04-02 T0 | 04-02 | 2 | All web MKT-* stubs | unit | `cd web && pnpm test -- --testPathPattern="marketplace|chat|validators"` | Wave 0 creates | ⬜ |
 | 04-02 T1 | 04-02 | 2 | MKT-001, MKT-002, MKT-003, MKT-005, MKT-006, MKT-007, MKT-008, MKT-009, MKT-010, MKT-011 (web) | RTL | `cd web && pnpm test -- --testPathPattern="marketplace"` | Task 0 stubs | ⬜ |
 | 04-02 T2 | 04-02 | 2 | MKT-004 (web) + MKT-008 shared admin queue + D-26 toggle | RTL | `cd web && pnpm test -- --testPathPattern="chat|admin"` | Task 0 stubs | ⬜ |
-| 04-03 T0 | 04-03 | 2 | SignalR singleton forced-WebSocket | unit | `cd mobile && npx jest --testPathPattern="marketplace|chat"` | Wave 0 creates | ⬜ |
-| 04-03 T1 | 04-03 | 2 | MKT-001..011 (mobile marketplace) | RTL | `cd mobile && npx jest --testPathPattern="marketplace"` | Task 0 stubs | ⬜ |
-| 04-03 T2 | 04-03 | 2 | MKT-004 (mobile chat) | RTL + manual EAS smoke | `cd mobile && npx jest --testPathPattern="chat"` + manual EAS | Task 0 stubs | ⬜ |
+| 04-03 T0 | 04-03 | 2 | SignalR singleton forced-WebSocket | unit | `cd mobile && npx jest --testPathPattern="marketplace|chat"` | ✅ created | ✅ |
+| 04-03 T1 | 04-03 | 2 | MKT-001..011 (mobile marketplace) | RTL | `cd mobile && npx jest --testPathPattern="marketplace"` | ✅ created | ✅ |
+| 04-03 T2 | 04-03 | 2 | MKT-004 (mobile chat) | RTL + manual EAS smoke | `cd mobile && npx jest --testPathPattern="chat"` + manual EAS | ✅ created | ✅ |
 
 **Deferred (acknowledged in plans, not tested):**
 - MKT-012 Paid spotlight → Phase 6
