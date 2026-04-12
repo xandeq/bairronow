@@ -13,7 +13,7 @@ NossoVizinho delivers a neighborhood social network for Brazil in 6 phases: star
 - [x] **Phase 1: Foundation + Auth** - Both projects scaffolded, CORS proven, JWT auth working end-to-end (completed 2026-04-07)
 - [ ] **Phase 2: Verification + Neighborhoods** - CEP lookup, proof upload, admin review, bairro assignment
 - [ ] **Phase 3: Feed + Posts** - Neighborhood-scoped feed with posts, comments, likes, search, moderation
-- [x] **Phase 4: Marketplace + Chat** - Listings, search, private 1:1 chat, reporting (completed 2026-04-12)
+- [x] **Phase 4: Marketplace + Chat** - Listings, search, private 1:1 chat, reporting (completed 2026-04-12)
 - [ ] **Phase 5: Map + Groups** - Neighbor map, community groups, group feeds
 - [ ] **Phase 6: Polish + Deploy** - LGPD, sharing, dark mode, advanced auth, domain + DNS, final deploy
 
@@ -95,12 +95,12 @@ Plans:
   2. User can click a pin to see a mini-profile and contact the neighbor, with a toggle to opt out of the map
   3. User can create/join themed groups, post in group-exclusive feeds, and browse all bairro groups
   4. Group admins can moderate members, posts, and rules, and create group events with RSVP
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
+- [ ] 05-01-PLAN.md — Backend (.NET 8): map pins API + coordinate fuzzing, groups CRUD + GroupPost feed, SignalR group rooms, events + RSVP, GroupEventReminderService, EF migration
+- [ ] 05-02-PLAN.md — Web (Next.js): interactive map (react-leaflet dynamic import ssr:false), groups listing/detail/feed/events/create, admin group moderation
+- [ ] 05-03-PLAN.md — Mobile (Expo): react-native-maps map screen, groups listing/feed/events/create screens, SignalR group rooms
 
 ### Phase 6: Polish + Deploy
 **Goal**: Platform is LGPD-compliant, shareable, polished, and live on bairronow.com.br
