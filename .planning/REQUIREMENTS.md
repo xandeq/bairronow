@@ -59,17 +59,17 @@
 
 ### Marketplace (13)
 
-- [ ] **MKT-001** [Must]: Verified users create listings — title, description, price (or "a combinar"), category, up to 6 photos.
-- [ ] **MKT-002** [Must]: Bairro marketplace grid — thumbnail, title, price. Filter by category + price range. Sort by recency/price.
-- [ ] **MKT-003** [Must]: Listing detail page — photo gallery, description, price, seller profile (with badge), approximate location, date.
-- [ ] **MKT-004** [Must]: Private 1:1 chat between buyer and seller. Text + image. Linked to listing. New message notifications.
-- [ ] **MKT-005** [Must]: Mark listing as sold. "Sold" visual for 7 days, then soft deleted.
-- [ ] **MKT-006** [Must]: Edit/remove listing. Seller edits all fields anytime. Remove via soft delete with confirmation.
-- [ ] **MKT-007** [Must]: Full-text search in listings. Combined filters: category, price, distance, verified seller.
-- [ ] **MKT-008** [Must]: Report listing — prohibited item, scam, abusive price, misinformation. Separate moderation queue.
-- [ ] **MKT-009** [Should]: Favorite listings. Notification on price change. Favorites counter visible to seller.
-- [ ] **MKT-010** [Should]: Seller ratings — 1-5 stars + comment after transaction. Average rating on seller profile.
-- [ ] **MKT-011** [Should]: Categories + subcategories taxonomy. Browse + filter navigation.
+- [x] **MKT-001** [Must]: Verified users create listings — title, description, price (or "a combinar"), category, up to 6 photos.
+- [x] **MKT-002** [Must]: Bairro marketplace grid — thumbnail, title, price. Filter by category + price range. Sort by recency/price.
+- [x] **MKT-003** [Must]: Listing detail page — photo gallery, description, price, seller profile (with badge), approximate location, date.
+- [x] **MKT-004** [Must]: Private 1:1 chat between buyer and seller. Text + image. Linked to listing. New message notifications.
+- [x] **MKT-005** [Must]: Mark listing as sold. "Sold" visual for 7 days, then soft deleted.
+- [x] **MKT-006** [Must]: Edit/remove listing. Seller edits all fields anytime. Remove via soft delete with confirmation.
+- [x] **MKT-007** [Must]: Full-text search in listings. Combined filters: category, price, distance, verified seller.
+- [x] **MKT-008** [Must]: Report listing — prohibited item, scam, abusive price, misinformation. Separate moderation queue.
+- [x] **MKT-009** [Should]: Favorite listings. Notification on price change. Favorites counter visible to seller.
+- [x] **MKT-010** [Should]: Seller ratings — 1-5 stars + comment after transaction. Average rating on seller profile.
+- [x] **MKT-011** [Should]: Categories + subcategories taxonomy. Browse + filter navigation.
 - [ ] **MKT-012** [Could]: Paid spotlight for local businesses — "Verified Business" badge. Featured listings. Monthly plan R$200-500.
 - [ ] **MKT-013** [Nice]: Service listings with scheduling — service providers offer time slots, neighbors book directly.
 
@@ -200,17 +200,17 @@
 | FEED-014 | Phase 3 | Pending |
 | FEED-015 | Phase 3 | Pending |
 | FEED-016 | Phase 3 | Pending |
-| MKT-001 | Phase 4 | Pending |
-| MKT-002 | Phase 4 | Pending |
-| MKT-003 | Phase 4 | Pending |
-| MKT-004 | Phase 4 | Pending |
-| MKT-005 | Phase 4 | Pending |
-| MKT-006 | Phase 4 | Pending |
-| MKT-007 | Phase 4 | Pending |
-| MKT-008 | Phase 4 | Pending |
-| MKT-009 | Phase 4 | Pending |
-| MKT-010 | Phase 4 | Pending |
-| MKT-011 | Phase 4 | Pending |
+| MKT-001 | Phase 4 | Complete |
+| MKT-002 | Phase 4 | Complete |
+| MKT-003 | Phase 4 | Complete |
+| MKT-004 | Phase 4 | Complete |
+| MKT-005 | Phase 4 | Complete |
+| MKT-006 | Phase 4 | Complete |
+| MKT-007 | Phase 4 | Complete |
+| MKT-008 | Phase 4 | Complete |
+| MKT-009 | Phase 4 | Complete |
+| MKT-010 | Phase 4 | Complete |
+| MKT-011 | Phase 4 | Complete |
 | MKT-012 | Phase 4 | Pending |
 | MKT-013 | Phase 4 | Pending |
 | MAP-001 | Phase 5 | Pending |

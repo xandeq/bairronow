@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-04-09T02:30:06.324Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-04-12T00:10:48.053Z"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # Project State
@@ -55,6 +55,7 @@ Plan: 2 of 3
 | Phase 03-feed-posts P02 | 30min | 2 tasks | 28 files |
 | Phase 03-feed-posts P03 | 4min | 2 tasks | 3 files |
 | Phase 04 P01 | ~13m | 4 tasks | 39 files |
+| Phase 04-marketplace-chat P03 | 35min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 01]: SHA256 for refresh token storage (fast lookup vs BCrypt per-row scan)
 - [Phase 01]: Partitioned cookie attribute via Set-Cookie header workaround for .NET 8
 - [Phase 01-infrastructure-auth]: Cloudflare proxied CNAME for api subdomain + Flexible SSL for mtempurl origin (no per-domain cert on SmarterASP)
+- [Phase 04-marketplace-chat]: jest testEnvironment:node + minimal jest-setup.js polyfills avoids pnpm virtual store ESM incompatibility with react-native/jest/setup.js
+- [Phase 04-marketplace-chat]: jest.mock factory inline pattern (initialize mocks inside factory) avoids babel hoisting order issues with mock variable references
 
 ### Pending Todos
 
@@ -84,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09T02:30:06.321Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-04-12T00:10:48.050Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None
