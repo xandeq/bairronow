@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ListingDto } from "@/lib/types/marketplace";
 import VerifiedBadge from "@/components/VerifiedBadge";
+import WhatsAppShareButton from "@/components/WhatsAppShareButton";
 
 const BRL = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -56,6 +57,12 @@ export default function ListingCard({ listing }: ListingCardProps) {
           {listing.sellerIsVerified && (
             <VerifiedBadge verified size="sm" />
           )}
+        </div>
+        <div className="pt-1" onClick={(e) => e.preventDefault()}>
+          <WhatsAppShareButton
+            url={`https://bairronow.com.br/m/${listing.id}`}
+            text="Veja esta oferta no BairroNow"
+          />
         </div>
       </div>
     </Link>

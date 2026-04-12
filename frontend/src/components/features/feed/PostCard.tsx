@@ -1,5 +1,6 @@
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import WhatsAppShareButton from "@/components/WhatsAppShareButton";
 import type { Post } from "@bairronow/shared-types";
 
 function timeAgo(iso: string): string {
@@ -34,8 +35,11 @@ export default function PostCard({ post }: { post: Post }) {
       </header>
       <p className="text-fg leading-relaxed mb-4">{post.content}</p>
       <footer className="flex items-center gap-6 text-sm font-semibold text-fg/70">
-        <span>♥ {post.likeCount} curtidas</span>
-        <span>💬 {post.commentCount} comentários</span>
+        <span>{post.likeCount} curtidas</span>
+        <span>{post.commentCount} comentarios</span>
+        <WhatsAppShareButton
+          url={`https://bairronow.com.br/p/${post.id}`}
+        />
       </footer>
     </Card>
   );

@@ -1,0 +1,197 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import api from "@/lib/api";
+import { useAuthStore } from "@/lib/auth";
+import WhatsAppShareButton from "@/components/WhatsAppShareButton";
+
+const BRL = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+interface ListingPreview {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  status: string;
+  createdAt: string;
+  sellerDisplayName: string;
+  sellerIsVerified: boolean;
+  photos: Array<{ url: string; thumbnailUrl?: string }>;
+}
+
+export default function ListingPreviewClient({
+  listingId,
+}: {
+  listingId: string;
+}) {
+  const [listing, setListing] = useState<ListingPreview | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  useEffect(() => {
+    if (listingId === "preview") {
+      setLoading(false);
+      return;
+    }
+
+    const fetchListing = async () => {
+      try {
+        const { data } = await api.get<ListingPreview>(
+          `/api/v1/listings/${listingId}`
+        );
+        setListing(data);
+      } catch {
+        setError("Anuncio nao encontrado");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListing();
+  }, [listingId]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-fg/60 font-medium">Carregando...</p>
+      </div>
+    );
+  }
+
+  if (error || !listing) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <p className="text-danger font-semibold">
+          {error ?? "Anuncio nao encontrado"}
+        </p>
+        <Link
+          href="/login/"
+          className="text-primary font-semibold hover:underline"
+        >
+          Ir para BairroNow
+        </Link>
+      </div>
+    );
+  }
+
+  const shareUrl = `https://bairronow.com.br/m/${listing.id}`;
+  const cover = listing.photos?.[0];
+
+  return (
+    <div className="min-h-screen bg-bg">
+      <header className="border-b-2 border-border px-6 py-4">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <Link href="/feed/" className="text-2xl font-extrabold text-primary">
+            BairroNow
+          </Link>
+          {!isAuthenticated && (
+            <div className="flex gap-2">
+              <Link
+                href="/login/"
+                className="px-4 py-2 text-sm font-semibold text-primary border-2 border-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+              >
+                Entrar
+              </Link>
+              <Link
+                href="/register/"
+                className="px-4 py-2 text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+              >
+                Criar conta
+              </Link>
+            </div>
+          )}
+        </div>
+      </header>
+
+      <main className="max-w-2xl mx-auto px-6 py-8">
+        <article className="bg-bg border-2 border-border rounded-lg overflow-hidden">
+          {cover && (
+            <div className="aspect-video w-full bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={cover.url}
+                alt={listing.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          <div className="p-6 space-y-4">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h1 className="text-2xl font-extrabold text-fg">
+                  {listing.title}
+                </h1>
+                <p className="text-3xl text-primary font-extrabold mt-1">
+                  {BRL.format(listing.price)}
+                </p>
+              </div>
+              {listing.status === "sold" && (
+                <span className="bg-red-600 text-white font-extrabold px-3 py-1 rounded shrink-0">
+                  VENDIDO
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 text-sm text-fg/60 font-medium">
+              <span>{listing.sellerDisplayName}</span>
+              {listing.sellerIsVerified && (
+                <span className="text-xs bg-secondary/20 text-secondary px-2 py-0.5 rounded-full font-semibold">
+                  Verificado
+                </span>
+              )}
+              <span>
+                •{" "}
+                {new Date(listing.createdAt).toLocaleDateString("pt-BR")}
+              </span>
+            </div>
+
+            <div className="border-t border-border pt-4">
+              <h2 className="font-bold text-fg mb-2">Descricao</h2>
+              <p className="text-fg/80 whitespace-pre-wrap">
+                {listing.description}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <WhatsAppShareButton
+                url={shareUrl}
+                text="Veja esta oferta no BairroNow"
+              />
+            </div>
+          </div>
+        </article>
+
+        {!isAuthenticated && (
+          <div className="mt-8 bg-primary/10 border-2 border-primary/30 rounded-lg p-6 text-center space-y-3">
+            <h2 className="text-lg font-bold text-fg">
+              Entre no BairroNow para comprar e vender com vizinhos
+            </h2>
+            <p className="text-sm text-fg/70">
+              Converse com o vendedor e feche negocios com seguranca.
+            </p>
+            <div className="flex justify-center gap-3">
+              <Link
+                href="/login/"
+                className="px-6 py-2 font-semibold text-primary border-2 border-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+              >
+                Entrar
+              </Link>
+              <Link
+                href="/register/"
+                className="px-6 py-2 font-semibold bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+              >
+                Criar conta
+              </Link>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
