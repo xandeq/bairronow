@@ -20,6 +20,8 @@ import { marketplaceApi } from '../../src/lib/api/marketplace';
 import { chatApi } from '../../src/lib/api/chat';
 import type { ListingDto } from '../../src/lib/api/marketplace.types';
 import { useAuthStore } from '../../src/lib/auth-store';
+import WhatsAppShareButton from '../../src/features/share/components/WhatsAppShareButton';
+import { getListingShareUrl } from '../../src/features/share/utils/share';
 
 const priceFormatter = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -151,9 +153,14 @@ export default function ListingDetailScreen() {
           />
         )}
         <View style={{ height: 8 }} />
+        <WhatsAppShareButton
+          url={getListingShareUrl(String(listing.id))}
+          text="Veja esta oferta no BairroNow"
+        />
+        <View style={{ height: 8 }} />
         {!isOwner && (
           <Button
-            title={listing.isFavoritedByCurrentUser ? '♥ Favoritado' : '♡ Favoritar'}
+            title={listing.isFavoritedByCurrentUser ? '\u2665 Favoritado' : '\u2661 Favoritar'}
             variant="outline"
             onPress={handleToggleFavorite}
           />
