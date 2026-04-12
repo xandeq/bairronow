@@ -1,8 +1,25 @@
 # NossoVizinho
 
+## Current State (v1.0 — Shipped 2026-04-12)
+
+NossoVizinho v1.0 MVP is complete. The platform is deployed on bairronow.com.br with:
+- Full JWT + Google OAuth + magic link + TOTP authentication
+- Address verification (CEP + proof-of-residence upload, admin review queue)
+- Neighborhood-scoped feed (posts, comments, likes, search, moderation)
+- Local marketplace (listings, private chat, ratings, favorites)
+- Interactive bairro map (privacy-safe pins with coordinate fuzzing)
+- Community groups (create/join, group feeds, events + RSVP)
+- LGPD compliance (data export, account deletion, document retention)
+- WhatsApp sharing + public preview routes
+- Dark mode (web + mobile)
+- Weekly email digest
+
+**Stack**: Next.js 15 (HostGator cPanel) + .NET 8 API (SmarterASP) + SQL Server + SignalR + Cloudflare DNS
+**Codebase**: ~105 commits, 6 phases, 20 plans executed
+
 ## What This Is
 
-A neighborhood operating system for Brazil — a "Nextdoor brasileiro" where verified residents, building sindicos, local businesses, and public agencies connect on a centralized, geo-scoped platform. Residents share news, buy/sell/donate in a trusted marketplace, organize events, and form community groups. Sindicos manage building communities. Local businesses (gardening, food, retail, real estate, personal care, medical, salons) maintain profiles with deals and reviews. Public agencies send geo-targeted alerts and emergency messages. Everything is scoped to your bairro or building, and trust is built through address verification.
+A neighborhood social network ("Nextdoor brasileiro") for Brazil where verified residents connect on a geo-scoped platform. Users share news, buy/sell in a trusted marketplace, form community groups, and discover neighbors on an interactive map. Trust is built through address verification (CEP + proof-of-residence document).
 
 ## Core Value
 
@@ -26,31 +43,26 @@ Verified neighbor discovery — users must be able to find and trust that the pe
 - [x] WhatsApp share buttons — Validated in Phase 06
 - [x] Public preview routes (/p/[postId], /m/[listingId]) — Validated in Phase 06
 
-### Active
+### Active (v1.1 candidates)
 
-- [ ] Address verification via CEP + utility bill upload (proof of residence)
-- [ ] Neighborhood-scoped feed with posts (text + images)
-- [ ] Local marketplace (buy/sell between verified neighbors)
-- [ ] Event creation with RSVP
-- [ ] Community groups within neighborhoods
-- [ ] Neighbor map showing verified residents
-- [ ] User profiles with neighborhood affiliation
-- [ ] JWT authentication with refresh tokens
-- [ ] Rate limiting (100 req/min per user)
-- [ ] Audit logging (who did what, when)
-- [ ] Soft deletes across all entities
-- [ ] Real-time updates (SignalR)
-- [ ] Local business ads (revenue model)
+- [ ] Post pinning (admin pins up to 3 posts at feed top) — FEED-011
+- [ ] Simple polls on posts — FEED-013
+- [ ] Business spotlight / "Verified Business" badge — MKT-012
+- [ ] Expo native app (currently Expo web only) — MOB-01
+- [ ] Push notifications via FCM/APNs — MOB-02
+- [ ] PIX in-app payments for marketplace — MKTV-01
+- [ ] Redis caching layer — PERF-01
 
 ### Out of Scope
 
-- Mobile native app — web-first, responsive design sufficient for MVP
-- Multi-language — Portuguese only for Brazil launch
-- Payment processing — marketplace is contact-only in MVP (no transactions)
 - Video posts — storage/bandwidth costs, defer to v2+
-- OAuth/social login — email/password sufficient for MVP
-- Multi-region deployment — single SmarterASP instance for MVP
-- ClamAV file scanning — defer to v2, use image type/size validation for MVP
+- Multi-language (i18n) — PT-BR only for Brazil launch
+- Payment processing in MVP — marketplace is contact-only (contacts seller via chat)
+- Multi-region deployment — single SmarterASP instance
+- ClamAV file scanning — using image type/size validation
+- Scheduled posts — FEED-016, low priority
+- Cross-bairro groups spanning adjacent neighborhoods — GRP-008, defer to v1.1
+- Google Street View integration — MAP-009, defer to v1.1
 
 ## Context
 
@@ -58,9 +70,9 @@ Verified neighbor discovery — users must be able to find and trust that the pe
 - **Pilot**: Vila Velha, ES — smaller market for fast validation, then prove scalability in SP.
 - **Revenue**: Local business ads targeting specific neighborhoods.
 - **Verification**: CEP + uploaded proof document (utility bill). This is the core trust mechanism.
-- **Stack decided**: Next.js 15 frontend (HostGator cPanel), .NET Core 8 API (SmarterASP), SQL Server (SmarterASP), Cloudflare DNS.
-- **Infrastructure**: HostGator reseller (alexa084), SmarterASP existing account, Cloudflare account ready.
-- **Domain**: bairronow.com.br to be registered at Registro.br.
+- **Stack (shipped)**: Next.js 15 frontend (HostGator cPanel), .NET 8 API (SmarterASP), SQL Server (SmarterASP), Cloudflare DNS.
+- **Domain**: bairronow.com.br — registered and configured.
+- **v1.0 shipped**: 2026-04-12 — 6 phases, 20 plans, 105 commits, 7-day build.
 
 ## Constraints
 
@@ -77,13 +89,17 @@ Verified neighbor discovery — users must be able to find and trust that the pe
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| CEP + proof of residence verification | Core value is trust — self-declaration too easy to game | — Pending |
-| Vila Velha as pilot city | Smaller market for fast validation before SP | — Pending |
-| Local ads as revenue model | Non-intrusive, aligns with local business value | — Pending |
-| Next.js + .NET Core + SQL Server | Leverages existing hosting (HostGator + SmarterASP) | — Pending |
-| In-memory cache instead of Redis | SmarterASP free tier has no Redis | — Pending |
-| SignalR for real-time | Native .NET Core integration, no extra infra | — Pending |
-| Contact-only marketplace (no payments) | Avoids payment complexity in MVP | — Pending |
+| CEP + proof of residence verification | Core value is trust — self-declaration too easy to game | ✓ Shipped — admin queue working |
+| Vila Velha as pilot city | Smaller market for fast validation before SP | ✓ Seeded in Phase 2 |
+| Local ads as revenue model | Non-intrusive, aligns with local business value | — Pending (v1.1) |
+| Next.js + .NET Core + SQL Server | Leverages existing hosting (HostGator + SmarterASP) | ✓ Deployed and working |
+| In-memory cache instead of Redis | SmarterASP free tier has no Redis | ✓ Works at MVP scale |
+| SignalR for real-time | Native .NET Core integration, no extra infra | ✓ Used in feed, chat, groups, notifications |
+| Contact-only marketplace (no payments) | Avoids payment complexity in MVP | ✓ Private chat between buyer/seller |
+| Coordinate fuzzing (±0.001°) for map privacy | Block-level precision without exposing exact address | ✓ Deterministic hash-based fuzzing |
+| GroupPost as separate entity (not extending Post) | Groups have different moderation and scope rules | ✓ Avoids feed contamination |
+| expo-auth-session for Google OAuth mobile | No custom URI scheme needed, works with Expo Go | ✓ id_token exchange via /auth/google/mobile |
+| Resend for transactional email | Simple REST API, LGPD-friendly EU data handling | ✓ Used for magic links + weekly digest |
 
 ## Evolution
 
@@ -103,4 +119,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-12 — Phase 06 (polish-deploy) complete. All 6 phases done. v1.0 milestone ready for deploy.*
+*Last updated: 2026-04-12 after v1.0 milestone*
