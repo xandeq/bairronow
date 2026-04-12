@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-04-12T18:42:32.175Z"
+stopped_at: Completed 06-01b-PLAN.md
+last_updated: "2026-04-12T19:00:19.896Z"
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 20
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-04-05)
 ## Current Position
 
 Phase: 06 (polish-deploy) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Plan: 2 of 4
 | Phase 04-marketplace-chat P03 | 35min | 3 tasks | 6 files |
 | Phase 04-marketplace-chat P02 | 45 | 3 tasks | 34 files |
 | Phase 06 P01 | 6min | 1 tasks | 19 files |
+| Phase 06 P01b | 13min | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,9 @@ Recent decisions affecting current work:
 - [Phase 06]: Resend via HttpClient POST (not SDK wrapper) for simplicity
 - [Phase 06]: OcrService graceful degradation - returns null if Tesseract native binaries unavailable
 - [Phase 06]: LGPD anonymization: 30-day grace then email/name nullified with deleted+uuid pattern
+- [Phase 06]: TOTP gate uses short-lived JWT (5min) with totp_pending claim as temp token
+- [Phase 06]: Google mobile OAuth accepts idToken directly (not auth code) for expo-auth-session
+- [Phase 06]: Vouching auto-approval threshold set at 2 vouches
 
 ### Pending Todos
 
@@ -94,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T18:42:32.171Z
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-04-12T19:00:19.892Z
+Stopped at: Completed 06-01b-PLAN.md
 Resume file: None

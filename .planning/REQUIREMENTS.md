@@ -16,12 +16,12 @@
 - [x] **AUTH-006** [Must]: Rate limiting — 100 req/min authenticated, 20 req/min public (login, register). 429 with Retry-After header.
 - [x] **AUTH-007** [Must]: CORS configured for authorized domains only. Credentials enabled. Explicit allowed headers.
 - [x] **AUTH-008** [Must]: HTTPS/TLS on all endpoints. HTTP→HTTPS redirect. HSTS header.
-- [ ] **AUTH-009** [Should]: 2FA for moderators/admins via TOTP (Google Authenticator, Authy). Backup codes on activation.
+- [x] **AUTH-009** [Should]: 2FA for moderators/admins via TOTP (Google Authenticator, Authy). Backup codes on activation.
 - [x] **AUTH-010** [Should]: Editable user profile — display name, profile photo, bio (160 chars), reference bairro.
 - [x] **AUTH-011** [Should]: Account lockout after 5 failed login attempts (15min cooldown). Email notification.
 - [x] **AUTH-012** [Should]: Terms of use + privacy policy acceptance at signup. Versioned. Re-acceptance on update.
-- [ ] **AUTH-013** [Could]: Social login via Google + Apple Sign-In (OAuth2). Link with existing account by email.
-- [ ] **AUTH-014** [Nice]: Magic link login — passwordless via email link (10min TTL, single-use).
+- [x] **AUTH-013** [Could]: Social login via Google + Apple Sign-In (OAuth2). Link with existing account by email.
+- [x] **AUTH-014** [Nice]: Magic link login — passwordless via email link (10min TTL, single-use).
 
 ### Verification (12)
 
@@ -166,12 +166,12 @@
 | AUTH-006 | Phase 1 | Complete |
 | AUTH-007 | Phase 1 | Complete |
 | AUTH-008 | Phase 1 | Complete |
-| AUTH-009 | Phase 6 | Pending |
+| AUTH-009 | Phase 6 | Complete |
 | AUTH-010 | Phase 2 | Complete |
 | AUTH-011 | Phase 1 | Complete |
 | AUTH-012 | Phase 2 | Complete |
-| AUTH-013 | Phase 6 | Pending |
-| AUTH-014 | Phase 6 | Pending |
+| AUTH-013 | Phase 6 | Complete |
+| AUTH-014 | Phase 6 | Complete |
 | VER-001 | Phase 2 | Complete |
 | VER-002 | Phase 2 | Complete |
 | VER-003 | Phase 2 | Complete |
