@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-04-12T00:31:08.285Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-04-12T18:42:32.175Z"
 progress:
   total_phases: 6
-  completed_phases: 4
-  total_plans: 13
-  completed_plans: 13
+  completed_phases: 5
+  total_plans: 20
+  completed_plans: 17
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-05)
 
 **Core value:** Verified neighbor discovery -- users must trust that people on the platform actually live in their neighborhood.
-**Current focus:** Phase 04 — marketplace-chat
+**Current focus:** Phase 06 — polish-deploy
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
+Phase: 06 (polish-deploy) — EXECUTING
+Plan: 2 of 4
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Plan: Not started
 | Phase 04 P01 | ~13m | 4 tasks | 39 files |
 | Phase 04-marketplace-chat P03 | 35min | 3 tasks | 6 files |
 | Phase 04-marketplace-chat P02 | 45 | 3 tasks | 34 files |
+| Phase 06 P01 | 6min | 1 tasks | 19 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,9 @@ Recent decisions affecting current work:
 - [Phase 04-marketplace-chat]: jest.mock factory inline pattern (initialize mocks inside factory) avoids babel hoisting order issues with mock variable references
 - [Phase 04-marketplace-chat]: Server component wrapper pattern for dynamic routes in Next.js 16 static export: page.tsx (server, generateStaticParams) imports *Client.tsx (use client) — empty params array rejected, must return at least one placeholder path
 - [Phase 04-marketplace-chat]: Single SignalR HubConnection shared between Phase 3 NotificationBell and Phase 4 chat via getHubConnection() singleton — chat handlers registered once via _wiredHandlers flag in chatStore.connect()
+- [Phase 06]: Resend via HttpClient POST (not SDK wrapper) for simplicity
+- [Phase 06]: OcrService graceful degradation - returns null if Tesseract native binaries unavailable
+- [Phase 06]: LGPD anonymization: 30-day grace then email/name nullified with deleted+uuid pattern
 
 ### Pending Todos
 
@@ -90,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-12T00:13:40.509Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-04-12T18:42:32.171Z
+Stopped at: Completed 06-01-PLAN.md
 Resume file: None

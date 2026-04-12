@@ -114,7 +114,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Backend: advanced auth (TOTP/OAuth/magic link), LGPD endpoints (export/deletion/retention), Resend email service, weekly digest, OCR, vouching, unit tests
+- [x] 06-01-PLAN.md — Backend: advanced auth (TOTP/OAuth/magic link), LGPD endpoints (export/deletion/retention), Resend email service, weekly digest, OCR, vouching, unit tests
 - [ ] 06-02-PLAN.md — Web (Next.js): dark mode (next-themes + Tailwind v4), auth page extensions, WhatsApp share buttons, public preview routes, LGPD settings page
 - [ ] 06-03-PLAN.md — Mobile (Expo): Google OAuth (expo-auth-session), dark mode (ThemeContext + AsyncStorage), WhatsApp share, LGPD data export + deletion
 

@@ -35,8 +35,8 @@
 - [x] **VER-008** [Should]: Basic fraud detection — same document used by multiple users, CEP/IP geolocation mismatch, abnormal signup volume at same address.
 - [x] **VER-009** [Should]: Real-time verification status — sent, in review, approved, rejected. Push/email on each change.
 - [x] **VER-010** [Should]: Soft delete for verification data. Data marked, not physically removed.
-- [ ] **VER-011** [Could]: OCR on proof documents — auto-extract name, address, date. Pre-validation before manual review.
-- [ ] **VER-012** [Could]: Neighbor vouching — 2 verified neighbors vouch for new user as equivalent to proof document.
+- [x] **VER-011** [Could]: OCR on proof documents — auto-extract name, address, date. Pre-validation before manual review.
+- [x] **VER-012** [Could]: Neighbor vouching — 2 verified neighbors vouch for new user as equivalent to proof document.
 
 ### Feed & Posts (16)
 
@@ -108,9 +108,9 @@
 ### LGPD Compliance
 
 - [x] **LGPD-01** [Must]: Privacy consent at signup (terms + data usage acceptance).
-- [ ] **LGPD-02** [Should]: User can export personal data (JSON/ZIP download).
-- [ ] **LGPD-03** [Should]: User can request account deletion (anonymize data, remove PII).
-- [ ] **LGPD-04** [Should]: Verification documents have retention policy (delete after X days post-approval).
+- [x] **LGPD-02** [Should]: User can export personal data (JSON/ZIP download).
+- [x] **LGPD-03** [Should]: User can request account deletion (anonymize data, remove PII).
+- [x] **LGPD-04** [Should]: Verification documents have retention policy (delete after X days post-approval).
 - [x] **LGPD-05** [Must]: Privacy policy page accessible from all screens.
 
 ### Sharing & Growth
@@ -127,7 +127,7 @@
 
 ### Notifications
 
-- [ ] **NOTF-01** [Should]: Weekly email digest "O que aconteceu no seu bairro" with top posts/events.
+- [x] **NOTF-01** [Should]: Weekly email digest "O que aconteceu no seu bairro" with top posts/events.
 
 ## v2 Requirements
 
@@ -182,8 +182,8 @@
 | VER-008 | Phase 2 | Complete |
 | VER-009 | Phase 2 | Complete |
 | VER-010 | Phase 2 | Complete |
-| VER-011 | Phase 6 | Pending |
-| VER-012 | Phase 6 | Pending |
+| VER-011 | Phase 6 | Complete |
+| VER-012 | Phase 6 | Complete |
 | FEED-001 | Phase 3 | Complete |
 | FEED-002 | Phase 3 | Complete |
 | FEED-003 | Phase 3 | Complete |
@@ -237,9 +237,9 @@
 | INF-003 | Phase 1 | Complete |
 | INF-004 | Phase 1 | Complete |
 | LGPD-01 | Phase 1 | Complete |
-| LGPD-02 | Phase 6 | Pending |
-| LGPD-03 | Phase 6 | Pending |
-| LGPD-04 | Phase 6 | Pending |
+| LGPD-02 | Phase 6 | Complete |
+| LGPD-03 | Phase 6 | Complete |
+| LGPD-04 | Phase 6 | Complete |
 | LGPD-05 | Phase 1 | Complete |
 | SHAR-01 | Phase 6 | Pending |
 | SHAR-02 | Phase 6 | Pending |
@@ -247,7 +247,7 @@
 | UXDS-01 | Phase 1 | Complete |
 | UXDS-02 | Phase 6 | Pending |
 | UXDS-03 | Phase 1 | Complete |
-| NOTF-01 | Phase 6 | Pending |
+| NOTF-01 | Phase 6 | Complete |
 
 **Coverage:**
 - Must have: 42
