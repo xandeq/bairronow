@@ -111,12 +111,12 @@ Plans:
   2. User can share posts and listings to WhatsApp with rich preview, and non-logged-in visitors see a public preview with signup CTA
   3. Dark mode toggle works across all screens, and weekly email digest delivers top bairro content
   4. All advanced auth features (2FA, social login, magic link) deployed and working
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
+- [ ] 06-01-PLAN.md — Backend: advanced auth (TOTP/OAuth/magic link), LGPD endpoints (export/deletion/retention), Resend email service, weekly digest, OCR, vouching, unit tests
+- [ ] 06-02-PLAN.md — Web (Next.js): dark mode (next-themes + Tailwind v4), auth page extensions, WhatsApp share buttons, public preview routes, LGPD settings page
+- [ ] 06-03-PLAN.md — Mobile (Expo): Google OAuth (expo-auth-session), dark mode (ThemeContext + AsyncStorage), WhatsApp share, LGPD data export + deletion
 
 ## Progress
 
