@@ -115,14 +115,14 @@
 
 ### Sharing & Growth
 
-- [ ] **SHAR-01** [Should]: WhatsApp share button on posts (deep link).
-- [ ] **SHAR-02** [Should]: WhatsApp share button on marketplace listings.
-- [ ] **SHAR-03** [Should]: Shared links show public preview + CTA to sign up for non-logged-in users.
+- [x] **SHAR-01** [Should]: WhatsApp share button on posts (deep link).
+- [x] **SHAR-02** [Should]: WhatsApp share button on marketplace listings.
+- [x] **SHAR-03** [Should]: Shared links show public preview + CTA to sign up for non-logged-in users.
 
 ### UX & Design
 
 - [x] **UXDS-01** [Must]: Fully responsive mobile-first design (Tailwind CSS).
-- [ ] **UXDS-02** [Should]: Dark mode support (toggle in settings).
+- [x] **UXDS-02** [Should]: Dark mode support (toggle in settings).
 - [x] **UXDS-03** [Must]: Portuguese (PT-BR) only — no i18n.
 
 ### Notifications
@@ -241,11 +241,11 @@
 | LGPD-03 | Phase 6 | Complete |
 | LGPD-04 | Phase 6 | Complete |
 | LGPD-05 | Phase 1 | Complete |
-| SHAR-01 | Phase 6 | Pending |
-| SHAR-02 | Phase 6 | Pending |
-| SHAR-03 | Phase 6 | Pending |
+| SHAR-01 | Phase 6 | Complete |
+| SHAR-02 | Phase 6 | Complete |
+| SHAR-03 | Phase 6 | Complete |
 | UXDS-01 | Phase 1 | Complete |
-| UXDS-02 | Phase 6 | Pending |
+| UXDS-02 | Phase 6 | Complete |
 | UXDS-03 | Phase 1 | Complete |
 | NOTF-01 | Phase 6 | Complete |
 
