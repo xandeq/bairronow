@@ -12,7 +12,19 @@ Verified neighbor discovery — users must be able to find and trust that the pe
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] JWT authentication with refresh tokens — Validated in Phase 01
+- [x] Address verification via CEP + utility bill upload (proof of residence) — Validated in Phase 02
+- [x] Neighborhood-scoped feed with posts (text + images) — Validated in Phase 03
+- [x] Local marketplace (buy/sell between verified neighbors) — Validated in Phase 04
+- [x] Community groups within neighborhoods — Validated in Phase 05
+- [x] Neighbor map showing verified residents — Validated in Phase 05
+- [x] Rate limiting (100 req/min per user) — Validated in Phase 05
+- [x] Soft deletes across all entities — Validated in Phase 05
+- [x] Google OAuth, magic link, TOTP auth flows — Validated in Phase 06
+- [x] LGPD compliance (data export + account deletion) — Validated in Phase 06
+- [x] Dark mode (web + mobile) — Validated in Phase 06
+- [x] WhatsApp share buttons — Validated in Phase 06
+- [x] Public preview routes (/p/[postId], /m/[listingId]) — Validated in Phase 06
 
 ### Active
 
@@ -91,4 +103,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-05 after initialization*
+*Last updated: 2026-04-12 — Phase 06 (polish-deploy) complete. All 6 phases done. v1.0 milestone ready for deploy.*
