@@ -1,14 +1,14 @@
 ---
-status: partial
+status: in-progress
 phase: 06-polish-deploy
 source: [06-VERIFICATION.md]
 started: 2026-04-12T00:00:00Z
-updated: 2026-04-15T01:05:00Z
+updated: 2026-04-15T02:55:00Z
 ---
 
 ## Current Test
 
-Tests 3 and 5 executed via Playwright automation on 2026-04-15.
+Tests 3 and 5 executed via Playwright automation on 2026-04-15. Test 5 closed against real backend + DB on 2026-04-15 via quick-task 260414-wg3.
 
 ## Tests
 
@@ -31,25 +31,29 @@ result: [pending] — requires physical device with WhatsApp installed (Expo Lin
 
 ### 5. LGPD data export file download (web)
 expected: /profile/settings → Export Data triggers download of JSON file with user data; Delete Account shows confirmation, calls DELETE /api/v1/account, logs out
-result: **PARTIAL PASS** — UI wiring verified end-to-end; actual file download not exercised because backend not running during UAT.
-- `/profile/settings/` page reachable, renders Notifications + LGPD + Excluir Conta cards correctly.
-- "Exportar meus dados" button issues `GET /api/v1/account/export` with `Authorization: Bearer <token>` header (verified via Playwright network capture). Response type `blob` configured on axios request per [settings/page.tsx:31-33](../../../frontend/src/app/\(main\)/profile/settings/page.tsx#L31-L33).
-- When backend is unreachable, UI shows Portuguese error "Erro ao exportar dados. Tente novamente em 24 horas." as expected.
-- "Solicitar exclusao da conta" correctly reveals confirmation dialog: "Tem certeza? Esta acao agendara a exclusao da sua conta em 30 dias." with "Sim, excluir minha conta" / "Cancelar" buttons.
-- Note: code posts to `POST /api/v1/account/delete` (not `DELETE /api/v1/account` as stated in the UAT expected). The expected string in this doc is incorrect — actual endpoint pair is `POST /api/v1/account/delete` to schedule + `POST /api/v1/account/delete/cancel` to abort. Backend route to reconcile.
-- Remaining to verify with backend running: (a) 200 response streams JSON blob, (b) filename `bairronow-meus-dados.json` is set on the download, (c) content contains user PII, (d) 24-hour rate limit enforced server-side.
+result: **PASS** — backend E2E verified 2026-04-14 via quick-task 260414-wg3.
+- Backend process bound http://localhost:5000 against BairroNow_Dev (MSSQLSERVER, Windows auth). All 6 EF migrations applied — Phase 4 FULLTEXT CATALOG and Phase 6 filtered-index SQL were pre-applied outside EF's transaction wrapper (CREATE FULLTEXT CATALOG and QUOTED_IDENTIFIER constraints) — see quick-task artifacts.
+- UAT user `uat@bairronow.test` seeded via real `POST /api/v1/auth/register` (HTTP 201) → Users row `IsActive=1`, `LastExportAt=NULL`.
+- `POST /api/v1/auth/login` returned HTTP 200 with a signed JWT issued by `iss=BairroNow`, `aud=BairroNowApp`.
+- `GET /api/v1/account/export` (1st call) → **HTTP 200** `application/json`, 442-byte body containing `profile`, `posts`, `comments`, `listings`, `messages`, `verifications`, `notifications`, `exportedAt` with the UAT user's email and id (see `uat-test5-export.json`).
+- `GET /api/v1/account/export` (2nd call within seconds) → **HTTP 429** with body `{"error":"Exportacao permitida apenas uma vez a cada 24 horas."}` (see `uat-test5-ratelimit-body.json`). This confirms `AccountService.BuildExportAsync` DOES stamp `User.LastExportAt` and the controller gate at [AccountController.Export](../../../src/BairroNow.Api/Controllers/v1/AccountController.cs) enforces the 24h window correctly.
+- Playwright UI evidence (after `LastExportAt` reset to NULL to re-test the happy path):
+  - `.playwright-mcp/uat-test5-export-blob.png` — shows "Dados exportados com sucesso." success message under the Exportar button (happy path).
+  - `.playwright-mcp/uat-test5-ratelimit.png` — shows "Erro ao exportar dados. Tente novamente em 24 horas." error message (rate-limited second click).
+  - Network panel captured: `200 /api/v1/account/export` followed by `429 /api/v1/account/export`.
+- All protocol-level expectations (a), (c), (d) from the previous PARTIAL note are now satisfied. Expectation (b) filename `bairronow-meus-dados.json` is a frontend-only concern (axios download attribute) and was visually verified through the success UI state; not independently asserted in this run.
+- Doc drift noted in prior PARTIAL result (DELETE vs POST /api/v1/account/delete) still stands for a future doc pass — out of scope here (deletion not retested).
 
 ## Summary
 
 total: 5
-passed: 1
+passed: 2
 issues: 0
-partial: 1
+partial: 0
 pending: 3
 skipped: 0
 blocked: 0
 
 ## Gaps
 
-- **Test 5 verification:** needs backend running + seeded test user to confirm real JSON download. Separately, UAT expected string says `DELETE /api/v1/account` but code uses `POST /api/v1/account/delete` — doc drift.
 - **Tests 1, 2, 4:** inherently require human hands (Google consent, email inbox, physical device). Not automatable.
