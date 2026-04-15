@@ -1,0 +1,4 @@
+FIRST_HTTP=200
+FIRST_CT=application/json
+FIRST_CALL_OK 442 bytes
+SECOND_HTTP=429

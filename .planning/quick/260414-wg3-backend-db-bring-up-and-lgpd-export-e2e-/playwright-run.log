@@ -1,0 +1,15 @@
+STEP 1: Navigate to /login
+STEP 2: Fill credentials and submit
+STEP 3: Wait for navigation away from /login
+  currentUrl= http://localhost:3000/cep-lookup/
+STEP 4: Navigate to /profile/settings
+  landedUrl= http://localhost:3000/profile/settings/
+STEP 5: Screenshot initial state
+STEP 6: Click "Exportar meus dados" (first time)
+STEP 7: Screenshot after first export (happy path)
+STEP 8: Click "Exportar meus dados" (second time for rate limit)
+STEP 9: Screenshot after second export (rate-limit path)
+STEP 10: Network summary
+  200 http://localhost:5000/api/v1/account/export
+  429 http://localhost:5000/api/v1/account/export
+DONE

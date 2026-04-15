@@ -1,0 +1,21 @@
+{
+  "profile": {
+    "Id": "0d1253ee-6912-4eb8-9ebe-d6b30924e309",
+    "Email": "uat@bairronow.test",
+    "DisplayName": null,
+    "Bio": null,
+    "PhotoUrl": null,
+    "BairroId": null,
+    "IsVerified": false,
+    "EmailConfirmed": false,
+    "CreatedAt": "2026-04-15T02:42:03.3103794",
+    "UpdatedAt": "2026-04-15T02:42:03.3103794"
+  },
+  "posts": [],
+  "comments": [],
+  "listings": [],
+  "messages": [],
+  "verifications": [],
+  "notifications": [],
+  "exportedAt": "2026-04-15T02:43:10.296227Z"
+}
