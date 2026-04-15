@@ -9,10 +9,10 @@ export default function FeedHeader() {
   const isAdmin = user?.isAdmin === true;
 
   return (
-    <header className="flex items-center justify-between bg-white shadow rounded-lg p-3 mb-4">
+    <header className="flex items-center justify-between bg-bg border border-border rounded-lg p-3 mb-4">
       <div className="flex items-center gap-4">
         <Link href="/feed/" className="text-xl font-extrabold text-green-700">
-          NossoVizinho
+          BairroNow
         </Link>
         <span className="text-sm text-fg/60 font-medium hidden sm:inline">
           Bairro #{user?.bairroId ?? "?"}

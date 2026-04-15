@@ -73,7 +73,7 @@ export default function FeedPage() {
       )}
 
       {items.length === 0 && !loading ? (
-        <div className="bg-white rounded-lg shadow p-8 text-center">
+        <div className="bg-muted border border-border rounded-lg p-8 text-center">
           <p className="text-fg/60 font-medium">
             Nenhum post ainda no seu bairro.
           </p>
