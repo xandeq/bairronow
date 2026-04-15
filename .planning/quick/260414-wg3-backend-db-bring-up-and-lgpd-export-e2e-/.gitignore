@@ -1,0 +1,6 @@
+# Never commit JWTs or login responses with tokens
+uat-access-token.txt
+uat-login-response.json
+backend.pid
+# Backend log contains JWTs in access_token= SignalR query params
+backend-startup.log
