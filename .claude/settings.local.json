@@ -2,7 +2,22 @@
   "permissions": {
     "allow": [
       "Skill(gsd:new-project)",
-      "Skill(gsd:new-project:*)"
+      "Skill(gsd:new-project:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_evaluate",
+      "Skill(gsd:plan-phase)",
+      "Skill(gsd:plan-phase:*)",
+      "Skill(gsd:execute-phase)",
+      "Skill(gsd:execute-phase:*)",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_network_requests",
+      "mcp__playwright__browser_file_upload"
     ]
   }
 }

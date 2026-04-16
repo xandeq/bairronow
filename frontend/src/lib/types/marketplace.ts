@@ -1,5 +1,5 @@
 // Phase 4 Plan 02: Marketplace + Chat DTO types.
-// Mirror NossoVizinho.Api.Models.DTOs.MarketplaceDtos / ChatDtos (04-01 backend).
+// Mirror BairroNow.Api.Models.DTOs.MarketplaceDtos / ChatDtos (04-01 backend).
 // Note: backend uses int for Listing/Conversation/Message ids and Guid for user ids.
 
 export type ListingStatus = "active" | "sold" | "removed";

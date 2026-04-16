@@ -27,6 +27,6 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - run: dotnet restore src/NossoVizinho.Api/NossoVizinho.Api.csproj
-      - run: dotnet build src/NossoVizinho.Api/NossoVizinho.Api.csproj -c Release --no-restore
-      - run: dotnet test tests/NossoVizinho.Api.Tests/NossoVizinho.Api.Tests.csproj -c Release --no-restore
+      - run: dotnet restore src/BairroNow.Api/BairroNow.Api.csproj
+      - run: dotnet build src/BairroNow.Api/BairroNow.Api.csproj -c Release --no-restore
+      - run: dotnet test tests/BairroNow.Api.Tests/BairroNow.Api.Tests.csproj -c Release --no-restore

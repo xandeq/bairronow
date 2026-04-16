@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="text-xl font-semibold mb-3">Dados Coletados</h2>
           <p className="text-gray-700">
             Coletamos os seguintes dados para o funcionamento da plataforma
-            NossoVizinho:
+            BairroNow:
           </p>
           <ul className="list-disc pl-6 text-gray-700 space-y-1">
             <li>Nome e e-mail para identificacao da conta</li>

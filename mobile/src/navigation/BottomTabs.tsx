@@ -27,6 +27,8 @@ const TAB_CONFIG: Record<string, { label: string; icon: string }> = {
   feed: { label: 'Bairro', icon: '🏘️' },
   marketplace: { label: 'Mercado', icon: '🛒' },
   chat: { label: 'Chat', icon: '💬' },
+  map: { label: 'Mapa', icon: '🗺️' },
+  'groups/index': { label: 'Grupos', icon: '👥' },
 };
 
 function getTabKey(routeName: string) {

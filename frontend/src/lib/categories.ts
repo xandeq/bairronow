@@ -1,5 +1,5 @@
 // Phase 4 D-24/D-25: Hardcoded 10-category taxonomy mirroring
-// src/NossoVizinho.Api/Constants/Categories.cs. Kept in sync manually.
+// src/BairroNow.Api/Constants/Categories.cs. Kept in sync manually.
 // Cache from GET /api/v1/categories after first fetch to pick up admin toggles.
 
 export interface LocalSubcategory {

@@ -10,7 +10,7 @@ import type {
 } from "@/lib/types/marketplace";
 
 // Phase 4 Plan 02 Task 0: axios wrappers matching backend 04-01 controllers.
-// Routes verified against src/NossoVizinho.Api/Controllers/v1/{Listings,SellerRatings,Categories,Moderation}Controller.cs
+// Routes verified against src/BairroNow.Api/Controllers/v1/{Listings,SellerRatings,Categories,Moderation}Controller.cs
 
 const BASE = "/api/v1";
 

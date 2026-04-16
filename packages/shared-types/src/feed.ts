@@ -1,5 +1,5 @@
 // Feed module shared types — generated for Phase 03-01.
-// Mirrors NossoVizinho.Api.Models.DTOs.* and Enums.
+// Mirrors BairroNow.Api.Models.DTOs.* and Enums.
 
 export type PostCategory = "Dica" | "Alerta" | "Pergunta" | "Evento" | "Geral";
 export type ReportReason =
@@ -8,7 +8,7 @@ export type ReportReason =
   | "Discrimination"
   | "Misinformation"
   | "Other";
-export type ReportTargetType = "post" | "comment";
+export type ReportTargetType = "post" | "comment" | "listing";
 export type NotificationType = "comment" | "reply" | "like" | "mention";
 
 export interface PostImageDto {

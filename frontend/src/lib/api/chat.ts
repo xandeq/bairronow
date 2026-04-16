@@ -6,7 +6,7 @@ import type {
 } from "@/lib/types/marketplace";
 
 // Phase 4 Plan 02 Task 0: chat API wrappers matching
-// src/NossoVizinho.Api/Controllers/v1/ChatController.cs
+// src/BairroNow.Api/Controllers/v1/ChatController.cs
 
 const BASE = "/api/v1/chat";
 

@@ -1,7 +1,7 @@
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
-**NossoVizinho**
+**BairroNow**
 
 A neighborhood operating system for Brazil — a "Nextdoor brasileiro" where verified residents, building sindicos, local businesses, and public agencies connect on a centralized, geo-scoped platform. Residents share news, buy/sell/donate in a trusted marketplace, organize events, and form community groups. Sindicos manage building communities. Local businesses (gardening, food, retail, real estate, personal care, medical, salons) maintain profiles with deals and reviews. Public agencies send geo-targeted alerts and emergency messages. Everything is scoped to your bairro or building, and trust is built through address verification.
 
