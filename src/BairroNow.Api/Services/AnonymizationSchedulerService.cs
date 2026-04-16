@@ -26,10 +26,13 @@ public class AnonymizationSchedulerService : BackgroundService
                 var today = DateOnly.FromDateTime(DateTime.UtcNow);
                 if (_lastRunDate != today)
                 {
-                    _lastRunDate = today;
                     using var scope = _services.CreateScope();
                     var accountService = scope.ServiceProvider.GetRequiredService<AccountService>();
                     await accountService.RunAnonymizationAsync();
+                    // Only mark the day complete AFTER a successful run, so a transient
+                    // failure (DB down, etc.) gets retried on the next 1h tick instead
+                    // of being skipped until tomorrow's midnight roll-over.
+                    _lastRunDate = today;
                 }
             }
             catch (Exception ex)
