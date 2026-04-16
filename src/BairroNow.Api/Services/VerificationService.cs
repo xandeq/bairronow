@@ -126,19 +126,21 @@ public class VerificationService : IVerificationService
 
     public async Task<bool> ApproveAsync(int verificationId, Guid adminUserId, CancellationToken ct = default)
     {
-        var v = await _db.Verifications.FirstOrDefaultAsync(x => x.Id == verificationId, ct);
-        if (v == null) return false;
+        var now = DateTime.UtcNow;
+        var claimed = await _db.Database.ExecuteSqlInterpolatedAsync(
+            $"UPDATE Verifications SET Status = 'approved', ReviewedByUserId = {adminUserId}, ReviewedAt = {now} WHERE Id = {verificationId} AND Status = 'pending'", ct);
 
-        v.Status = VerificationStatus.Approved;
-        v.ReviewedByUserId = adminUserId;
-        v.ReviewedAt = DateTime.UtcNow;
+        if (claimed == 0) return false;
+
+        var v = await _db.Verifications.AsNoTracking().FirstOrDefaultAsync(x => x.Id == verificationId, ct);
+        if (v == null) return false;
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == v.UserId, ct);
         if (user != null)
         {
             user.IsVerified = true;
             user.BairroId = v.BairroId;
-            user.VerifiedAt = DateTime.UtcNow;
+            user.VerifiedAt = now;
         }
 
         _db.AuditLogs.Add(new AuditLog

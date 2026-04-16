@@ -323,17 +323,21 @@ public class AuthService : IAuthService
             var rawToken = Convert.FromBase64String(rawTokenBase64);
             var tokenHash = Convert.ToBase64String(SHA256.HashData(rawToken));
 
-            var stored = await _db.MagicLinkTokens
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(t => t.TokenHash == tokenHash && !t.Used && t.ExpiresAt > DateTime.UtcNow);
+            var now = DateTime.UtcNow;
+            var claimed = await _db.Database.ExecuteSqlInterpolatedAsync(
+                $"UPDATE MagicLinkTokens SET Used = 1 WHERE TokenHash = {tokenHash} AND Used = 0 AND ExpiresAt > {now}");
 
-            if (stored == null)
+            if (claimed == 0)
                 return (null, null, "Link invalido ou expirado.");
 
-            stored.Used = true;
-            await _db.SaveChangesAsync();
+            var stored = await _db.MagicLinkTokens
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.TokenHash == tokenHash);
 
-            return IssueTokens(stored.User!, "magic-link");
+            if (stored?.User == null)
+                return (null, null, "Link invalido ou expirado.");
+
+            return IssueTokens(stored.User, "magic-link");
         }
         catch (FormatException)
         {
