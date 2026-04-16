@@ -16,6 +16,9 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (config.method === 'post' && !config.headers['Idempotency-Key']) {
+    config.headers['Idempotency-Key'] = crypto.randomUUID();
+  }
   return config;
 });
 

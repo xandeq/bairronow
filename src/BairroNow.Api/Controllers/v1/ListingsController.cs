@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using BairroNow.Api.Middleware;
 using BairroNow.Api.Models.DTOs;
 using BairroNow.Api.Services;
 
@@ -21,6 +22,7 @@ public class ListingsController : ControllerBase
     }
 
     [HttpPost("")]
+    [Idempotent]
     [Authorize(Policy = "VerifiedOnly")]
     [EnableRateLimiting("feed-write")]
     [RequestSizeLimit(35_000_000)]

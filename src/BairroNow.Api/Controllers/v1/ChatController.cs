@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using BairroNow.Api.Middleware;
 using BairroNow.Api.Models.DTOs;
 using BairroNow.Api.Services;
 
@@ -54,6 +55,7 @@ public class ChatController : ControllerBase
     }
 
     [HttpPost("conversations/{id:int}/messages")]
+    [Idempotent]
     [EnableRateLimiting("feed-write")]
     [RequestSizeLimit(10_000_000)]
     public async Task<IActionResult> Send(int id, CancellationToken ct)

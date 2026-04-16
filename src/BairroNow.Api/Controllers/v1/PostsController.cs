@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using BairroNow.Api.Middleware;
 using BairroNow.Api.Models.DTOs;
 using BairroNow.Api.Services;
 
@@ -22,6 +23,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpPost("")]
+    [Idempotent]
     [Authorize(Policy = "VerifiedOnly")]
     [EnableRateLimiting("feed-write")]
     [RequestSizeLimit(25_000_000)]
