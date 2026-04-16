@@ -25,8 +25,10 @@ public class DocumentRetentionService : BackgroundService
                 var today = DateOnly.FromDateTime(DateTime.UtcNow);
                 if (_lastRunDate != today)
                 {
-                    _lastRunDate = today;
                     await CleanExpiredDocumentsAsync(stoppingToken);
+                    // Mark day done AFTER success so transient failures retry on the
+                    // next 1h tick rather than deferring LGPD 90d retention by a day.
+                    _lastRunDate = today;
                 }
             }
             catch (Exception ex)

@@ -28,8 +28,11 @@ public class DigestSchedulerService : BackgroundService
                     var today = DateOnly.FromDateTime(now);
                     if (_lastDigestDate != today)
                     {
-                        _lastDigestDate = today;
                         await SendDigestsAsync(stoppingToken);
+                        // Mark week's digest sent only after success, so a transient
+                        // DB/SMTP failure during the 5-minute Monday window can still
+                        // retry on the next 1-minute tick instead of losing the week.
+                        _lastDigestDate = today;
                     }
                 }
             }
