@@ -100,6 +100,17 @@ Verified neighbor discovery — users must be able to find and trust that the pe
 | GroupPost as separate entity (not extending Post) | Groups have different moderation and scope rules | ✓ Avoids feed contamination |
 | expo-auth-session for Google OAuth mobile | No custom URI scheme needed, works with Expo Go | ✓ id_token exchange via /auth/google/mobile |
 | Resend for transactional email | Simple REST API, LGPD-friendly EU data handling | ✓ Used for magic links + weekly digest |
+| Confirmação do stack backend (.NET 8) pós-MVP | Escolha original de Phase 1 (linha acima) validada pelo entregue; lacunas arquiteturais identificadas são portáveis entre stacks | ✓ ADR-001 aceito 2026-04-15 — gatilhos de reavaliação documentados |
+
+## Architectural Decision Records (ADRs)
+
+Decisões arquiteturais estratégicas ficam em `.planning/decisions/ADR-NNN-*.md`.
+Use este formato quando a decisão tiver custo alto de reversão, impactar múltiplas phases,
+ou exigir justificativa rastreável para auditoria futura.
+
+| ADR | Status | Título |
+|-----|--------|--------|
+| [ADR-001](./decisions/ADR-001-backend-stack.md) | ✅ Accepted | Confirmação do stack de backend (.NET 8) e condições para reavaliação |
 
 ## Evolution
 
