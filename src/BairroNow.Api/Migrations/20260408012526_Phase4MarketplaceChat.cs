@@ -321,7 +321,7 @@ BEGIN
         EXEC('CREATE FULLTEXT INDEX ON Listings(Title, Description)
               KEY INDEX PK_Listings ON ftListings WITH CHANGE_TRACKING AUTO;');
 END
-");
+", suppressTransaction: true);
         }
 
         /// <inheritdoc />
