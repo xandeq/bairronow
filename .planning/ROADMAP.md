@@ -4,6 +4,7 @@
 
 - ✅ **v1.0 MVP** — Phases 1–6 (shipped 2026-04-12)
 - ✅ **v1.0 Honest** — Phase 7 stabilization (completed 2026-04-16)
+- ✅ **v1.1 Powerful** — Phase 8 operational excellence (completed 2026-04-16)
 
 ## Phases
 
@@ -49,9 +50,44 @@ Key fixes:
 
 </details>
 
+<details>
+<summary>✅ v1.1 Powerful (Phase 8) — COMPLETED 2026-04-16</summary>
+
+Operational excellence pass: security hardening, observability, resilience,
+and performance — upgrades that make the app production-grade without
+changing user-facing behavior.
+
+| Task | Category | Status |
+|------|----------|--------|
+| 08-01 security-headers | Security | ✓ Complete |
+| 08-02 response-compression | Performance | ✓ Complete |
+| 08-03 health-checks | Ops / observability | ✓ Complete |
+| 08-04 correlation-logging | Observability | ✓ Complete |
+| 08-05 polly-resilience | Resilience | ✓ Complete |
+| 08-06 ef-hot-path-tracking | Performance | ✓ Complete |
+| 08-07 frontend-metadata-preconnect | Performance / SEO | ✓ Complete |
+
+Key upgrades:
+- `SecurityHeadersMiddleware` — CSP, HSTS (HTTPS-aware via X-Forwarded-Proto),
+  X-Frame-Options DENY, Permissions-Policy, Referrer-Policy
+- Brotli + Gzip response compression for JSON/JS/CSS/SVG
+- Split `/health/live` (liveness, no deps) vs `/health/ready` (DB probe)
+  with structured per-check JSON responses
+- `CorrelationIdMiddleware` + Serilog `FromLogContext` + `UseSerilogRequestLogging`
+  — every log line carries a correlation ID, error responses include it so
+  users can quote it to support
+- Polly v8 standard resilience pipeline (retry + timeout + circuit breaker)
+  on ViaCEP/BrasilAPI and Resend email HTTP clients
+- `AsNoTracking()` on genuinely read-only entity loads in ChatService /
+  ListingService hot paths
+- Frontend `<link rel="preconnect">` to API origin + full OpenGraph /
+  Twitter / themeColor metadata
+
+</details>
+
 ## Next Milestone
 
-No milestone planned yet. Start with `/gsd:new-milestone` to define v1.1.
+No milestone planned yet. Start with `/gsd:new-milestone` to define v1.2.
 
 ---
-*Last updated: 2026-04-16 — v1.0 Honest stabilization completed*
+*Last updated: 2026-04-16 — v1.1 Powerful operational excellence pass completed*

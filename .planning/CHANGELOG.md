@@ -1,5 +1,43 @@
 # Changelog
 
+## v1.1 Powerful — 2026-04-16
+
+Operational excellence upgrade: security hardening, observability,
+resilience and performance. No user-facing behavior changes — these are
+"make v1.0 production-grade" upgrades.
+
+### Security
+- `SecurityHeadersMiddleware` — X-Content-Type-Options, X-Frame-Options: DENY,
+  Referrer-Policy, Permissions-Policy, CSP (env-aware: Swagger-friendly in
+  dev, locked-down in prod), HSTS (only over HTTPS, respects Cloudflare's
+  X-Forwarded-Proto). Strips auto-emitted `Server: Kestrel` header. (`8f5b5b8`)
+
+### Performance
+- Brotli + Gzip response compression for JSON/JS/CSS/SVG responses (`dff7715`)
+- Frontend `<link rel="preconnect">` + `dns-prefetch` to API origin; viewport
+  `themeColor` matches active light/dark theme; OpenGraph/Twitter card metadata
+  for shareable post/listing URLs (`2a28e12`)
+- `AsNoTracking()` on genuinely read-only entity reads in `ChatService.CreateOrGetAsync`
+  and `ListingService.ToggleFavoriteAsync` hot paths (`6cf4e87`)
+
+### Observability
+- Split `/health/live` (liveness, no deps, always fast) vs `/health/ready`
+  (readiness, includes EF DbContext probe); structured JSON responses report
+  per-check durations and errors (`57b4290`)
+- `CorrelationIdMiddleware` — generates or honors `X-Correlation-Id`, pushes
+  to Serilog `LogContext` so every log line carries it; echoes on response
+  header and in 500-error body for user-quotable triage IDs (`59ebd78`)
+- `UseSerilogRequestLogging` — one structured line per request with method,
+  path, status, elapsed ms, user-agent, client IP, userId when authenticated (`59ebd78`)
+
+### Resilience
+- `Microsoft.Extensions.Http.Resilience` (Polly v8) standard pipeline on
+  `CepLookupService` (ViaCEP + BrasilAPI) and Resend email HTTP clients.
+  Retry + timeout + circuit breaker; named "resend" client so the policy
+  actually applies (previously `CreateClient()` with no name bypassed it) (`a7937e9`)
+
+---
+
 ## v1.0 Honest — 2026-04-16
 
 Post-ship stabilization addressing deploy blockers, concurrency bugs,
