@@ -1,6 +1,8 @@
+using System.IO.Compression;
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.ResponseCompression;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -178,6 +180,27 @@ try
     // Phase 4 chat-send rate limiter (D-12 hub) — 30 messages/min per user
     builder.Services.Configure<Microsoft.AspNetCore.RateLimiting.RateLimiterOptions>(opts => { });
 
+    // Response compression — Brotli first (better ratio), then Gzip fallback.
+    // EnableForHttps: Cloudflare is the only HTTPS-aware proxy in front of us and
+    // already does compression at the edge, but enabling at the origin still helps
+    // for CF-bypass paths and for payloads above CF's limits.
+    builder.Services.AddResponseCompression(options =>
+    {
+        options.EnableForHttps = true;
+        options.Providers.Add<BrotliCompressionProvider>();
+        options.Providers.Add<GzipCompressionProvider>();
+        options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+        {
+            "application/json",
+            "application/javascript",
+            "text/json",
+            "text/css",
+            "image/svg+xml"
+        });
+    });
+    builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
+    builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
+
     // SignalR
     builder.Services.AddSignalR();
 
@@ -273,6 +296,9 @@ try
     // SecurityHeadersMiddleware runs early via OnStarting so headers attach to
     // every response (controllers, static files, Swagger, error pages).
     app.UseMiddleware<SecurityHeadersMiddleware>();
+    // Response compression must precede UseStaticFiles / MapControllers so the
+    // middleware sees the body being written and can compress it.
+    app.UseResponseCompression();
     // HttpsRedirection disabled: Cloudflare terminates TLS at edge, origin runs HTTP
     app.UseCors("Frontend");
     app.UseAuthentication();
