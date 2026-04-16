@@ -180,6 +180,13 @@ try
     // Phase 4 chat-send rate limiter (D-12 hub) — 30 messages/min per user
     builder.Services.Configure<Microsoft.AspNetCore.RateLimiting.RateLimiterOptions>(opts => { });
 
+    // Health checks — self + DB. Two endpoints below differentiate liveness
+    // (process up?) from readiness (can we actually serve traffic?).
+    builder.Services.AddHealthChecks()
+        .AddDbContextCheck<AppDbContext>(
+            name: "database",
+            tags: new[] { "ready" });
+
     // Response compression — Brotli first (better ratio), then Gzip fallback.
     // EnableForHttps: Cloudflare is the only HTTPS-aware proxy in front of us and
     // already does compression at the edge, but enabling at the origin still helps
@@ -325,7 +332,44 @@ try
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BairroNow API v1"));
 
+    // Liveness: is the process up? (no dependency checks — always fast, always 200
+    // unless Kestrel itself is broken). Used by SmarterASP/K8s-style probes that
+    // want to know if they should restart us.
+    app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        Predicate = _ => false,
+        ResponseWriter = WriteHealthResponse
+    });
+
+    // Readiness: can we serve real traffic? (includes DB probe). Used by a load
+    // balancer / CF origin-health to decide whether to route requests here.
+    app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        Predicate = hc => hc.Tags.Contains("ready"),
+        ResponseWriter = WriteHealthResponse
+    });
+
+    // Back-compat: /health keeps the original shape so existing probes don't break.
     app.MapGet("/health", () => Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }));
+
+    static Task WriteHealthResponse(HttpContext ctx,
+        Microsoft.Extensions.Diagnostics.HealthChecks.HealthReport report)
+    {
+        ctx.Response.ContentType = "application/json";
+        var payload = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            status = report.Status.ToString(),
+            totalDurationMs = report.TotalDuration.TotalMilliseconds,
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                durationMs = e.Value.Duration.TotalMilliseconds,
+                error = e.Value.Exception?.Message
+            })
+        });
+        return ctx.Response.WriteAsync(payload);
+    }
 
     app.MapHub<NotificationHub>("/hubs/notifications");
     app.MapControllers();
