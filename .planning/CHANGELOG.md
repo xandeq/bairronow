@@ -20,6 +20,7 @@ LGPD compliance gaps, and frontend dark mode inconsistencies.
 - Global query filter on User entity (`IsActive`) — soft-deleted users excluded from all queries (`52668ab`)
 - Global query filter on Message entity (`DeletedAt`) — deleted messages excluded (`52668ab`)
 - Fixed `AccountService.CancelDeletionAsync` and `RunAnonymizationAsync` to use `IgnoreQueryFilters()` (`52668ab`)
+- `AnonymizationSchedulerService` — daily BackgroundService that actually calls `RunAnonymizationAsync` (previously unreachable, users stuck in indefinite grace period) (`dc82d2d`)
 
 ### Frontend
 - Dark mode codemod: 65+ hardcoded `bg-white`/`text-gray-*`/`border-gray-*` classes replaced with design tokens across 19 files (`735a3c1`)
