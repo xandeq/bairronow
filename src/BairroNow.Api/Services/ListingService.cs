@@ -317,8 +317,12 @@ public class ListingService : IListingService
 
     public async Task<bool> ToggleFavoriteAsync(Guid userId, int listingId, CancellationToken ct = default)
     {
-        var listing = await _db.Listings.FirstOrDefaultAsync(l => l.Id == listingId, ct)
+        // Listing is read-only here — we only consume its Price below for the
+        // snapshot. Tracking this entity just to read one column is pure cost.
+        var listing = await _db.Listings.AsNoTracking()
+            .FirstOrDefaultAsync(l => l.Id == listingId, ct)
             ?? throw new ListingNotFoundException();
+        // `existing` below MUST stay tracked — it may be Remove()d.
         var existing = await _db.ListingFavorites
             .FirstOrDefaultAsync(f => f.ListingId == listingId && f.UserId == userId, ct);
         if (existing != null)

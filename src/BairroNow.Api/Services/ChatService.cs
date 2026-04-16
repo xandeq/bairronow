@@ -46,8 +46,9 @@ public class ChatService : IChatService
         if (buyer.BairroId != listing.BairroId)
             throw new ChatForbiddenException("Anúncio fora do seu bairro.");
 
-        // Dedupe on (ListingId, BuyerId, SellerId)
-        var existing = await _db.Conversations
+        // Dedupe on (ListingId, BuyerId, SellerId) — only the Id is consumed
+        // before BuildConvDtoAsync re-queries fresh, so tracker is pure overhead.
+        var existing = await _db.Conversations.AsNoTracking()
             .FirstOrDefaultAsync(c => c.ListingId == dto.ListingId && c.BuyerId == buyerId && c.SellerId == listing.SellerId, ct);
         if (existing != null)
             return await BuildConvDtoAsync(existing.Id, buyerId, ct) ?? throw new ChatNotFoundException();
