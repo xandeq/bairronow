@@ -3,7 +3,7 @@ status: in-progress
 phase: 06-polish-deploy
 source: [06-VERIFICATION.md]
 started: 2026-04-12T00:00:00Z
-updated: 2026-04-15T02:55:00Z
+updated: 2026-04-16T02:55:00Z
 ---
 
 ## Current Test
@@ -23,7 +23,7 @@ result: [pending] — requires Resend API key configured + real email inbox
 ### 3. Dark mode visual appearance (web)
 expected: ThemeToggle switches app between light/dark; dark colors apply consistently across all pages; preference persists on reload
 result: **PASS** — fix verified 2026-04-15 via Playwright MCP. Removed `inline` keyword from `@theme` in [globals.css:5](../../../frontend/src/app/globals.css#L5) so Tailwind v4 emits `var(--color-bg)` references in utility classes, letting the `.dark { --color-bg: #0f172a; ... }` override at [globals.css:40](../../../frontend/src/app/globals.css#L40) cascade to all utilities. Also tokenized the two hardcoded `bg-white` offenders identified in the original root-cause analysis: [FeedHeader.tsx:12](../../../frontend/src/components/layouts/FeedHeader.tsx#L12) (`bg-white shadow` → `bg-bg border border-border`) and [feed/page.tsx:76](../../../frontend/src/app/\(main\)/feed/page.tsx#L76) (`bg-white shadow` → `bg-muted border border-border`). Measured post-fix on /feed/ in dark mode: `<html>` and `<body>` bg = `rgb(15, 23, 42)`; header bg = `rgb(15, 23, 42)`; feed empty-state card bg = `rgb(30, 41, 59)`; `localStorage.theme === 'dark'` and `.dark` class on `<html>` persist across reload. Screenshots: `frontend/.playwright-mcp/darkmode-fix-before.png`, `frontend/.playwright-mcp/darkmode-fix-after.png`.
-- Remaining hardcoded `bg-white` / `bg-gray-*` / `text-gray-*` in ~28 other files (PostCard, GroupClient, PostComposer, ReportDialog, NotificationBell, map/MapClient, groups pages, privacy-policy, feed/search, admin/moderation, RatingForm, CommentThread, etc.) are deferred to a broader ui-consistency polish pass — out of scope for UAT Test 3 which specifically tested /feed/. Tracked for the next milestone.
+- Dark mode codemod completed 2026-04-16: replaced 65+ hardcoded `bg-white`/`bg-gray-*`/`text-gray-*`/`border-gray-*` classes with design tokens (`bg-card`, `bg-muted`, `text-fg`, `text-muted-fg`, `border-border`) across 19 files. Added `--color-muted-fg` token for both light (#6b7280) and dark (#94a3b8) themes. Commit `735a3c1`.
 
 ### 4. WhatsApp share on mobile device
 expected: WhatsApp share button opens WhatsApp with pre-filled message containing post/listing link; works on real device with WhatsApp installed
@@ -43,6 +43,7 @@ result: **PASS** — backend E2E verified 2026-04-14 via quick-task 260414-wg3.
   - Network panel captured: `200 /api/v1/account/export` followed by `429 /api/v1/account/export`.
 - All protocol-level expectations (a), (c), (d) from the previous PARTIAL note are now satisfied. Expectation (b) filename `bairronow-meus-dados.json` is a frontend-only concern (axios download attribute) and was visually verified through the success UI state; not independently asserted in this run.
 - Doc drift noted in prior PARTIAL result (DELETE vs POST /api/v1/account/delete) still stands for a future doc pass — out of scope here (deletion not retested).
+- **Re-verified 2026-04-16** with full Playwright browser flow: login → /profile/settings → click "Exportar meus dados" → file `bairronow-meus-dados.json` downloaded (531 bytes, valid JSON with profile.Email, profile.DisplayName, profile.Id) → second click shows "Erro ao exportar dados. Tente novamente em 24 horas." Screenshots: `lgpd-export-success.png`, `lgpd-export-rate-limit.png`. Backend on port 5041, frontend on port 3000.
 
 ## Summary
 
