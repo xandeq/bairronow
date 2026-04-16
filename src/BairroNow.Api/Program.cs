@@ -26,9 +26,11 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    // Serilog
+    // Serilog — FromLogContext pulls in CorrelationId pushed by
+    // CorrelationIdMiddleware so every log line carries it downstream.
     builder.Host.UseSerilog((context, services, configuration) =>
         configuration.ReadFrom.Configuration(context.Configuration)
+            .Enrich.FromLogContext()
             .WriteTo.Console());
 
     // DbContext
@@ -299,6 +301,27 @@ try
         KnownNetworks = { },
         KnownProxies = { }
     });
+    // CorrelationIdMiddleware runs FIRST so every subsequent log (including
+    // exception logs) carries the ID for triage.
+    app.UseMiddleware<CorrelationIdMiddleware>();
+
+    // Serilog structured request logging — emits ONE line per request with
+    // method, path, status code, elapsed ms, user-agent. Enriched with the
+    // correlation ID + authenticated user id via the middleware below.
+    app.UseSerilogRequestLogging(options =>
+    {
+        options.EnrichDiagnosticContext = (diagCtx, httpCtx) =>
+        {
+            diagCtx.Set("UserAgent", httpCtx.Request.Headers.UserAgent.ToString());
+            diagCtx.Set("ClientIp", httpCtx.Connection.RemoteIpAddress?.ToString() ?? "unknown");
+            var userId = httpCtx.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                diagCtx.Set("UserId", userId);
+            }
+        };
+    });
+
     app.UseMiddleware<ExceptionHandlerMiddleware>();
     // SecurityHeadersMiddleware runs early via OnStarting so headers attach to
     // every response (controllers, static files, Swagger, error pages).

@@ -24,14 +24,18 @@ public class ExceptionHandlerMiddleware
         }
         catch (Exception ex)
         {
+            var correlationId = context.Items["CorrelationId"] as string;
             _logger.LogError(ex, "Unhandled exception on {Method} {Path}", context.Request.Method, context.Request.Path);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var response = _env.IsDevelopment()
-                ? new { error = "Erro interno do servidor.", detail = ex.Message }
-                : new { error = "Erro interno do servidor.", detail = (string?)null };
+            // The client sees the correlation ID so an end user can quote it back
+            // to support and we can pull the exact log line in seconds. Detail is
+            // only leaked in Development.
+            object response = _env.IsDevelopment()
+                ? new { error = "Erro interno do servidor.", detail = (string?)ex.Message, correlationId }
+                : new { error = "Erro interno do servidor.", detail = (string?)null, correlationId };
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
