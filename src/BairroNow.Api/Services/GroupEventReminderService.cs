@@ -37,12 +37,22 @@ public class GroupEventReminderService : BackgroundService
             .Include(e => e.Group)
             .ToListAsync(ct);
 
+        // Save per-event: if SendAsync for event N throws, events 0..N-1 stay
+        // marked sent and won't be duplicated on the next 5-minute tick. Without
+        // this, a single SignalR hiccup re-delivers reminders already received.
         foreach (var ev in due)
         {
-            await hub.Clients.Group($"group:{ev.GroupId}")
-                .SendAsync("GroupEventReminder", new { ev.Id, ev.Title, ev.StartsAt }, ct);
-            ev.ReminderSent = true;
+            try
+            {
+                await hub.Clients.Group($"group:{ev.GroupId}")
+                    .SendAsync("GroupEventReminder", new { ev.Id, ev.Title, ev.StartsAt }, ct);
+                ev.ReminderSent = true;
+                await db.SaveChangesAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send reminder for event {EventId}", ev.Id);
+            }
         }
-        await db.SaveChangesAsync(ct);
     }
 }
