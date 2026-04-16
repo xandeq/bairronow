@@ -1,0 +1,24 @@
+# BairroNow static export — HostGator Apache
+# Next.js `output: 'export'` only pre-renders placeholder IDs for dynamic routes.
+# Users who share/paste/refresh a URL like /marketplace/123 would get 404 without this.
+# This rewrite serves the pre-rendered placeholder shell; the client component
+# reads the real ID from window.location via useParams() and fetches via API.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Don't rewrite if the requested path is an actual file or directory
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # More-specific routes first (edit sub-route before generic detail)
+  RewriteRule ^marketplace/[^/]+/edit/?$ /marketplace/0/edit/index.html [L]
+  RewriteRule ^groups/[^/]+/events/?$ /groups/placeholder/events/index.html [L]
+
+  # Generic dynamic-segment fallbacks
+  RewriteRule ^marketplace/[^/]+/?$ /marketplace/0/index.html [L]
+  RewriteRule ^chat/[^/]+/?$ /chat/0/index.html [L]
+  RewriteRule ^groups/[^/]+/?$ /groups/placeholder/index.html [L]
+  RewriteRule ^m/[^/]+/?$ /m/preview/index.html [L]
+  RewriteRule ^p/[^/]+/?$ /p/preview/index.html [L]
+</IfModule>
