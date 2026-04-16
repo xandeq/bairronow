@@ -220,6 +220,7 @@ try
     // Phase 6 (06-01) services
     builder.Services.AddHostedService<DigestSchedulerService>();
     builder.Services.AddHostedService<DocumentRetentionService>();
+    builder.Services.AddHostedService<AnonymizationSchedulerService>();
     builder.Services.AddScoped<AccountService>();
     builder.Services.AddScoped<OcrService>();
     builder.Services.AddHttpClient();
