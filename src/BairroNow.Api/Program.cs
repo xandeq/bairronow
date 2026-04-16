@@ -148,6 +148,19 @@ try
     builder.Services.AddHttpClient<ICepLookupService, CepLookupService>(client =>
     {
         client.Timeout = TimeSpan.FromSeconds(5);
+    })
+    // AddStandardResilienceHandler wraps with Polly v8 pipeline:
+    //   rate limiter → total-timeout → retry (3x, exp backoff, jitter) →
+    //   circuit breaker (opens on 50% failures in 30s) → attempt-timeout
+    // Sensible defaults for 3rd-party APIs like ViaCEP and BrasilAPI.
+    .AddStandardResilienceHandler(options =>
+    {
+        // Per-attempt timeout must be < total timeout; the HttpClient.Timeout (5s)
+        // sets the outer bound, so we shrink these to fit.
+        options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(3);
+        options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(10);
+        options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(30);
+        options.Retry.MaxRetryAttempts = 2;
     });
     builder.Services.AddScoped<IBairroService, BairroService>();
     builder.Services.AddScoped<IFileStorageService, FileStorageService>();
@@ -248,6 +261,22 @@ try
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<IEmailService, ResendEmailService>();
+
+    // Named HttpClient "resend" with resilience — Resend API occasionally 502s
+    // under load. Retry + circuit breaker keeps transactional emails flowing.
+    builder.Services.AddHttpClient("resend", client =>
+    {
+        client.BaseAddress = new Uri("https://api.resend.com/");
+        client.Timeout = TimeSpan.FromSeconds(15);
+        var apiKey = builder.Configuration["RESEND_API_KEY"] ?? builder.Configuration["Resend:ApiKey"] ?? "";
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+    })
+    .AddStandardResilienceHandler(options =>
+    {
+        options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(5);
+        options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(20);
+        options.Retry.MaxRetryAttempts = 3;
+    });
 
     // Phase 6 (06-01) services
     builder.Services.AddHostedService<DigestSchedulerService>();

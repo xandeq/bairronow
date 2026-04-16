@@ -14,10 +14,10 @@ public class ResendEmailService : IEmailService
     {
         _configuration = configuration;
         _logger = logger;
-        _httpClient = httpClientFactory.CreateClient();
-        _httpClient.BaseAddress = new Uri("https://api.resend.com/");
-        var apiKey = configuration["RESEND_API_KEY"] ?? configuration["Resend:ApiKey"] ?? "";
-        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+        // Named client "resend" has the Polly resilience handler attached in
+        // Program.cs (retry + timeout). Do NOT fall back to CreateClient() with
+        // no name here — it would bypass the retry policy.
+        _httpClient = httpClientFactory.CreateClient("resend");
         _from = configuration["Resend:From"] ?? "BairroNow <noreply@bairronow.com.br>";
     }
 
