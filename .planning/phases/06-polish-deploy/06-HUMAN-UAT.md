@@ -30,7 +30,7 @@ expected: WhatsApp share button opens WhatsApp with pre-filled message containin
 result: [pending] — requires physical device with WhatsApp installed (Expo Linking API)
 
 ### 5. LGPD data export file download (web)
-expected: /profile/settings → Export Data triggers download of JSON file with user data; Delete Account shows confirmation, calls DELETE /api/v1/account, logs out
+expected: /profile/settings → Export Data triggers download of JSON file with user data; Delete Account shows confirmation, calls POST /api/v1/account/delete (schedules 30-day grace-period anonymization, does not log out immediately — user can cancel via POST /api/v1/account/delete/cancel)
 result: **PASS** — backend E2E verified 2026-04-14 via quick-task 260414-wg3.
 - Backend process bound http://localhost:5000 against BairroNow_Dev (MSSQLSERVER, Windows auth). All 6 EF migrations applied — Phase 4 FULLTEXT CATALOG and Phase 6 filtered-index SQL were pre-applied outside EF's transaction wrapper (CREATE FULLTEXT CATALOG and QUOTED_IDENTIFIER constraints) — see quick-task artifacts.
 - UAT user `uat@bairronow.test` seeded via real `POST /api/v1/auth/register` (HTTP 201) → Users row `IsActive=1`, `LastExportAt=NULL`.
@@ -42,7 +42,7 @@ result: **PASS** — backend E2E verified 2026-04-14 via quick-task 260414-wg3.
   - `.playwright-mcp/uat-test5-ratelimit.png` — shows "Erro ao exportar dados. Tente novamente em 24 horas." error message (rate-limited second click).
   - Network panel captured: `200 /api/v1/account/export` followed by `429 /api/v1/account/export`.
 - All protocol-level expectations (a), (c), (d) from the previous PARTIAL note are now satisfied. Expectation (b) filename `bairronow-meus-dados.json` is a frontend-only concern (axios download attribute) and was visually verified through the success UI state; not independently asserted in this run.
-- Doc drift noted in prior PARTIAL result (DELETE vs POST /api/v1/account/delete) still stands for a future doc pass — out of scope here (deletion not retested).
+- Doc drift resolved 2026-04-16: "expected" field above corrected to reflect actual `POST /api/v1/account/delete` + `POST /api/v1/account/delete/cancel` endpoints with 30-day grace-period semantics (not immediate DELETE).
 - **Re-verified 2026-04-16** with full Playwright browser flow: login → /profile/settings → click "Exportar meus dados" → file `bairronow-meus-dados.json` downloaded (531 bytes, valid JSON with profile.Email, profile.DisplayName, profile.Id) → second click shows "Erro ao exportar dados. Tente novamente em 24 horas." Screenshots: `lgpd-export-success.png`, `lgpd-export-rate-limit.png`. Backend on port 5041, frontend on port 3000.
 
 ## Summary
