@@ -270,6 +270,9 @@ try
         KnownProxies = { }
     });
     app.UseMiddleware<ExceptionHandlerMiddleware>();
+    // SecurityHeadersMiddleware runs early via OnStarting so headers attach to
+    // every response (controllers, static files, Swagger, error pages).
+    app.UseMiddleware<SecurityHeadersMiddleware>();
     // HttpsRedirection disabled: Cloudflare terminates TLS at edge, origin runs HTTP
     app.UseCors("Frontend");
     app.UseAuthentication();
