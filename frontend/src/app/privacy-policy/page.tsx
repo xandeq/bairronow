@@ -8,11 +8,11 @@ export default function PrivacyPolicyPage() {
       <div className="prose prose-gray max-w-none space-y-6">
         <section>
           <h2 className="text-xl font-semibold mb-3">Dados Coletados</h2>
-          <p className="text-gray-700">
+          <p className="text-muted-fg">
             Coletamos os seguintes dados para o funcionamento da plataforma
             BairroNow:
           </p>
-          <ul className="list-disc pl-6 text-gray-700 space-y-1">
+          <ul className="list-disc pl-6 text-muted-fg space-y-1">
             <li>Nome e e-mail para identificacao da conta</li>
             <li>
               CEP e comprovante de residencia para verificacao de endereco
@@ -24,10 +24,10 @@ export default function PrivacyPolicyPage() {
 
         <section>
           <h2 className="text-xl font-semibold mb-3">Como Usamos</h2>
-          <p className="text-gray-700">
+          <p className="text-muted-fg">
             Seus dados sao utilizados exclusivamente para:
           </p>
-          <ul className="list-disc pl-6 text-gray-700 space-y-1">
+          <ul className="list-disc pl-6 text-muted-fg space-y-1">
             <li>Verificar sua identidade e endereco de residencia</li>
             <li>Exibir conteudo relevante ao seu bairro</li>
             <li>Permitir interacoes com vizinhos verificados</li>
@@ -37,11 +37,11 @@ export default function PrivacyPolicyPage() {
 
         <section>
           <h2 className="text-xl font-semibold mb-3">Seus Direitos</h2>
-          <p className="text-gray-700">
+          <p className="text-muted-fg">
             Em conformidade com a Lei Geral de Protecao de Dados (LGPD), voce
             tem direito a:
           </p>
-          <ul className="list-disc pl-6 text-gray-700 space-y-1">
+          <ul className="list-disc pl-6 text-muted-fg space-y-1">
             <li>Acessar seus dados pessoais armazenados</li>
             <li>Solicitar correcao de dados incorretos</li>
             <li>Solicitar exclusao de seus dados</li>
@@ -52,7 +52,7 @@ export default function PrivacyPolicyPage() {
 
         <section>
           <h2 className="text-xl font-semibold mb-3">Contato</h2>
-          <p className="text-gray-700">
+          <p className="text-muted-fg">
             Para exercer seus direitos ou tirar duvidas sobre esta politica,
             entre em contato pelo e-mail:{" "}
             <span className="font-medium">privacidade@bairronow.com.br</span>

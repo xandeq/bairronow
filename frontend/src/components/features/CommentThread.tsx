@@ -51,7 +51,7 @@ export default function CommentThread({ postId, initial }: CommentThreadProps) {
                 isReply={false}
               />
               {c.replies.length > 0 && (
-                <ul className="mt-2 ml-8 space-y-2 border-l-2 border-gray-200 pl-4">
+                <ul className="mt-2 ml-8 space-y-2 border-l-2 border-border pl-4">
                   {c.replies.map((r) => (
                     <li key={r.id}>
                       <CommentItem
@@ -109,7 +109,7 @@ function CommentItem({
   };
 
   return (
-    <div className="bg-gray-50 rounded-md p-3">
+    <div className="bg-muted rounded-md p-3">
       <div className="flex items-center gap-2 mb-1">
         <span className="font-bold text-sm text-fg">
           {comment.author.displayName ?? "Vizinho"}
@@ -124,7 +124,7 @@ function CommentItem({
             onChange={(e) => setEditBody(e.target.value)}
             maxLength={500}
             rows={2}
-            className="border border-gray-300 rounded-md px-2 py-1 w-full text-sm"
+            className="border border-border rounded-md px-2 py-1 w-full text-sm"
           />
           <div className="flex gap-2">
             <button
@@ -233,7 +233,7 @@ function CommentForm({
         rows={2}
         maxLength={500}
         placeholder={parentCommentId ? "Responder..." : "Escreva um comentário..."}
-        className="border border-gray-300 rounded-md px-3 py-2 w-full text-sm"
+        className="border border-border rounded-md px-3 py-2 w-full text-sm"
       />
       {errors.body && (
         <p className="text-xs text-red-600 font-semibold">

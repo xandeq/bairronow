@@ -19,7 +19,7 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
         className={`max-w-[75%] rounded-2xl px-3 py-2 ${
           isOwn
             ? "bg-primary text-white rounded-br-sm"
-            : "bg-gray-100 text-fg rounded-bl-sm"
+            : "bg-muted text-fg rounded-bl-sm"
         }`}
       >
         {message.imageUrl && (

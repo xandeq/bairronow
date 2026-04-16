@@ -86,19 +86,19 @@ export default function GroupClient({ groupId }: Props) {
     <div className="container mx-auto px-4 py-6 max-w-2xl">
       {currentGroup && (
         <div className="mb-4">
-          <h1 className="text-2xl font-semibold text-gray-900">{currentGroup.name}</h1>
-          <p className="text-sm text-gray-500 mt-1">{currentGroup.description}</p>
+          <h1 className="text-2xl font-semibold text-fg">{currentGroup.name}</h1>
+          <p className="text-sm text-muted-fg mt-1">{currentGroup.description}</p>
         </div>
       )}
 
       {/* Tab nav */}
-      <div className="flex gap-4 border-b border-gray-200 mb-4">
+      <div className="flex gap-4 border-b border-border mb-4">
         {(['feed', 'events'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`pb-2 text-sm font-medium ${
-              activeTab === tab ? 'border-b-2 border-green-700 text-green-700' : 'text-gray-500'
+              activeTab === tab ? 'border-b-2 border-green-700 text-green-700' : 'text-muted-fg'
             }`}
           >
             {tab === 'feed' ? 'Feed' : 'Eventos'}
@@ -111,14 +111,14 @@ export default function GroupClient({ groupId }: Props) {
           {/* Composer */}
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-4"
+            className="bg-card rounded-xl border border-border shadow-sm p-4 mb-4"
           >
             <textarea
               value={composerBody}
               onChange={(e) => setComposerBody(e.target.value)}
               placeholder="Compartilhe algo com o grupo..."
               rows={3}
-              className="w-full resize-none text-sm text-gray-700 outline-none"
+              className="w-full resize-none text-sm text-muted-fg outline-none"
             />
             <div className="flex justify-end mt-2">
               <button
@@ -134,19 +134,19 @@ export default function GroupClient({ groupId }: Props) {
           {/* Posts */}
           <div className="space-y-3">
             {posts.map((p) => (
-              <div key={p.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+              <div key={p.id} className="bg-card rounded-xl border border-border shadow-sm p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
+                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-fg text-xs">
                     {p.author.displayName?.[0] ?? '?'}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{p.author.displayName}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm font-medium text-fg">{p.author.displayName}</p>
+                    <p className="text-xs text-muted-fg">
                       {new Date(p.createdAt).toLocaleDateString('pt-BR')}
                     </p>
                   </div>
                 </div>
-                <p className="text-sm text-gray-700">{p.body}</p>
+                <p className="text-sm text-muted-fg">{p.body}</p>
               </div>
             ))}
           </div>
@@ -192,15 +192,15 @@ function GroupEventsTab({ groupId }: { groupId: number }) {
   return (
     <div className="space-y-3">
       {events.map((ev) => (
-        <div key={ev.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-          <p className="font-medium text-gray-900">{ev.title}</p>
-          {ev.location && <p className="text-sm text-gray-500">{ev.location}</p>}
-          <p className="text-sm text-gray-500">{new Date(ev.startsAt).toLocaleString('pt-BR')}</p>
-          <p className="text-xs text-gray-400">{ev.rsvpCount} confirmados</p>
+        <div key={ev.id} className="bg-card rounded-xl border border-border shadow-sm p-4">
+          <p className="font-medium text-fg">{ev.title}</p>
+          {ev.location && <p className="text-sm text-muted-fg">{ev.location}</p>}
+          <p className="text-sm text-muted-fg">{new Date(ev.startsAt).toLocaleString('pt-BR')}</p>
+          <p className="text-xs text-muted-fg">{ev.rsvpCount} confirmados</p>
           <button
             onClick={() => handleRsvp(ev)}
             className={`mt-2 text-sm px-3 py-1 rounded-lg ${
-              ev.myRsvp ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+              ev.myRsvp ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-fg'
             }`}
           >
             {ev.myRsvp ? 'Confirmado' : 'Confirmar presença'}
@@ -208,7 +208,7 @@ function GroupEventsTab({ groupId }: { groupId: number }) {
         </div>
       ))}
       {events.length === 0 && (
-        <p className="text-sm text-gray-500 text-center py-8">Nenhum evento criado ainda.</p>
+        <p className="text-sm text-muted-fg text-center py-8">Nenhum evento criado ainda.</p>
       )}
     </div>
   );

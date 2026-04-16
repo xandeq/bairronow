@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 
 const MapClient = dynamic(() => import('./MapClient'), {
-  loading: () => <div className="h-[70vh] bg-gray-100 animate-pulse rounded-lg" />,
+  loading: () => <div className="h-[70vh] bg-muted animate-pulse rounded-lg" />,
   ssr: false,
 });
 

@@ -5,6 +5,8 @@
 @theme {
   --color-bg: #ffffff;
   --color-fg: #111827;
+  --color-muted-fg: #6b7280;
+  --color-card: #ffffff;
   --color-primary: #3b82f6;
   --color-primary-hover: #2563eb;
   --color-secondary: #10b981;
@@ -40,6 +42,7 @@ body {
 .dark {
   --color-bg: #0f172a;
   --color-fg: #f1f5f9;
+  --color-muted-fg: #94a3b8;
   --color-primary: #4ade80;
   --color-primary-hover: #22c55e;
   --color-secondary: #34d399;

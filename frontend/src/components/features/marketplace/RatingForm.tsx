@@ -64,7 +64,7 @@ export default function RatingForm({
             aria-label={`${n} estrela${n > 1 ? "s" : ""}`}
             onClick={() => setStars(n)}
             className={`text-3xl transition ${
-              n <= stars ? "text-yellow-500" : "text-gray-300"
+              n <= stars ? "text-yellow-500" : "text-border"
             }`}
           >
             ★

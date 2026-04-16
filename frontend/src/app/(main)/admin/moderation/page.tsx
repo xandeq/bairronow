@@ -123,7 +123,7 @@ export default function ModerationPage() {
         <div className="overflow-x-auto bg-bg rounded-lg border-2 border-border">
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="text-left font-bold text-fg/70 border-b-2 border-gray-200">
+              <tr className="text-left font-bold text-fg/70 border-b-2 border-border">
                 <th className="px-3 py-2">Tipo</th>
                 <th className="px-3 py-2">Alvo</th>
                 <th className="px-3 py-2">Denunciante</th>
@@ -134,12 +134,12 @@ export default function ModerationPage() {
             </thead>
             <tbody>
               {filtered.map((r) => (
-                <tr key={r.id} className="border-b border-gray-100">
+                <tr key={r.id} className="border-b border-border">
                   <td className="px-3 py-2">
                     <span
                       className={`inline-block text-xs font-bold rounded-full px-2 py-0.5 ring-1 ${
                         TYPE_BADGE[r.targetType] ??
-                        "bg-gray-100 text-gray-800 ring-gray-300"
+                        "bg-muted text-fg ring-border"
                       }`}
                     >
                       {TYPE_LABELS[r.targetType] ?? r.targetType}

@@ -70,7 +70,7 @@ export default function NotificationBell() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Notificações"
-        className="relative p-2 rounded-md hover:bg-gray-100"
+        className="relative p-2 rounded-md hover:bg-muted"
       >
         <span aria-hidden className="text-xl">
           🔔
@@ -83,7 +83,7 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-40">
+        <div className="absolute right-0 mt-2 w-80 bg-card rounded-lg shadow-lg border border-border z-40">
           <div className="p-3 border-b font-bold text-fg">Notificações</div>
           {last10.length === 0 ? (
             <p className="p-4 text-sm text-fg/60">Nenhuma notificação.</p>
@@ -97,7 +97,7 @@ export default function NotificationBell() {
                       void markRead(n.id);
                       setOpen(false);
                     }}
-                    className={`block p-3 text-sm border-b border-gray-100 hover:bg-gray-50 ${
+                    className={`block p-3 text-sm border-b border-border hover:bg-muted ${
                       n.isRead ? "text-fg/60" : "text-fg font-semibold"
                     }`}
                   >

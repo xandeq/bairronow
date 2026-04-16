@@ -24,7 +24,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Alerta: "bg-red-100 text-red-800",
   Pergunta: "bg-purple-100 text-purple-800",
   Evento: "bg-yellow-100 text-yellow-800",
-  Geral: "bg-gray-100 text-gray-800",
+  Geral: "bg-muted text-fg",
 };
 
 export default function PostCard({
@@ -66,7 +66,7 @@ export default function PostCard({
           : "grid-cols-2";
 
   return (
-    <article className="bg-white rounded-lg shadow p-4">
+    <article className="bg-card rounded-lg shadow p-4">
       <header className="flex items-center gap-3 mb-3">
         {post.author.photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -94,7 +94,7 @@ export default function PostCard({
         </div>
         <span
           className={`text-xs font-bold rounded-full px-3 py-1 ${
-            CATEGORY_COLORS[post.category] ?? "bg-gray-100 text-gray-800"
+            CATEGORY_COLORS[post.category] ?? "bg-muted text-fg"
           }`}
         >
           {post.category}
@@ -119,7 +119,7 @@ export default function PostCard({
         </div>
       )}
 
-      <footer className="flex items-center gap-6 text-sm font-semibold text-fg/70 pt-2 border-t border-gray-100">
+      <footer className="flex items-center gap-6 text-sm font-semibold text-fg/70 pt-2 border-t border-border">
         <LikeButton
           postId={post.id}
           initialLiked={post.likedByMe}

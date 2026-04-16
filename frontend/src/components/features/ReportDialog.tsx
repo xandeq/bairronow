@@ -53,7 +53,7 @@ export default function ReportDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-lg bg-card p-6 shadow-xl">
         <h2 className="text-xl font-extrabold text-fg mb-3">Denunciar</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -61,7 +61,7 @@ export default function ReportDialog({
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value as ReportReason)}
-              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              className="border border-border rounded-md px-3 py-2 w-full"
             >
               {REASONS.map((r) => (
                 <option key={r.value} value={r.value}>
@@ -79,7 +79,7 @@ export default function ReportDialog({
               onChange={(e) => setNote(e.target.value)}
               maxLength={500}
               rows={3}
-              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              className="border border-border rounded-md px-3 py-2 w-full"
             />
           </div>
           {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
@@ -87,7 +87,7 @@ export default function ReportDialog({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md border-2 border-gray-300 font-semibold"
+              className="px-4 py-2 rounded-md border-2 border-border font-semibold"
             >
               Cancelar
             </button>

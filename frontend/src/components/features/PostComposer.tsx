@@ -118,7 +118,7 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-2xl rounded-lg bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-2xl rounded-lg bg-card p-6 shadow-xl max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-extrabold text-fg mb-4">Novo post</h2>
 
         {!isVerified && (
@@ -134,7 +134,7 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
             </label>
             <select
               {...register("category")}
-              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              className="border border-border rounded-md px-3 py-2 w-full"
             >
               <option value="Geral">Geral</option>
               <option value="Dica">Dica</option>
@@ -152,7 +152,7 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
               {...register("body")}
               rows={5}
               maxLength={2000}
-              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              className="border border-border rounded-md px-3 py-2 w-full"
               placeholder="O que está acontecendo no seu bairro?"
             />
             <div className="flex justify-between text-xs mt-1">
@@ -170,7 +170,7 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
               className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center ${
                 isDragActive
                   ? "border-green-700 bg-green-50"
-                  : "border-gray-300 bg-gray-50"
+                  : "border-border bg-muted"
               } ${files.length >= MAX_IMAGES ? "opacity-50" : ""}`}
             >
               <input {...getInputProps()} />
@@ -213,7 +213,7 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md border-2 border-gray-300 font-semibold"
+              className="px-4 py-2 rounded-md border-2 border-border font-semibold"
             >
               Cancelar
             </button>

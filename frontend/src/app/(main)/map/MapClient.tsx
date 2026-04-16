@@ -55,13 +55,13 @@ export default function MapClient() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1 text-sm rounded-full border ${filter === f ? 'bg-green-700 text-white border-green-700' : 'bg-white text-gray-600 border-gray-300'}`}
+              className={`px-3 py-1 text-sm rounded-full border ${filter === f ? 'bg-green-700 text-white border-green-700' : 'bg-card text-muted-fg border-border'}`}
             >
               {f === 'all' ? 'Todos' : f === 'verified' ? 'Verificados' : 'Novos'}
             </button>
           ))}
         </div>
-        <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+        <label className="flex items-center gap-2 text-sm text-muted-fg cursor-pointer">
           <input
             type="checkbox"
             checked={showOnMap}
@@ -76,7 +76,7 @@ export default function MapClient() {
       <MapContainer
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}
-        className="h-[65vh] w-full rounded-xl border border-gray-200"
+        className="h-[65vh] w-full rounded-xl border border-border"
         style={{ zIndex: 0 }}
       >
         <TileLayer
@@ -98,12 +98,12 @@ export default function MapClient() {
                         className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
+                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-fg text-xs">
                         {pin.displayName?.[0] ?? '?'}
                       </div>
                     )}
                     <div>
-                      <p className="font-medium text-sm text-gray-900">{pin.displayName ?? 'Vizinho'}</p>
+                      <p className="font-medium text-sm text-fg">{pin.displayName ?? 'Vizinho'}</p>
                       {pin.isVerified && (
                         <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
                           Verificado
@@ -111,7 +111,7 @@ export default function MapClient() {
                       )}
                     </div>
                   </div>
-                  {pin.bio && <p className="text-xs text-gray-500">{pin.bio}</p>}
+                  {pin.bio && <p className="text-xs text-muted-fg">{pin.bio}</p>}
                   <a
                     href="/marketplace"
                     className="block text-center text-xs bg-green-700 text-white py-1 px-2 rounded mt-1 hover:bg-green-800"
@@ -133,14 +133,14 @@ export default function MapClient() {
           >
             <Popup>
               <p className="font-medium text-sm">{poi.name}</p>
-              <p className="text-xs text-gray-500">{poi.category}</p>
-              {poi.description && <p className="text-xs text-gray-600 mt-1">{poi.description}</p>}
+              <p className="text-xs text-muted-fg">{poi.category}</p>
+              {poi.description && <p className="text-xs text-muted-fg mt-1">{poi.description}</p>}
             </Popup>
           </Marker>
         ))}
       </MapContainer>
 
-      {loading && <p className="text-sm text-gray-500 text-center">Carregando pins...</p>}
+      {loading && <p className="text-sm text-muted-fg text-center">Carregando pins...</p>}
     </div>
   );
 }

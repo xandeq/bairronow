@@ -17,8 +17,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         "w-full px-4 py-2.5 rounded-md bg-muted text-fg placeholder:text-fg/40",
         "border-2 outline-none transition-colors duration-150",
         error
-          ? "border-danger bg-white"
-          : "border-transparent focus:bg-white focus:border-primary",
+          ? "border-danger bg-card"
+          : "border-transparent focus:bg-card focus:border-primary",
         className,
       ].join(" ")}
       {...rest}

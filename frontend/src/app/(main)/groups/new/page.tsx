@@ -44,30 +44,30 @@ export default function NewGroupPage() {
 
   return (
     <main className="container mx-auto px-4 py-6 max-w-xl">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Criar Grupo</h1>
+      <h1 className="text-2xl font-semibold text-fg mb-6">Criar Grupo</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+          <label className="block text-sm font-medium text-muted-fg mb-1">Nome</label>
           <input
             {...register('name')}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            className="w-full border border-border rounded-lg px-3 py-2 text-sm"
           />
           {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+          <label className="block text-sm font-medium text-muted-fg mb-1">Descrição</label>
           <textarea
             {...register('description')}
             rows={3}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none"
+            className="w-full border border-border rounded-lg px-3 py-2 text-sm resize-none"
           />
           {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+          <label className="block text-sm font-medium text-muted-fg mb-1">Categoria</label>
           <select
             {...register('category')}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            className="w-full border border-border rounded-lg px-3 py-2 text-sm"
           >
             {['Esportes', 'Animais', 'Pais', 'Seguranca', 'Jardinagem', 'Negocios', 'Cultura', 'Outros'].map(
               (c) => (

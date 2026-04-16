@@ -26,9 +26,9 @@ export default function AdminGroupsPage() {
 
   return (
     <main className="container mx-auto px-4 py-6">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6">Moderação de Grupos</h1>
+      <h1 className="text-2xl font-semibold text-fg mb-6">Moderação de Grupos</h1>
       {flaggedPosts.length === 0 ? (
-        <p className="text-gray-500 text-sm">Nenhuma publicação sinalizada.</p>
+        <p className="text-muted-fg text-sm">Nenhuma publicação sinalizada.</p>
       ) : (
         <table className="w-full text-sm border-collapse">
           <thead>
