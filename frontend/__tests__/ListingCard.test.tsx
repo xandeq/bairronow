@@ -61,7 +61,9 @@ describe("ListingCard", () => {
 
   it("links to listing detail", () => {
     render(<ListingCard listing={baseListing} />);
-    const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", "/marketplace/42/");
+    // Card has multiple links (detail + WhatsApp share); pick the detail one by href prefix
+    const links = screen.getAllByRole("link");
+    const detailLink = links.find((l) => l.getAttribute("href")?.startsWith("/marketplace/"));
+    expect(detailLink).toHaveAttribute("href", "/marketplace/42/");
   });
 });
