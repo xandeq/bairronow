@@ -34,7 +34,11 @@
       "favicon": "./assets/brand/icon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      ["react-native-maps", {
+        "androidGoogleMapsApiKey": "YOUR_ANDROID_GOOGLE_MAPS_API_KEY",
+        "iosGoogleMapsApiKey": "YOUR_IOS_GOOGLE_MAPS_API_KEY"
+      }]
     ],
     "extra": {
       "apiUrl": "https://api.bairronow.com.br"
