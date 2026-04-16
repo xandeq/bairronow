@@ -129,7 +129,7 @@ public class AccountService
 
     public async Task<bool> CancelDeletionAsync(Guid userId)
     {
-        var user = await _db.Users.FindAsync(userId);
+        var user = await _db.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
             return false;
 
@@ -150,8 +150,8 @@ public class AccountService
     public async Task RunAnonymizationAsync()
     {
         var cutoff = DateTime.UtcNow.AddDays(-30);
-        var usersToAnonymize = await _db.Users
-            .Where(u => u.DeleteRequestedAt != null && u.DeleteRequestedAt < cutoff && u.DeletedAt == null)
+        var usersToAnonymize = await _db.Users.IgnoreQueryFilters()
+            .Where(u => u.DeleteRequestedAt != null && u.DeleteRequestedAt <= cutoff && u.DeletedAt == null)
             .ToListAsync();
 
         foreach (var user in usersToAnonymize)

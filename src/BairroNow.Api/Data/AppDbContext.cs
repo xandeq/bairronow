@@ -68,6 +68,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.EmailConfirmed).HasDefaultValue(false);
             entity.Property(e => e.FailedLoginAttempts).HasDefaultValue(0);
             entity.Property(e => e.AcceptedPrivacyPolicyVersion).HasDefaultValue(1);
+            entity.HasQueryFilter(u => u.IsActive);
         });
 
         // RefreshToken
@@ -371,6 +372,7 @@ public class AppDbContext : DbContext
                 .HasForeignKey(e => e.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
             entity.HasIndex(e => new { e.ConversationId, e.SentAt });
+            entity.HasQueryFilter(m => m.DeletedAt == null);
         });
 
         // Phase 5 — User map preference
