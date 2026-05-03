@@ -32,18 +32,21 @@ jobs:
         run: dotnet publish src/BairroNow.Api/BairroNow.Api.csproj -c Release -o publish --no-restore
 
       - name: Inject production secrets
+        env:
+          CONN: ${{ secrets.BAIRRONOW_CONN_STRING }}
+          JWT_KEY: ${{ secrets.BAIRRONOW_JWT_KEY }}
+          RESEND: ${{ secrets.BAIRRONOW_RESEND_API_KEY }}
         run: |
-          cat > publish/appsettings.Production.json <<'APPSETTINGS'
-          {
-            "ConnectionStrings": {
-              "Default": "${{ secrets.BAIRRONOW_CONN_STRING }}"
-            },
-            "Jwt": {
-              "Key": "${{ secrets.BAIRRONOW_JWT_KEY }}"
-            },
-            "RESEND_API_KEY": "${{ secrets.BAIRRONOW_RESEND_API_KEY }}"
+          python3 -c "
+          import json, os
+          data = {
+            'ConnectionStrings': {'Default': os.environ['CONN']},
+            'Jwt': {'Key': os.environ['JWT_KEY']},
+            'RESEND_API_KEY': os.environ['RESEND']
           }
-          APPSETTINGS
+          with open('publish/appsettings.Production.json', 'w') as f:
+            json.dump(data, f, indent=2)
+          "
 
       - name: Place app_offline.htm
         run: |
