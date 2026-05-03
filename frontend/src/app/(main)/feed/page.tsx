@@ -26,7 +26,7 @@ export default function FeedPage() {
       const u = useAuthStore.getState().user;
       const bairroId = u?.bairroId ?? null;
       if (!bairroId) {
-        router.replace("/onboarding/cep/");
+        router.replace("/cep-lookup/");
         return;
       }
       loadFirst(bairroId);

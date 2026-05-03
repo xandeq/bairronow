@@ -7,18 +7,33 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Don't rewrite if the requested path is an actual file or directory
+  # More-specific routes first (edit sub-route before generic detail)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^marketplace/[0-9]+/edit/?$ /marketplace/0/edit/index.html [L]
 
-  # More-specific routes first (edit sub-route before generic detail)
-  RewriteRule ^marketplace/[^/]+/edit/?$ /marketplace/0/edit/index.html [L]
-  RewriteRule ^groups/[^/]+/events/?$ /groups/placeholder/events/index.html [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^groups/[0-9]+/events/?$ /groups/placeholder/events/index.html [L]
 
   # Generic dynamic-segment fallbacks
-  RewriteRule ^marketplace/[^/]+/?$ /marketplace/0/index.html [L]
-  RewriteRule ^chat/[^/]+/?$ /chat/0/index.html [L]
-  RewriteRule ^groups/[^/]+/?$ /groups/placeholder/index.html [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^marketplace/[0-9]+/?$ /marketplace/0/index.html [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^chat/[0-9]+/?$ /chat/0/index.html [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^groups/[0-9]+/?$ /groups/placeholder/index.html [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^m/[^/]+/?$ /m/preview/index.html [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^p/[^/]+/?$ /p/preview/index.html [L]
 </IfModule>
