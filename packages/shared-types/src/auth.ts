@@ -21,6 +21,7 @@ export interface UserInfo {
   displayName: string | null;
   emailConfirmed: boolean;
   bairroId: number | null;
+  bairroName: string | null;
   isVerified: boolean;
   isAdmin: boolean;
 }

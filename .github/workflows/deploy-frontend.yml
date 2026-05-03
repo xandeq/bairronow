@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.HOSTGATOR_FTP_USER }}
           password: ${{ secrets.HOSTGATOR_FTP_PASSWORD }}
           local-dir: ./frontend/out/
-          server-dir: /home/cleardesk/bairronow.com.br/
+          server-dir: /bairronow.com.br/
           protocol: ftp
 
       - name: Smoke test

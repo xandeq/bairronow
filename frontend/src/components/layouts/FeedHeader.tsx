@@ -15,7 +15,7 @@ export default function FeedHeader() {
           BairroNow
         </Link>
         <span className="text-sm text-fg/60 font-medium hidden sm:inline">
-          Bairro #{user?.bairroId ?? "?"}
+          {user?.bairroName ?? `Bairro #${user?.bairroId ?? "?"}`}
         </span>
       </div>
       <nav className="flex items-center gap-3">

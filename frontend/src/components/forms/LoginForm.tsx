@@ -43,6 +43,10 @@ export default function LoginForm() {
     let destination = "/cep-lookup/";
     try {
       const profile = await profileApi.getMe();
+      if (profile.bairroNome) {
+        const current = useAuthStore.getState().user;
+        if (current) useAuthStore.getState().setUser({ ...current, bairroName: profile.bairroNome });
+      }
       if (profile.isVerified) destination = "/feed/";
     } catch {
       // ignore - fall back to onboarding
