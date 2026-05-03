@@ -31,6 +31,20 @@ jobs:
       - name: Publish
         run: dotnet publish src/BairroNow.Api/BairroNow.Api.csproj -c Release -o publish --no-restore
 
+      - name: Inject production secrets
+        run: |
+          cat > publish/appsettings.Production.json <<'APPSETTINGS'
+          {
+            "ConnectionStrings": {
+              "Default": "${{ secrets.BAIRRONOW_CONN_STRING }}"
+            },
+            "Jwt": {
+              "Key": "${{ secrets.BAIRRONOW_JWT_KEY }}"
+            },
+            "RESEND_API_KEY": "${{ secrets.BAIRRONOW_RESEND_API_KEY }}"
+          }
+          APPSETTINGS
+
       - name: Place app_offline.htm
         run: |
           python3 -c "
