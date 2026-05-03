@@ -102,7 +102,7 @@ try
     });
 
     // JWT Authentication
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    var authBuilder = builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
@@ -117,11 +117,18 @@ try
                     Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
                         ?? throw new InvalidOperationException("JWT key not configured")))
             };
-        })
-        .AddGoogle(options =>
+        });
+
+    // Only register Google OAuth when real credentials are present — AddGoogle()
+    // validates ClientId/ClientSecret on first request and throws if empty.
+    var googleClientId = builder.Configuration["Google:ClientId"];
+    var googleClientSecret = builder.Configuration["Google:ClientSecret"];
+    if (!string.IsNullOrWhiteSpace(googleClientId) && !string.IsNullOrWhiteSpace(googleClientSecret))
+    {
+        authBuilder.AddGoogle(options =>
         {
-            options.ClientId = builder.Configuration["Google:ClientId"] ?? "";
-            options.ClientSecret = builder.Configuration["Google:ClientSecret"] ?? "";
+            options.ClientId = googleClientId;
+            options.ClientSecret = googleClientSecret;
             options.CallbackPath = "/api/v1/auth/google/callback";
             options.Events.OnTicketReceived = async ctx =>
             {
@@ -134,6 +141,7 @@ try
                 ctx.Response.Redirect($"{frontendUrl}/auth/callback?token={result.Response?.AccessToken}&refresh={result.RefreshToken}");
             };
         });
+    }
 
     builder.Services.AddAuthorization(options =>
     {
