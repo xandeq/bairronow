@@ -42,6 +42,9 @@ jobs:
           ftp.quit()
           "
 
+      - name: Wait for IIS to release file locks
+        run: sleep 15
+
       - name: FTP deploy to SmarterASP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
