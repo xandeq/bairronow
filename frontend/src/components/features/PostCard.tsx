@@ -5,7 +5,7 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { PostDto } from "@bairronow/shared-types";
-import VerifiedBadge from "@/components/VerifiedBadge";
+import Avatar from "@/components/ui/Avatar";
 import LikeButton from "./LikeButton";
 import ReportDialog from "./ReportDialog";
 import { useAuthStore } from "@/lib/auth";
@@ -66,28 +66,19 @@ export default function PostCard({
           : "grid-cols-2";
 
   return (
-    <article className="bg-card rounded-lg shadow p-4">
+    <article className="bg-card rounded-lg border border-border p-4">
       <header className="flex items-center gap-3 mb-3">
-        {post.author.photoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={post.author.photoUrl}
-            alt={post.author.displayName ?? "Autor"}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center font-bold">
-            {(post.author.displayName ?? "?").charAt(0)}
-          </div>
-        )}
+        <Avatar
+          src={post.author.photoUrl}
+          name={post.author.displayName}
+          size="md"
+          verified={post.author.isVerified}
+        />
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <p className="font-bold text-fg truncate">
-              {post.author.displayName ?? "Vizinho"}
-            </p>
-            <VerifiedBadge verified={post.author.isVerified} size="sm" />
-          </div>
-          <p className="text-xs text-fg/60 font-medium">
+          <p className="font-bold text-fg truncate">
+            {post.author.displayName ?? "Vizinho"}
+          </p>
+          <p className="text-xs text-muted-fg font-medium">
             {timeAgo}
             {post.isEdited ? " · Editado" : ""}
           </p>
@@ -119,7 +110,7 @@ export default function PostCard({
         </div>
       )}
 
-      <footer className="flex items-center gap-6 text-sm font-semibold text-fg/70 pt-2 border-t border-border">
+      <footer className="flex items-center gap-6 text-sm font-semibold text-muted-fg pt-2 border-t border-border">
         <LikeButton
           postId={post.id}
           initialLiked={post.likedByMe}

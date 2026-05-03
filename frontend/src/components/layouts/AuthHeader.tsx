@@ -15,7 +15,7 @@ export default function AuthHeader() {
           </Link>
           <Link
             href="/register/"
-            className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-hover transition-transform hover:scale-105"
+            className="px-4 py-2 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover transition-colors"
           >
             Criar conta
           </Link>

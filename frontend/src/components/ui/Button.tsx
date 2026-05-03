@@ -2,29 +2,42 @@
 
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
-type Variant = "primary" | "secondary" | "outline";
-type Size = "sm" | "md" | "lg";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "destructive";
+
+export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: Variant;
-  size?: Size;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   loading?: boolean;
   fullWidth?: boolean;
 }
 
-const variants: Record<Variant, string> = {
+const variants: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-white hover:bg-primary-hover border-2 border-primary",
+    "bg-primary text-white hover:bg-primary-hover",
   secondary:
-    "bg-muted text-fg hover:bg-border border-2 border-muted",
+    "bg-muted text-fg hover:bg-border",
+  /** Bold border that fills on hover — flat design's alternative to raised state */
   outline:
-    "bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-white",
+    "bg-transparent text-primary border-4 border-primary hover:bg-primary hover:text-white",
+  ghost:
+    "bg-transparent text-fg hover:bg-muted",
+  /** Reserved for delete / report — never use decoratively */
+  destructive:
+    "bg-danger text-white hover:bg-danger-hover",
 };
 
-const sizes: Record<Size, string> = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-5 py-2.5 text-base",
-  lg: "px-7 py-3 text-lg",
+/** h-* ensures 44px+ touch targets on every size (WCAG 2.5.5) */
+const sizes: Record<ButtonSize, string> = {
+  sm: "h-9  px-4 text-sm",
+  md: "h-12 px-6 text-base",
+  lg: "h-14 px-8 text-lg",
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -44,19 +57,33 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     <button
       ref={ref}
       disabled={disabled || loading}
+      aria-disabled={disabled || loading}
       className={[
-        "inline-flex items-center justify-center font-semibold rounded-md",
-        "transition-transform duration-150 ease-out",
-        "hover:scale-105 active:scale-100",
+        "inline-flex items-center justify-center font-semibold rounded-lg",
+        "transition-all duration-200",
+        "hover:scale-[1.03] active:scale-[0.98]",
         "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary",
         variants[variant],
         sizes[size],
         fullWidth ? "w-full" : "",
         className,
-      ].join(" ")}
+      ]
+        .filter(Boolean)
+        .join(" ")}
       {...rest}
     >
-      {loading ? "Carregando..." : children}
+      {loading ? (
+        <span className="flex items-center gap-2">
+          <span
+            aria-hidden
+            className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"
+          />
+          Carregando…
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 });

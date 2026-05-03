@@ -3,56 +3,76 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-bg: #ffffff;
-  --color-fg: #111827;
-  --color-muted-fg: #6b7280;
-  --color-card: #ffffff;
-  --color-primary: #3b82f6;
-  --color-primary-hover: #2563eb;
-  --color-secondary: #10b981;
-  --color-secondary-hover: #059669;
-  --color-accent: #f59e0b;
-  --color-accent-hover: #d97706;
-  --color-muted: #f3f4f6;
-  --color-border: #e5e7eb;
-  --color-danger: #dc2626;
-  --color-background: #ffffff;
-  --color-foreground: #111827;
+  /* ─── Surfaces ─────────────────────────────────────────── */
+  --color-bg:       #ffffff;
+  --color-fg:       #0F172A;   /* slate-900 — sharper than 111827 */
+  --color-muted-fg: #64748B;   /* slate-500 */
+  --color-card:     #ffffff;
 
-  --font-sans: var(--font-outfit), system-ui, sans-serif;
+  /* ─── Brand palette ────────────────────────────────────── */
+  /* Blue  = trust / action  */
+  --color-primary:       #2563EB;   /* blue-600  */
+  --color-primary-hover: #1D4ED8;   /* blue-700  */
 
+  /* Emerald = community / verified */
+  --color-secondary:       #059669; /* emerald-600 */
+  --color-secondary-hover: #047857; /* emerald-700 */
+
+  /* Amber = marketplace / highlight */
+  --color-accent:       #F59E0B;    /* amber-500 */
+  --color-accent-hover: #D97706;    /* amber-600 */
+
+  /* Red = moderation / destructive only — never decorative */
+  --color-danger:       #DC2626;    /* red-600   */
+  --color-danger-hover: #B91C1C;    /* red-700   */
+
+  /* ─── UI chrome ────────────────────────────────────────── */
+  --color-muted:  #F1F5F9;   /* slate-100 */
+  --color-border: #E2E8F0;   /* slate-200 */
+
+  /* ─── Typography ───────────────────────────────────────── */
+  --font-sans: var(--font-outfit), 'Inter', system-ui, sans-serif;
+
+  /* ─── Radius ────────────────────────────────────────────── */
+  --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
 
   --shadow-none: none;
 }
 
-html,
-body {
-  background: var(--color-bg);
-  color: var(--color-fg);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+/* ─── Base reset ──────────────────────────────────────────── */
+html, body {
+  background:              var(--color-bg);
+  color:                   var(--color-fg);
+  font-family:             var(--font-sans);
+  -webkit-font-smoothing:  antialiased;
 }
 
-* {
-  box-shadow: none !important;
-}
+/* Flat design — zero shadows everywhere */
+* { box-shadow: none !important; }
 
+/* ─── Dark mode overrides ─────────────────────────────────── */
+/* Blue stays blue — just lighter for dark-bg readability.     */
+/* Removes the old green primary that broke brand consistency. */
 .dark {
-  --color-bg: #0f172a;
-  --color-fg: #f1f5f9;
-  --color-muted-fg: #94a3b8;
-  --color-primary: #4ade80;
-  --color-primary-hover: #22c55e;
-  --color-secondary: #34d399;
-  --color-secondary-hover: #10b981;
-  --color-accent: #fbbf24;
-  --color-accent-hover: #f59e0b;
-  --color-muted: #1e293b;
-  --color-border: #334155;
-  --color-danger: #f87171;
-  --color-background: #0f172a;
-  --color-foreground: #f1f5f9;
-  --color-card: #1e293b;
+  --color-bg:       #0F172A;   /* slate-900 */
+  --color-fg:       #F1F5F9;   /* slate-100 */
+  --color-muted-fg: #94A3B8;   /* slate-400 */
+  --color-card:     #1E293B;   /* slate-800 */
+
+  --color-primary:       #60A5FA;   /* blue-400  — readable on dark */
+  --color-primary-hover: #3B82F6;   /* blue-500  */
+
+  --color-secondary:       #34D399; /* emerald-400 */
+  --color-secondary-hover: #10B981; /* emerald-500 */
+
+  --color-accent:       #FBBF24;    /* amber-400 */
+  --color-accent-hover: #F59E0B;    /* amber-500 */
+
+  --color-danger:       #F87171;    /* red-400   */
+  --color-danger-hover: #EF4444;    /* red-500   */
+
+  --color-muted:  #1E293B;   /* slate-800 */
+  --color-border: #334155;   /* slate-700 */
 }

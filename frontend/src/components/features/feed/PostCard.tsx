@@ -1,5 +1,5 @@
 import Card from "@/components/ui/Card";
-import Badge from "@/components/ui/Badge";
+import Avatar from "@/components/ui/Avatar";
 import WhatsAppShareButton from "@/components/WhatsAppShareButton";
 import type { Post } from "@bairronow/shared-types";
 
@@ -18,23 +18,16 @@ export default function PostCard({ post }: { post: Post }) {
   return (
     <Card interactive padding="md">
       <header className="flex items-center gap-3 mb-3">
-        <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">
-          {post.author.name.charAt(0)}
-        </div>
+        <Avatar name={post.author.name} size="md" verified={post.author.verified} />
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <p className="font-bold text-fg truncate">{post.author.name}</p>
-            {post.author.verified && (
-              <Badge variant="secondary">Verificado</Badge>
-            )}
-          </div>
-          <p className="text-xs text-fg/60 font-medium">
+          <p className="font-bold text-fg truncate">{post.author.name}</p>
+          <p className="text-xs text-muted-fg font-medium">
             {post.author.bairro} • {timeAgo(post.createdAt)}
           </p>
         </div>
       </header>
       <p className="text-fg leading-relaxed mb-4">{post.content}</p>
-      <footer className="flex items-center gap-6 text-sm font-semibold text-fg/70">
+      <footer className="flex items-center gap-6 text-sm font-semibold text-muted-fg">
         <span>{post.likeCount} curtidas</span>
         <span>{post.commentCount} comentarios</span>
         <WhatsAppShareButton

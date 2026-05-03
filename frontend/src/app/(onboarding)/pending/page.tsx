@@ -29,7 +29,7 @@ export default function PendingPage() {
     >
       <div className="space-y-5">
         {current === "pending" && (
-          <Card bgColor="muted" padding="md">
+          <Card bg="muted" padding="md">
             <div className="flex items-center gap-3 mb-3">
               <Badge variant="accent">Em analise</Badge>
               <span
@@ -37,7 +37,7 @@ export default function PendingPage() {
                 aria-label="Carregando"
               />
             </div>
-            <p className="text-fg/80 font-medium">
+            <p className="text-fg font-medium">
               Documento em analise. Nossa equipe esta revisando seu
               comprovante. Esta pagina atualiza automaticamente.
             </p>
@@ -45,7 +45,7 @@ export default function PendingPage() {
         )}
 
         {current === "approved" && (
-          <Card bgColor="muted" padding="md">
+          <Card bg="muted" padding="md">
             <Badge variant="primary">Aprovado!</Badge>
             <p className="mt-3 font-bold text-fg">
               Bem vindo ao bairro {status?.bairroNome ?? ""}! Redirecionando...
@@ -54,13 +54,13 @@ export default function PendingPage() {
         )}
 
         {current === "rejected" && (
-          <Card bgColor="muted" padding="md">
+          <Card bg="muted" padding="md">
             <Badge variant="secondary">Rejeitado</Badge>
             <p className="mt-3 font-medium text-fg">
               Seu comprovante foi rejeitado.
             </p>
             {status?.rejectionReason && (
-              <p className="mt-1 text-sm text-fg/70">
+              <p className="mt-1 text-sm text-muted-fg">
                 Motivo: {status.rejectionReason}
               </p>
             )}

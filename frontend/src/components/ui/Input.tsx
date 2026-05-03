@@ -14,13 +14,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     <input
       ref={ref}
       className={[
-        "w-full px-4 py-2.5 rounded-md bg-muted text-fg placeholder:text-fg/40",
+        "w-full px-4 py-2.5 rounded-lg bg-muted text-fg",
+        "placeholder:text-muted-fg",
         "border-2 outline-none transition-colors duration-150",
+        "focus-visible:ring-0",
         error
-          ? "border-danger bg-card"
+          ? "border-danger bg-red-50"
           : "border-transparent focus:bg-card focus:border-primary",
         className,
-      ].join(" ")}
+      ]
+        .filter(Boolean)
+        .join(" ")}
       {...rest}
     />
   );

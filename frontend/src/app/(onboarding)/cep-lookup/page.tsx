@@ -82,16 +82,16 @@ export default function CEPLookupPage() {
         </Button>
 
         {result && (
-          <Card bgColor="muted" padding="md">
+          <Card bg="muted" padding="md">
             <div className="space-y-1 text-sm font-medium">
-              <p className="text-fg/70">Endereco encontrado:</p>
+              <p className="text-muted-fg">Endereco encontrado:</p>
               <p className="text-base font-bold text-fg">
                 {result.logradouro || "(Logradouro nao informado)"}
               </p>
               <p>
                 {result.bairro} — {result.localidade}/{result.uf}
               </p>
-              <p className="text-fg/70">CEP: {result.cep}</p>
+              <p className="text-muted-fg">CEP: {result.cep}</p>
               {result.bairroId !== null ? (
                 <p className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
                   Bairro reconhecido: {result.bairroNome}

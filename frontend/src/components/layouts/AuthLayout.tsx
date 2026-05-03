@@ -20,7 +20,7 @@ export default function AuthLayout({
       <main className="relative flex-1 flex items-center justify-center px-4 py-12 overflow-hidden">
         <Decorative variant="auth" />
         <div className="relative z-10 w-full max-w-md">
-          <div className="bg-bg border-2 border-border rounded-lg p-8">
+          <div className="bg-card border border-border rounded-lg p-8">
             <div className="mb-6 text-center">
               <h1 className="text-3xl font-extrabold text-fg">{title}</h1>
               {subtitle && (
