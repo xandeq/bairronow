@@ -1,5 +1,6 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useChatStore } from '../lib/chat-store';
+import { useTheme } from '../theme/ThemeContext';
 
 interface TabRoute {
   key: string;
@@ -36,10 +37,11 @@ function getTabKey(routeName: string) {
 }
 
 export function BottomTabs({ state, navigation }: BottomTabsProps) {
+  const { colors } = useTheme();
   const unreadTotal = useChatStore((s) => s.unreadTotal);
 
   return (
-    <View style={styles.tabBar}>
+    <View style={[styles.tabBar, { backgroundColor: colors.card, borderTopColor: colors.border }]}>
       {state.routes.map((route, index) => {
         const key = getTabKey(route.name);
         const config = TAB_CONFIG[key] ?? { label: key, icon: '•' };
@@ -58,12 +60,14 @@ export function BottomTabs({ state, navigation }: BottomTabsProps) {
             <View>
               <Text style={[styles.icon, isFocused && styles.iconFocused]}>{config.icon}</Text>
               {isChatTab && unreadTotal > 0 && (
-                <View style={styles.badge}>
+                <View style={[styles.badge, { backgroundColor: colors.danger }]}>
                   <Text style={styles.badgeText}>{unreadTotal > 99 ? '99+' : unreadTotal}</Text>
                 </View>
               )}
             </View>
-            <Text style={[styles.label, isFocused && styles.labelFocused]}>{config.label}</Text>
+            <Text style={[styles.label, { color: colors.mutedFg }, isFocused && { color: colors.primary, fontWeight: '700' }]}>
+              {config.label}
+            </Text>
           </Pressable>
         );
       })}
@@ -74,22 +78,18 @@ export function BottomTabs({ state, navigation }: BottomTabsProps) {
 const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
     paddingBottom: 8,
     paddingTop: 6,
   },
   tab: { flex: 1, alignItems: 'center', gap: 2 },
   icon: { fontSize: 22, opacity: 0.5 },
   iconFocused: { opacity: 1 },
-  label: { fontSize: 11, color: '#9CA3AF', fontWeight: '500' },
-  labelFocused: { color: '#15803D', fontWeight: '700' },
+  label: { fontSize: 11, fontWeight: '500' },
   badge: {
     position: 'absolute',
     top: -4,
     right: -8,
-    backgroundColor: '#EF4444',
     borderRadius: 10,
     minWidth: 18,
     height: 18,
