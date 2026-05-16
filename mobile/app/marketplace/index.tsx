@@ -16,8 +16,10 @@ import { marketplaceApi } from '../../src/lib/api/marketplace';
 import type { CategoryDto } from '../../src/lib/api/marketplace.types';
 import { ListingCard } from '../../src/components/marketplace/ListingCard';
 import { FilterChips } from '../../src/components/marketplace/FilterChips';
+import { useTheme } from '../../src/theme/ThemeContext';
 
 export default function MarketplaceScreen() {
+  const { colors } = useTheme();
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const bairroId = user?.bairroId ?? 0;
@@ -48,18 +50,19 @@ export default function MarketplaceScreen() {
 
   if (!bairroId) {
     return (
-      <View style={styles.empty}>
-        <Text style={styles.emptyText}>Complete sua verificação para ver o marketplace.</Text>
+      <View style={[styles.empty, { backgroundColor: colors.bg }]}>
+        <Text style={[styles.emptyText, { color: colors.mutedFg }]}>Complete sua verificação para ver o marketplace.</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.bg }]}>
       <View style={styles.searchBar}>
         <TextInput
-          style={styles.searchInput}
+          style={[styles.searchInput, { backgroundColor: colors.muted, borderColor: colors.border, color: colors.fg }]}
           placeholder="Buscar no bairro"
+          placeholderTextColor={colors.mutedFg}
           value={search}
           onChangeText={setSearch}
           onSubmitEditing={() => {
@@ -97,12 +100,12 @@ export default function MarketplaceScreen() {
           )
         }
         ListFooterComponent={
-          loading ? <ActivityIndicator style={{ margin: 16 }} color="#16A34A" /> : null
+          loading ? <ActivityIndicator style={{ margin: 16 }} color={colors.primary} /> : null
         }
       />
       {isVerified && (
         <Pressable
-          style={styles.fab}
+          style={[styles.fab, { backgroundColor: colors.primary }]}
           onPress={() => router.push('/marketplace/new')}
         >
           <Text style={styles.fabText}>+ Novo anúncio</Text>
@@ -113,33 +116,26 @@ export default function MarketplaceScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F9FAFB' },
+  container: { flex: 1 },
   searchBar: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 4 },
   searchInput: {
-    backgroundColor: '#fff',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    color: '#111827',
+    borderWidth: 1.5,
+    fontSize: 14,
   },
   grid: { padding: 6, paddingBottom: 100 },
-  empty: { padding: 32, alignItems: 'center' },
-  emptyText: { color: '#6B7280', fontSize: 14, textAlign: 'center' },
+  empty: { flex: 1, padding: 32, alignItems: 'center', justifyContent: 'center' },
+  emptyText: { fontSize: 14, textAlign: 'center' },
   fab: {
     position: 'absolute',
     right: 16,
     bottom: 24,
-    backgroundColor: '#16A34A',
     paddingHorizontal: 20,
     paddingVertical: 14,
     borderRadius: 999,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
   },
   fabText: { color: '#fff', fontWeight: '800', fontSize: 14 },
 });
