@@ -25,3 +25,6 @@ Thumbs.db
 .playwright-mcp/
 /cp-screen.png
 /smarterasp-login.png
+
+## Claude Code — developer tooling (not product code)
+.claude/
