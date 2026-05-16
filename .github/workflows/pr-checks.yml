@@ -20,6 +20,19 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: https://api.bairronow.com.br
 
+  mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @bairronow/mobile exec tsc --noEmit
+      - run: pnpm --filter @bairronow/mobile test
+
   backend:
     runs-on: ubuntu-latest
     steps:

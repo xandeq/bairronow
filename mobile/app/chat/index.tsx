@@ -11,8 +11,10 @@ import {
 import { useRouter } from 'expo-router';
 import { useChatStore } from '../../src/lib/chat-store';
 import { VerifiedBadge } from '../../src/components/VerifiedBadge';
+import { useTheme } from '../../src/theme/ThemeContext';
 
 export default function ConversationListScreen() {
+  const { colors } = useTheme();
   const router = useRouter();
   const conversations = useChatStore((s) => s.conversations);
   const loadConversations = useChatStore((s) => s.loadConversations);
@@ -31,35 +33,35 @@ export default function ConversationListScreen() {
 
   return (
     <FlatList
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.bg }]}
       data={sorted}
       keyExtractor={(c) => String(c.id)}
       refreshControl={
-        <RefreshControl refreshing={false} onRefresh={loadConversations} />
+        <RefreshControl refreshing={false} onRefresh={loadConversations} tintColor={colors.primary} />
       }
       renderItem={({ item }) => (
         <Pressable
-          style={styles.row}
+          style={[styles.row, { borderBottomColor: colors.border }]}
           onPress={() => router.push({ pathname: '/chat/[id]', params: { id: item.id } })}
         >
           {item.listingThumbnailUrl ? (
             <Image source={{ uri: item.listingThumbnailUrl }} style={styles.thumb} />
           ) : (
-            <View style={[styles.thumb, styles.thumbPlaceholder]} />
+            <View style={[styles.thumb, { backgroundColor: colors.muted }]} />
           )}
           <View style={{ flex: 1 }}>
             <View style={styles.titleRow}>
-              <Text style={styles.name} numberOfLines={1}>
+              <Text style={[styles.name, { color: colors.fg }]} numberOfLines={1}>
                 {item.otherUserDisplayName || 'Vizinho'}
               </Text>
               <VerifiedBadge verified={item.otherUserIsVerified} />
             </View>
-            <Text style={styles.listing} numberOfLines={1}>
+            <Text style={[styles.listing, { color: colors.mutedFg }]} numberOfLines={1}>
               {item.listingTitle}
             </Text>
           </View>
           {item.unreadCount > 0 && (
-            <View style={styles.badge}>
+            <View style={[styles.badge, { backgroundColor: colors.danger }]}>
               <Text style={styles.badgeText}>{item.unreadCount}</Text>
             </View>
           )}
@@ -67,7 +69,7 @@ export default function ConversationListScreen() {
       )}
       ListEmptyComponent={
         <View style={styles.empty}>
-          <Text style={{ color: '#6B7280' }}>Nenhuma conversa ainda.</Text>
+          <Text style={{ color: colors.mutedFg }}>Nenhuma conversa ainda.</Text>
         </View>
       }
     />
@@ -75,24 +77,21 @@ export default function ConversationListScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1 },
   row: {
     flexDirection: 'row',
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
     alignItems: 'center',
   },
-  thumb: { width: 52, height: 52, borderRadius: 8, marginRight: 12, backgroundColor: '#F3F4F6' },
-  thumbPlaceholder: { backgroundColor: '#E5E7EB' },
+  thumb: { width: 52, height: 52, borderRadius: 8, marginRight: 12 },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  name: { fontSize: 15, fontWeight: '700', color: '#111827', marginRight: 6, flexShrink: 1 },
-  listing: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+  name: { fontSize: 15, fontWeight: '700', marginRight: 6, flexShrink: 1 },
+  listing: { fontSize: 13, marginTop: 2 },
   badge: {
     minWidth: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: '#DC2626',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 6,
