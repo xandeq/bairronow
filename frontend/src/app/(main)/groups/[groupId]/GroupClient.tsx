@@ -98,7 +98,7 @@ export default function GroupClient({ groupId }: Props) {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`pb-2 text-sm font-medium ${
-              activeTab === tab ? 'border-b-2 border-green-700 text-green-700' : 'text-muted-fg'
+              activeTab === tab ? 'border-b-2 border-primary text-primary' : 'text-muted-fg'
             }`}
           >
             {tab === 'feed' ? 'Feed' : 'Eventos'}
@@ -124,7 +124,7 @@ export default function GroupClient({ groupId }: Props) {
               <button
                 type="submit"
                 disabled={submitting || !composerBody.trim()}
-                className="bg-green-700 hover:bg-green-800 disabled:opacity-40 text-white text-sm px-4 py-1.5 rounded-lg"
+                className="bg-primary hover:bg-primary/90 disabled:opacity-40 text-white text-sm px-4 py-1.5 rounded-xl"
               >
                 {submitting ? 'Publicando...' : 'Publicar'}
               </button>
@@ -154,7 +154,7 @@ export default function GroupClient({ groupId }: Props) {
           {hasMore && (
             <button
               onClick={() => incrementPage()}
-              className="mt-4 w-full text-sm text-green-700 py-2 border border-green-200 rounded-lg hover:bg-green-50"
+              className="mt-4 w-full text-sm text-primary py-2 border border-primary/20 rounded-xl hover:bg-primary/5"
             >
               Carregar mais
             </button>
@@ -199,8 +199,8 @@ function GroupEventsTab({ groupId }: { groupId: number }) {
           <p className="text-xs text-muted-fg">{ev.rsvpCount} confirmados</p>
           <button
             onClick={() => handleRsvp(ev)}
-            className={`mt-2 text-sm px-3 py-1 rounded-lg ${
-              ev.myRsvp ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-fg'
+            className={`mt-2 text-sm px-3 py-1 rounded-xl ${
+              ev.myRsvp ? 'bg-secondary text-secondary-fg' : 'bg-muted text-muted-fg'
             }`}
           >
             {ev.myRsvp ? 'Confirmado' : 'Confirmar presença'}

@@ -71,7 +71,7 @@ export default function ListingDetailClient() {
   if (loading) return <p className="text-fg/60 font-medium">Carregando...</p>;
   if (error || !listing)
     return (
-      <p className="text-red-600 font-semibold">
+      <p className="text-danger font-semibold">
         {error ?? "Anúncio não encontrado"}
       </p>
     );
@@ -131,7 +131,7 @@ export default function ListingDetailClient() {
             {listing.title}
           </h1>
           {isSold && (
-            <span className="bg-red-600 text-white font-extrabold px-3 py-1 rounded">
+            <span className="bg-danger text-white font-extrabold px-3 py-1 rounded-xl">
               VENDIDO
             </span>
           )}
@@ -144,7 +144,7 @@ export default function ListingDetailClient() {
         </p>
       </div>
 
-      <div className="bg-bg border-2 border-border rounded-lg p-4 space-y-2">
+      <div className="bg-bg border-2 border-border rounded-xl p-4 space-y-2">
         <h2 className="font-bold text-fg">Vendedor</h2>
         <div className="flex items-center gap-2">
           <span className="font-semibold text-fg">
@@ -159,7 +159,7 @@ export default function ListingDetailClient() {
         )}
       </div>
 
-      <div className="bg-bg border-2 border-border rounded-lg p-4">
+      <div className="bg-bg border-2 border-border rounded-xl p-4">
         <h2 className="font-bold text-fg mb-2">Descrição</h2>
         <p className="text-fg/80 whitespace-pre-wrap">{listing.description}</p>
       </div>
@@ -170,7 +170,7 @@ export default function ListingDetailClient() {
             type="button"
             onClick={startChat}
             disabled={busy}
-            className="flex-1 bg-primary text-white font-extrabold py-3 rounded-lg disabled:opacity-50"
+            className="flex-1 bg-primary text-white font-extrabold py-3 rounded-xl disabled:opacity-50"
           >
             Chat com vendedor
           </button>
@@ -178,14 +178,14 @@ export default function ListingDetailClient() {
             type="button"
             onClick={onFavorite}
             aria-label="Favoritar"
-            className="border-2 border-border rounded-lg px-4 text-2xl"
+            className="border-2 border-border rounded-xl px-4 text-2xl"
           >
             {favorited ? "❤️" : "🤍"}
           </button>
           <button
             type="button"
             onClick={() => setShowReport(true)}
-            className="border-2 border-red-400 text-red-600 font-semibold rounded-lg px-4"
+            className="border-2 border-danger text-danger font-semibold rounded-xl px-4"
           >
             Denunciar
           </button>
@@ -196,7 +196,7 @@ export default function ListingDetailClient() {
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/marketplace/${listing.id}/edit/`}
-            className="border-2 border-border font-semibold px-4 py-2 rounded-lg"
+            className="border-2 border-border font-semibold px-4 py-2 rounded-xl"
           >
             Editar
           </Link>
@@ -205,7 +205,7 @@ export default function ListingDetailClient() {
               type="button"
               onClick={onMarkSold}
               disabled={busy}
-              className="bg-amber-500 text-white font-extrabold px-4 py-2 rounded-lg disabled:opacity-50"
+              className="bg-accent text-accent-fg font-extrabold px-4 py-2 rounded-xl disabled:opacity-50"
             >
               Marcar como vendido
             </button>
@@ -214,7 +214,7 @@ export default function ListingDetailClient() {
             type="button"
             onClick={onDelete}
             disabled={busy}
-            className="bg-red-600 text-white font-extrabold px-4 py-2 rounded-lg disabled:opacity-50"
+            className="bg-danger text-white font-extrabold px-4 py-2 rounded-xl disabled:opacity-50"
           >
             Remover
           </button>

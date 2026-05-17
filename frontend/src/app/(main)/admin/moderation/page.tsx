@@ -19,9 +19,9 @@ const TYPE_LABELS: Record<ReportTargetType, string> = {
 };
 
 const TYPE_BADGE: Record<ReportTargetType, string> = {
-  post: "bg-blue-100 text-blue-800 ring-blue-300",
-  comment: "bg-purple-100 text-purple-800 ring-purple-300",
-  listing: "bg-green-100 text-green-800 ring-green-300",
+  post: "bg-info/10 text-info ring-info/30",
+  comment: "bg-accent/10 text-accent ring-accent/30",
+  listing: "bg-secondary/20 text-secondary-fg ring-secondary/30",
 };
 
 export default function ModerationPage() {
@@ -111,7 +111,7 @@ export default function ModerationPage() {
         ))}
       </div>
 
-      {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+      {error && <p className="text-sm text-danger font-semibold">{error}</p>}
 
       {loading ? (
         <p className="text-fg/60 font-medium">Carregando...</p>
@@ -149,14 +149,14 @@ export default function ModerationPage() {
                     {r.targetType === "post" ? (
                       <Link
                         href={`/feed/post/?id=${r.targetId}`}
-                        className="text-green-700 underline font-bold"
+                        className="text-primary underline font-bold"
                       >
                         #{r.targetId}
                       </Link>
                     ) : r.targetType === "listing" ? (
                       <Link
                         href={`/marketplace/${r.targetId}/`}
-                        className="text-green-700 underline font-bold"
+                        className="text-primary underline font-bold"
                       >
                         #{r.targetId}
                       </Link>
@@ -173,7 +173,7 @@ export default function ModerationPage() {
                         type="button"
                         disabled={busyId === r.id}
                         onClick={() => handleResolve(r.id, "remove")}
-                        className="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded px-2 py-1 disabled:opacity-50"
+                        className="bg-danger hover:bg-danger/90 text-white text-xs font-semibold rounded-xl px-2 py-1 disabled:opacity-50"
                       >
                         Remover
                       </button>

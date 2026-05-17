@@ -130,7 +130,7 @@ function CommentItem({
             <button
               type="button"
               onClick={handleEditSubmit}
-              className="bg-green-700 text-white text-xs font-semibold rounded px-2 py-1"
+              className="bg-primary hover:bg-primary/90 text-white text-xs font-semibold rounded-xl px-2 py-1"
             >
               Salvar
             </button>
@@ -152,7 +152,7 @@ function CommentItem({
           <button
             type="button"
             onClick={() => setReplyOpen((v) => !v)}
-            className="hover:text-green-700"
+            className="hover:text-primary"
           >
             Responder
           </button>
@@ -162,14 +162,14 @@ function CommentItem({
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="hover:text-green-700"
+              className="hover:text-primary"
             >
               Editar
             </button>
             <button
               type="button"
               onClick={handleDelete}
-              className="hover:text-red-600"
+              className="hover:text-danger"
             >
               Excluir
             </button>
@@ -236,7 +236,7 @@ function CommentForm({
         className="border border-border rounded-md px-3 py-2 w-full text-sm"
       />
       {errors.body && (
-        <p className="text-xs text-red-600 font-semibold">
+        <p className="text-xs text-danger font-semibold">
           {errors.body.message}
         </p>
       )}
@@ -244,7 +244,7 @@ function CommentForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bg-green-700 hover:bg-green-800 text-white text-sm rounded-md px-3 py-1.5 font-semibold disabled:opacity-50"
+          className="bg-primary hover:bg-primary/90 text-white text-sm rounded-xl px-3 py-1.5 font-semibold disabled:opacity-50"
         >
           {isSubmitting ? "Enviando..." : "Enviar"}
         </button>

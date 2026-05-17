@@ -82,7 +82,7 @@ export default function ReportDialog({
               className="border border-border rounded-md px-3 py-2 w-full"
             />
           </div>
-          {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+          {error && <p className="text-sm text-danger font-semibold">{error}</p>}
           <div className="flex justify-end gap-2">
             <button
               type="button"
@@ -94,7 +94,7 @@ export default function ReportDialog({
             <button
               type="submit"
               disabled={submitting}
-              className="bg-green-700 hover:bg-green-800 text-white rounded-md px-4 py-2 font-semibold disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-white rounded-xl px-4 py-2 font-semibold disabled:opacity-50"
             >
               {submitting ? "Enviando..." : "Enviar"}
             </button>

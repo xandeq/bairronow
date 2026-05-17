@@ -6,13 +6,13 @@ import { getGroups } from '@/lib/api/groups';
 import type { Group, GroupCategory } from '@/lib/types/groups';
 
 const CATEGORY_COLORS: Record<GroupCategory, string> = {
-  Esportes: 'bg-blue-100 text-blue-800',
-  Animais: 'bg-yellow-100 text-yellow-800',
-  Pais: 'bg-pink-100 text-pink-800',
-  Seguranca: 'bg-red-100 text-red-800',
-  Jardinagem: 'bg-green-100 text-green-800',
-  Negocios: 'bg-purple-100 text-purple-800',
-  Cultura: 'bg-orange-100 text-orange-800',
+  Esportes: 'bg-secondary text-secondary-fg',
+  Animais: 'bg-accent text-accent-fg',
+  Pais: 'bg-secondary text-secondary-fg',
+  Seguranca: 'bg-danger/10 text-danger',
+  Jardinagem: 'bg-secondary text-secondary-fg',
+  Negocios: 'bg-primary/10 text-primary',
+  Cultura: 'bg-accent/20 text-accent-fg',
   Outros: 'bg-muted text-fg',
 };
 
@@ -36,7 +36,7 @@ export default function GroupsPage() {
         <h1 className="text-2xl font-semibold text-fg">Grupos do Bairro</h1>
         <Link
           href="/groups/new"
-          className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-xl text-sm font-medium"
         >
           Criar Grupo
         </Link>
@@ -47,7 +47,7 @@ export default function GroupsPage() {
         placeholder="Buscar grupos..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full border border-border rounded-lg px-3 py-2 text-sm mb-4 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+        className="w-full border border-border rounded-xl px-3 py-2 text-sm mb-4 focus:ring-2 focus:ring-primary/30 focus:border-transparent"
       />
 
       {loading ? (
@@ -68,7 +68,7 @@ export default function GroupsPage() {
                 <img src={g.coverImageUrl} alt={g.name} className="h-24 w-full object-cover rounded-lg" />
               )}
               <div className="flex items-start justify-between">
-                <Link href={`/groups/${g.id}`} className="font-semibold text-fg hover:text-green-700 leading-tight">
+                <Link href={`/groups/${g.id}`} className="font-semibold text-fg hover:text-primary leading-tight">
                   {g.name}
                 </Link>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${CATEGORY_COLORS[g.category]}`}>

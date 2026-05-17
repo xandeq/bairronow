@@ -50,24 +50,24 @@ export default function NewGroupPage() {
           <label className="block text-sm font-medium text-muted-fg mb-1">Nome</label>
           <input
             {...register('name')}
-            className="w-full border border-border rounded-lg px-3 py-2 text-sm"
+            className="w-full border border-border rounded-xl px-3 py-2 text-sm"
           />
-          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+          {errors.name && <p className="text-danger text-xs mt-1">{errors.name.message}</p>}
         </div>
         <div>
           <label className="block text-sm font-medium text-muted-fg mb-1">Descrição</label>
           <textarea
             {...register('description')}
             rows={3}
-            className="w-full border border-border rounded-lg px-3 py-2 text-sm resize-none"
+            className="w-full border border-border rounded-xl px-3 py-2 text-sm resize-none"
           />
-          {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+          {errors.description && <p className="text-danger text-xs mt-1">{errors.description.message}</p>}
         </div>
         <div>
           <label className="block text-sm font-medium text-muted-fg mb-1">Categoria</label>
           <select
             {...register('category')}
-            className="w-full border border-border rounded-lg px-3 py-2 text-sm"
+            className="w-full border border-border rounded-xl px-3 py-2 text-sm"
           >
             {['Esportes', 'Animais', 'Pais', 'Seguranca', 'Jardinagem', 'Negocios', 'Cultura', 'Outros'].map(
               (c) => (
@@ -89,7 +89,7 @@ export default function NewGroupPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-green-700 hover:bg-green-800 disabled:opacity-40 text-white py-2 rounded-lg font-medium"
+          className="w-full bg-primary hover:bg-primary/90 disabled:opacity-40 text-white py-2 rounded-xl font-medium"
         >
           {isSubmitting ? 'Criando...' : 'Criar Grupo'}
         </button>

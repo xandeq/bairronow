@@ -55,7 +55,7 @@ export default function MapClient() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1 text-sm rounded-full border ${filter === f ? 'bg-green-700 text-white border-green-700' : 'bg-card text-muted-fg border-border'}`}
+              className={`px-3 py-1 text-sm rounded-full border ${filter === f ? 'bg-primary text-white border-primary' : 'bg-card text-muted-fg border-border'}`}
             >
               {f === 'all' ? 'Todos' : f === 'verified' ? 'Verificados' : 'Novos'}
             </button>
@@ -66,7 +66,7 @@ export default function MapClient() {
             type="checkbox"
             checked={showOnMap}
             onChange={handleToggleVisibility}
-            className="accent-green-700"
+            className="accent-primary"
           />
           Aparecer no mapa
         </label>
@@ -105,7 +105,7 @@ export default function MapClient() {
                     <div>
                       <p className="font-medium text-sm text-fg">{pin.displayName ?? 'Vizinho'}</p>
                       {pin.isVerified && (
-                        <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 bg-secondary text-secondary-fg text-xs px-2 py-0.5 rounded-full">
                           Verificado
                         </span>
                       )}
@@ -114,7 +114,7 @@ export default function MapClient() {
                   {pin.bio && <p className="text-xs text-muted-fg">{pin.bio}</p>}
                   <a
                     href="/marketplace"
-                    className="block text-center text-xs bg-green-700 text-white py-1 px-2 rounded mt-1 hover:bg-green-800"
+                    className="block text-center text-xs bg-primary text-white py-1 px-2 rounded-xl mt-1 hover:bg-primary/90"
                   >
                     Ver perfil
                   </a>

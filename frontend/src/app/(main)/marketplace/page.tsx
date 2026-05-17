@@ -93,7 +93,7 @@ export default function MarketplacePage() {
         ) : (
           <Link
             href="/profile/"
-            className="border-2 border-amber-500 text-amber-700 font-semibold px-4 py-2 rounded-lg text-sm"
+            className="border-2 border-accent text-accent-fg font-semibold px-4 py-2 rounded-xl text-sm"
           >
             Verifique seu endereço
           </Link>
@@ -117,7 +117,7 @@ export default function MarketplacePage() {
       {loading && items.length === 0 ? (
         <p className="text-fg/60 font-medium">Carregando...</p>
       ) : items.length === 0 ? (
-        <div className="bg-bg border-2 border-border rounded-lg p-8 text-center">
+        <div className="bg-bg border-2 border-border rounded-xl p-8 text-center">
           <p className="text-fg/70 font-semibold mb-3">
             Nenhum anúncio encontrado.
           </p>
