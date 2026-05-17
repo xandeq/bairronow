@@ -62,11 +62,24 @@ const navItems = [
   },
 ];
 
+const adminNavItem = {
+  href: "/admin/moderation/",
+  label: "Admin",
+  adminOnly: true,
+  icon: (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  ),
+};
+
 export default function MainHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const logout = useAuthStore((s) => s.logout);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
+  const isAdmin = user?.isAdmin === true;
   const connect = useChatStore((s) => s.connect);
   const loadUnread = useChatStore((s) => s.loadUnread);
   const unreadTotal = useChatStore((s) => s.unreadTotal);
@@ -117,7 +130,7 @@ export default function MainHeader() {
 
         {/* Nav */}
         <nav className="hidden md:flex items-center gap-1 bg-muted rounded-2xl p-1">
-          {navItems.map((item) => {
+          {[...navItems, ...(isAdmin ? [adminNavItem] : [])].map((item) => {
             const active = pathname?.startsWith(item.href.replace(/\/$/, ""));
             return (
               <Link
@@ -129,11 +142,12 @@ export default function MainHeader() {
                   active
                     ? "bg-card text-primary shadow-xs"
                     : "text-muted-fg hover:text-fg hover:bg-card/60",
+                  "adminOnly" in item && item.adminOnly ? "text-amber-600 hover:text-amber-700" : "",
                 ].join(" ")}
               >
                 {item.icon}
                 <span>{item.label}</span>
-                {item.badge && unreadTotal > 0 && (
+                {"badge" in item && item.badge && unreadTotal > 0 && (
                   <span className="absolute -top-1 -right-1 bg-danger text-white text-[9px] font-extrabold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 animate-badge-pop">
                     {unreadTotal > 99 ? "99+" : unreadTotal}
                   </span>
@@ -162,7 +176,7 @@ export default function MainHeader() {
 
       {/* Mobile nav */}
       <div className="md:hidden flex items-center justify-around border-t border-border/40 bg-card/95 backdrop-blur-sm px-2 pb-1 pt-1">
-        {navItems.map((item) => {
+        {[...navItems, ...(isAdmin ? [adminNavItem] : [])].map((item) => {
           const active = pathname?.startsWith(item.href.replace(/\/$/, ""));
           return (
             <Link
@@ -176,7 +190,7 @@ export default function MainHeader() {
             >
               <span className={active ? "scale-110" : ""}>{item.icon}</span>
               <span>{item.label}</span>
-              {item.badge && unreadTotal > 0 && (
+              {"badge" in item && item.badge && unreadTotal > 0 && (
                 <span className="absolute top-1 right-1 bg-danger text-white text-[8px] font-extrabold rounded-full min-w-[14px] h-3.5 flex items-center justify-center px-0.5">
                   {unreadTotal > 9 ? "9+" : unreadTotal}
                 </span>
