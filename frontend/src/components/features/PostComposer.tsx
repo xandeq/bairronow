@@ -12,6 +12,7 @@ import {
 import { feedClient } from "@/lib/feed";
 import { useFeedStore } from "@/stores/feed-store";
 import { useAuthStore } from "@/lib/auth";
+import Button from "@/components/ui/Button";
 
 interface PostComposerProps {
   open: boolean;
@@ -19,6 +20,26 @@ interface PostComposerProps {
 }
 
 const MAX_IMAGES = 4;
+
+const CATEGORIES = ["Geral", "Dica", "Alerta", "Pergunta", "Evento"] as const;
+
+function XIcon() {
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+function ImageIcon() {
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <polyline points="21 15 16 10 5 21" />
+    </svg>
+  );
+}
 
 export default function PostComposer({ open, onClose }: PostComposerProps) {
   const user = useAuthStore((s) => s.user);
@@ -36,6 +57,7 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<CreatePostInput>({
     resolver: zodResolver(createPostSchema),
@@ -43,6 +65,7 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
   });
 
   const body = watch("body") ?? "";
+  const selectedCategory = watch("category");
 
   const onDrop = useCallback(
     async (accepted: File[]) => {
@@ -74,11 +97,7 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-      "image/webp": [".webp"],
-    },
+    accept: { "image/jpeg": [".jpg", ".jpeg"], "image/png": [".png"], "image/webp": [".webp"] },
     multiple: true,
     disabled: files.length >= MAX_IMAGES,
   });
@@ -100,7 +119,6 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
       formData.append("category", data.category);
       formData.append("body", data.body);
       for (const f of files) formData.append("images", f, f.name);
-
       const post = await feedClient.createPost(formData);
       prependNew(post);
       reset();
@@ -114,116 +132,179 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
     }
   };
 
+  const handleClose = () => {
+    reset();
+    setFiles([]);
+    setPreviews([]);
+    setServerError(null);
+    onClose();
+  };
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-2xl rounded-lg bg-card p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-extrabold text-fg mb-4">Novo post</h2>
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(15,23,42,0.5)", backdropFilter: "blur(4px)" }}
+    >
+      <div className="w-full max-w-2xl bg-card rounded-3xl border border-border shadow-xl max-h-[90dvh] overflow-y-auto animate-fade-up">
+        {/* Modal header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border/60">
+          <div>
+            <h2 className="text-lg font-bold tracking-tight text-fg">Novo post</h2>
+            <p className="text-xs text-muted-fg">Compartilhe com o seu bairro</p>
+          </div>
+          <button
+            onClick={handleClose}
+            className="w-9 h-9 flex items-center justify-center rounded-xl text-muted-fg hover:text-fg hover:bg-muted transition-all duration-200"
+            aria-label="Fechar"
+          >
+            <XIcon />
+          </button>
+        </div>
 
+        {/* Not verified warning */}
         {!isVerified && (
-          <p className="mb-3 text-sm font-semibold text-amber-700 bg-amber-50 p-3 rounded">
-            Você precisa estar verificado para postar.
-          </p>
+          <div className="mx-6 mt-4 p-3 rounded-xl bg-accent-light border border-accent/20 text-sm font-semibold text-accent">
+            Você precisa estar verificado para postar no bairro.
+          </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4 space-y-5">
+          {/* Category */}
           <div>
-            <label className="block text-sm font-bold text-fg mb-1">
+            <label className="block text-xs font-bold text-muted-fg uppercase tracking-widest mb-2">
               Categoria
             </label>
-            <select
-              {...register("category")}
-              className="border border-border rounded-md px-3 py-2 w-full"
-            >
-              <option value="Geral">Geral</option>
-              <option value="Dica">Dica</option>
-              <option value="Alerta">Alerta</option>
-              <option value="Pergunta">Pergunta</option>
-              <option value="Evento">Evento</option>
-            </select>
+            <div className="flex flex-wrap gap-2">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setValue("category", cat)}
+                  className={[
+                    "px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200",
+                    selectedCategory === cat
+                      ? "bg-primary text-white border-primary shadow-blue"
+                      : "bg-muted text-muted-fg border-border hover:border-border-strong hover:text-fg",
+                  ].join(" ")}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+            <input type="hidden" {...register("category")} />
           </div>
 
+          {/* Body */}
           <div>
-            <label className="block text-sm font-bold text-fg mb-1">
+            <label className="block text-xs font-bold text-muted-fg uppercase tracking-widest mb-2">
               Mensagem
             </label>
             <textarea
               {...register("body")}
               rows={5}
               maxLength={2000}
-              className="border border-border rounded-md px-3 py-2 w-full"
+              className={[
+                "w-full px-4 py-3 rounded-xl bg-muted text-fg text-sm",
+                "border outline-none transition-all duration-200 resize-none",
+                "placeholder:text-muted-fg/60",
+                "focus:bg-card focus:border-primary",
+                errors.body
+                  ? "border-danger bg-danger-light"
+                  : "border-border",
+              ].join(" ")}
               placeholder="O que está acontecendo no seu bairro?"
             />
-            <div className="flex justify-between text-xs mt-1">
-              <span className="text-red-600">{errors.body?.message}</span>
-              <span className="text-fg/60">{body.length}/2000</span>
+            <div className="flex justify-between items-center text-xs mt-1.5 px-1">
+              {errors.body ? (
+                <span className="text-danger font-semibold">{errors.body.message}</span>
+              ) : (
+                <span />
+              )}
+              <span className={body.length > 1800 ? "text-danger font-semibold" : "text-muted-fg"}>
+                {body.length}/2000
+              </span>
             </div>
           </div>
 
+          {/* Images */}
           <div>
-            <label className="block text-sm font-bold text-fg mb-1">
-              Imagens (até {MAX_IMAGES})
+            <label className="block text-xs font-bold text-muted-fg uppercase tracking-widest mb-2">
+              Imagens <span className="normal-case font-medium">(até {MAX_IMAGES})</span>
             </label>
-            <div
-              {...getRootProps()}
-              className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center ${
-                isDragActive
-                  ? "border-green-700 bg-green-50"
-                  : "border-border bg-muted"
-              } ${files.length >= MAX_IMAGES ? "opacity-50" : ""}`}
-            >
-              <input {...getInputProps()} />
-              <p className="font-semibold text-fg/70">
-                {compressing
-                  ? "Comprimindo..."
-                  : files.length >= MAX_IMAGES
-                    ? "Máximo de imagens atingido"
-                    : "Arraste imagens ou clique para selecionar"}
-              </p>
-            </div>
+
             {previews.length > 0 && (
-              <div className="grid grid-cols-4 gap-2 mt-2">
+              <div className="grid grid-cols-4 gap-2 mb-2">
                 {previews.map((src, i) => (
-                  <div key={i} className="relative">
+                  <div key={i} className="relative group rounded-xl overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={src}
-                      alt=""
-                      className="w-full h-20 object-cover rounded-md"
-                    />
+                    <img src={src} alt="" className="w-full h-20 object-cover" />
                     <button
                       type="button"
                       onClick={() => removeFile(i)}
-                      className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-bl px-1"
+                      className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity"
+                      aria-label="Remover imagem"
                     >
-                      ×
+                      <XIcon />
                     </button>
                   </div>
                 ))}
               </div>
             )}
+
+            {files.length < MAX_IMAGES && (
+              <div
+                {...getRootProps()}
+                className={[
+                  "cursor-pointer rounded-xl border-2 border-dashed p-6 text-center",
+                  "transition-all duration-200",
+                  isDragActive
+                    ? "border-primary bg-primary-light"
+                    : "border-border hover:border-border-strong hover:bg-muted",
+                ].join(" ")}
+              >
+                <input {...getInputProps()} />
+                <div className="flex flex-col items-center gap-2 text-muted-fg">
+                  <ImageIcon />
+                  <p className="text-sm font-semibold">
+                    {compressing
+                      ? "Processando…"
+                      : isDragActive
+                        ? "Solte aqui"
+                        : "Arraste ou clique para adicionar"}
+                  </p>
+                  <p className="text-xs opacity-60">JPG, PNG, WebP &bull; máx. 1 MB cada</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {serverError && (
-            <p className="text-sm text-red-600 font-semibold">{serverError}</p>
+            <p className="text-sm font-semibold text-danger bg-danger-light p-3 rounded-xl">
+              {serverError}
+            </p>
           )}
 
-          <div className="flex justify-end gap-2">
-            <button
+          {/* Actions */}
+          <div className="flex justify-end gap-2 pb-2">
+            <Button
               type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-md border-2 border-border font-semibold"
+              variant="secondary"
+              size="md"
+              onClick={handleClose}
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={submitting || !isVerified || compressing}
-              className="bg-green-700 hover:bg-green-800 text-white rounded-md px-4 py-2 font-semibold disabled:opacity-50"
+              variant="primary"
+              size="md"
+              loading={submitting}
+              disabled={!isVerified || compressing}
             >
-              {submitting ? "Publicando..." : "Publicar"}
-            </button>
+              Publicar
+            </Button>
           </div>
         </form>
       </div>

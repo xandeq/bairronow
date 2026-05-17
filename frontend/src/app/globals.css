@@ -3,82 +3,188 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* ─── Surfaces ─────────────────────────────────────────── */
-  --color-bg:       #ffffff;
-  --color-fg:       #0F172A;   /* slate-900 — sharper than 111827 */
-  --color-muted-fg: #64748B;   /* slate-500 */
-  --color-card:     #ffffff;
+  /* ─── Typography ────────────────────────────────────────── */
+  --font-sans: var(--font-outfit), system-ui, sans-serif;
 
-  /* ─── Brand palette ────────────────────────────────────── */
-  /* Blue  = trust / action  */
-  --color-primary:       #2563EB;   /* blue-600  */
-  --color-primary-hover: #1D4ED8;   /* blue-700  */
+  /* ─── Surfaces ──────────────────────────────────────────── */
+  --color-bg:               #F8FAFC;
+  --color-fg:               #0F172A;
+  --color-muted-fg:         #64748B;
+  --color-card:             #FFFFFF;
+  --color-surface-elevated: #FAFBFF;
+  --color-muted:            #F1F5F9;
+  --color-border:           #E2E8F0;
+  --color-border-strong:    #CBD5E1;
 
-  /* Emerald = community / verified */
-  --color-secondary:       #059669; /* emerald-600 */
-  --color-secondary-hover: #047857; /* emerald-700 */
+  /* ─── Blue — trust / action ─────────────────────────────── */
+  --color-primary:          #2563EB;
+  --color-primary-hover:    #1D4ED8;
+  --color-primary-light:    #EFF6FF;
+  --color-primary-mid:      #BFDBFE;
 
-  /* Amber = marketplace / highlight */
-  --color-accent:       #F59E0B;    /* amber-500 */
-  --color-accent-hover: #D97706;    /* amber-600 */
+  /* ─── Emerald — community / verified ────────────────────── */
+  --color-secondary:        #059669;
+  --color-secondary-hover:  #047857;
+  --color-secondary-light:  #ECFDF5;
 
-  /* Red = moderation / destructive only — never decorative */
-  --color-danger:       #DC2626;    /* red-600   */
-  --color-danger-hover: #B91C1C;    /* red-700   */
+  /* ─── Amber — marketplace / highlight ───────────────────── */
+  --color-accent:           #D97706;
+  --color-accent-hover:     #B45309;
+  --color-accent-light:     #FFFBEB;
 
-  /* ─── UI chrome ────────────────────────────────────────── */
-  --color-muted:  #F1F5F9;   /* slate-100 */
-  --color-border: #E2E8F0;   /* slate-200 */
+  /* ─── Danger ─────────────────────────────────────────────── */
+  --color-danger:           #DC2626;
+  --color-danger-hover:     #B91C1C;
+  --color-danger-light:     #FEF2F2;
 
-  /* ─── Typography ───────────────────────────────────────── */
-  --font-sans: var(--font-outfit), 'Inter', system-ui, sans-serif;
+  /* ─── Shadows ────────────────────────────────────────────── */
+  --shadow-xs:      0 1px 2px rgba(15,23,42,0.05);
+  --shadow-sm:      0 2px 8px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md:      0 4px 16px rgba(15,23,42,0.08), 0 2px 4px rgba(15,23,42,0.04);
+  --shadow-lg:      0 8px 32px rgba(15,23,42,0.10), 0 4px 8px rgba(15,23,42,0.04);
+  --shadow-xl:      0 20px 60px rgba(15,23,42,0.12), 0 8px 16px rgba(15,23,42,0.06);
+  --shadow-blue:    0 4px 20px rgba(37,99,235,0.22), 0 2px 6px rgba(37,99,235,0.12);
+  --shadow-emerald: 0 4px 20px rgba(5,150,105,0.18), 0 2px 6px rgba(5,150,105,0.10);
+  --shadow-none:    none;
 
-  /* ─── Surfaces (elevation hierarchy) ─────────────────── */
-  --color-surface-elevated: #F8FAFC;   /* slate-50 — inner cards, info blocks */
-
-  /* ─── Radius ────────────────────────────────────────────── */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  /* ─── Radius ─────────────────────────────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
   --radius-xl: 24px;
-
-  --shadow-none: none;
+  --radius-2xl: 32px;
 }
 
 /* ─── Base reset ──────────────────────────────────────────── */
 html, body {
-  background:              var(--color-bg);
-  color:                   var(--color-fg);
-  font-family:             var(--font-sans);
-  -webkit-font-smoothing:  antialiased;
+  background:             var(--color-bg);
+  color:                  var(--color-fg);
+  font-family:            var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior:        smooth;
 }
 
-/* Flat design — zero shadows everywhere */
-* { box-shadow: none !important; }
+/* ─── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted-fg); }
 
-/* ─── Dark mode overrides ─────────────────────────────────── */
-/* Blue stays blue — just lighter for dark-bg readability.     */
-/* Removes the old green primary that broke brand consistency. */
+/* ─── Keyframes ──────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin-smooth {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40%           { transform: translateY(-4px); }
+}
+
+@keyframes badge-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ─── Utility classes ────────────────────────────────────── */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-muted) 25%,
+    var(--color-border) 50%,
+    var(--color-muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease both;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-badge-pop {
+  animation: badge-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Stagger helpers */
+.stagger-1 { animation-delay: 60ms; }
+.stagger-2 { animation-delay: 120ms; }
+.stagger-3 { animation-delay: 180ms; }
+.stagger-4 { animation-delay: 240ms; }
+.stagger-5 { animation-delay: 300ms; }
+
+/* ─── Dark mode overrides ────────────────────────────────── */
 .dark {
-  --color-bg:       #0F172A;   /* slate-900 */
-  --color-fg:       #F1F5F9;   /* slate-100 */
-  --color-muted-fg: #94A3B8;   /* slate-400 */
-  --color-card:     #1E293B;   /* slate-800 */
+  --color-bg:               #0D1117;
+  --color-fg:               #F1F5F9;
+  --color-muted-fg:         #94A3B8;
+  --color-card:             #161B27;
+  --color-surface-elevated: #1E2535;
+  --color-muted:            #1A2236;
+  --color-border:           #263147;
+  --color-border-strong:    #334155;
 
-  --color-primary:       #60A5FA;   /* blue-400  — readable on dark */
-  --color-primary-hover: #3B82F6;   /* blue-500  */
+  --color-primary:          #60A5FA;
+  --color-primary-hover:    #93C5FD;
+  --color-primary-light:    #1E3A5F;
+  --color-primary-mid:      #1D4ED8;
 
-  --color-secondary:       #34D399; /* emerald-400 */
-  --color-secondary-hover: #10B981; /* emerald-500 */
+  --color-secondary:        #34D399;
+  --color-secondary-hover:  #6EE7B7;
+  --color-secondary-light:  #064E3B;
 
-  --color-accent:       #FBBF24;    /* amber-400 */
-  --color-accent-hover: #F59E0B;    /* amber-500 */
+  --color-accent:           #FBBF24;
+  --color-accent-hover:     #FCD34D;
+  --color-accent-light:     #451A03;
 
-  --color-danger:       #F87171;    /* red-400   */
-  --color-danger-hover: #EF4444;    /* red-500   */
+  --color-danger:           #F87171;
+  --color-danger-hover:     #FCA5A5;
+  --color-danger-light:     #450A0A;
 
-  --color-surface-elevated: #1E293B;   /* slate-800 */
-
-  --color-muted:  #1E293B;   /* slate-800 */
-  --color-border: #334155;   /* slate-700 */
+  --shadow-xs:      0 1px 2px rgba(0,0,0,0.3);
+  --shadow-sm:      0 2px 8px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md:      0 4px 16px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
+  --shadow-lg:      0 8px 32px rgba(0,0,0,0.45), 0 4px 8px rgba(0,0,0,0.25);
+  --shadow-xl:      0 20px 60px rgba(0,0,0,0.5), 0 8px 16px rgba(0,0,0,0.3);
+  --shadow-blue:    0 4px 20px rgba(96,165,250,0.18), 0 2px 6px rgba(96,165,250,0.10);
+  --shadow-emerald: 0 4px 20px rgba(52,211,153,0.15), 0 2px 6px rgba(52,211,153,0.08);
 }

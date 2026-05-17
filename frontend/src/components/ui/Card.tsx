@@ -1,64 +1,102 @@
 import { HTMLAttributes } from "react";
 
-/**
- * Section-tint colours match the poster-aesthetic colour-blocked layout:
- *   blue-tint  → trust / verification sections  (bg-blue-50)
- *   green-tint → community / feed sections      (bg-emerald-50)
- *   amber-tint → marketplace sections           (bg-amber-50)
- *   dark       → footer / hero CTA blocks       (bg-slate-900)
- */
-export type CardBg =
-  | "white"
+export type CardVariant =
+  | "default"
+  | "elevated"
   | "muted"
+  | "glass"
+  | "primary-tint"
+  | "secondary-tint"
+  | "accent-tint"
+  | "dark"
+  // Legacy aliases kept for backward compatibility
+  | "white"
   | "blue-tint"
   | "green-tint"
-  | "amber-tint"
-  | "dark";
+  | "amber-tint";
 
-export type CardPadding = "none" | "sm" | "md" | "lg";
+export type CardPadding = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  interactive?: boolean;
-  bg?: CardBg;
+  variant?: CardVariant;
+  /** @deprecated Use variant instead */
+  bg?: CardVariant;
   padding?: CardPadding;
-  /** Explicit border — use only when colour-blocking can't carry the structure */
+  interactive?: boolean;
+  ringOnHover?: boolean;
+  liftOnHover?: boolean;
   border?: boolean;
 }
 
-const bgMap: Record<CardBg, string> = {
-  white:        "bg-bg text-fg",
-  muted:        "bg-muted text-fg",
-  "blue-tint":  "bg-blue-50 text-fg",
-  "green-tint": "bg-emerald-50 text-fg",
-  "amber-tint": "bg-amber-50 text-fg",
-  dark:         "bg-slate-900 text-white",
+const variantMap: Record<CardVariant, string> = {
+  default:
+    "bg-card border border-border/70",
+  elevated:
+    "bg-card border border-border/50 shadow-md",
+  muted:
+    "bg-muted border border-border/50",
+  glass:
+    "bg-card/70 backdrop-blur-xl border border-white/20 shadow-lg",
+  "primary-tint":
+    "bg-primary-light border border-primary-mid/30",
+  "secondary-tint":
+    "bg-secondary-light border border-secondary/20",
+  "accent-tint":
+    "bg-accent-light border border-accent/20",
+  dark:
+    "bg-slate-900 border border-slate-800 text-white",
+  // Legacy aliases
+  white:
+    "bg-card border border-border/70",
+  "blue-tint":
+    "bg-primary-light border border-primary-mid/30",
+  "green-tint":
+    "bg-secondary-light border border-secondary/20",
+  "amber-tint":
+    "bg-accent-light border border-accent/20",
 };
 
 const padMap: Record<CardPadding, string> = {
   none: "",
+  xs:   "p-3",
   sm:   "p-4",
-  md:   "p-6",
-  lg:   "p-8",
+  md:   "p-5",
+  lg:   "p-6",
+  xl:   "p-8",
 };
 
 export default function Card({
-  interactive = false,
-  bg = "white",
+  variant,
+  bg,
   padding = "md",
+  interactive = false,
+  ringOnHover = false,
+  liftOnHover = false,
   border = false,
   className = "",
   children,
   ...rest
 }: CardProps) {
+  const resolvedVariant = variant ?? bg ?? "default";
+
   return (
     <div
       className={[
-        "rounded-lg",
-        bgMap[bg],
+        "rounded-2xl",
+        variantMap[resolvedVariant],
         padMap[padding],
         border ? "border-2 border-border" : "",
+        interactive || liftOnHover
+          ? "transition-all duration-200 ease-out cursor-pointer"
+          : "",
         interactive
-          ? "group cursor-pointer transition-all duration-200 hover:scale-[1.02]"
+          ? "hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-sm"
+          : "",
+        liftOnHover
+          ? "hover:-translate-y-1 hover:shadow-lg"
+          : "",
+        ringOnHover
+          ? "hover:border-primary/40"
           : "",
         className,
       ]

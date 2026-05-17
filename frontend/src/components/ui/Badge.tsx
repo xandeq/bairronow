@@ -6,24 +6,53 @@ export type BadgeVariant =
   | "accent"
   | "muted"
   | "verified"
-  | "danger";
+  | "danger"
+  | "outline";
+
+export type BadgeSize = "sm" | "md";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
+  size?: BadgeSize;
+  dot?: boolean;
 }
 
 const variants: Record<BadgeVariant, string> = {
-  primary:  "bg-blue-100  text-blue-700",
-  secondary: "bg-emerald-100 text-emerald-700",
-  accent:   "bg-amber-100 text-amber-700",
-  muted:    "bg-muted     text-muted-fg",
-  /** Celebratory trust signal — used consistently wherever verified status appears */
-  verified: "bg-emerald-100 text-emerald-700",
-  danger:   "bg-red-100   text-red-700",
+  primary:
+    "bg-primary-light text-primary border border-primary-mid/40",
+  secondary:
+    "bg-secondary-light text-secondary border border-secondary/25",
+  accent:
+    "bg-accent-light text-accent border border-accent/25",
+  muted:
+    "bg-muted text-muted-fg border border-border",
+  verified:
+    "bg-secondary-light text-secondary border border-secondary/25",
+  danger:
+    "bg-danger-light text-danger border border-danger/25",
+  outline:
+    "bg-transparent text-muted-fg border border-border",
+};
+
+const dotColors: Record<BadgeVariant, string> = {
+  primary:  "bg-primary",
+  secondary: "bg-secondary",
+  accent:   "bg-accent",
+  muted:    "bg-muted-fg",
+  verified: "bg-secondary",
+  danger:   "bg-danger",
+  outline:  "bg-muted-fg",
+};
+
+const sizes: Record<BadgeSize, string> = {
+  sm: "px-2 py-0.5 text-[11px] gap-1",
+  md: "px-2.5 py-1 text-xs gap-1.5",
 };
 
 export default function Badge({
   variant = "primary",
+  size = "sm",
+  dot = false,
   className = "",
   children,
   ...rest
@@ -31,14 +60,21 @@ export default function Badge({
   return (
     <span
       className={[
-        "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold",
+        "inline-flex items-center font-semibold rounded-full",
         variants[variant],
+        sizes[size],
         className,
       ]
         .filter(Boolean)
         .join(" ")}
       {...rest}
     >
+      {dot && (
+        <span
+          aria-hidden
+          className={["w-1.5 h-1.5 rounded-full shrink-0", dotColors[variant]].join(" ")}
+        />
+      )}
       {children}
     </span>
   );

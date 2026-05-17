@@ -4,55 +4,92 @@ export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
   src?: string | null;
-  /** Used for the initials fallback and alt text */
   name?: string | null;
   size?: AvatarSize;
   verified?: boolean;
+  online?: boolean;
 }
 
-const sizeMap: Record<AvatarSize, { wrap: string; img: string; badge: string; text: string }> = {
-  xs: { wrap: "w-7 h-7",   img: "w-7 h-7",   badge: "w-3 h-3 -bottom-0.5 -right-0.5", text: "text-[10px]" },
-  sm: { wrap: "w-9 h-9",   img: "w-9 h-9",   badge: "w-4 h-4 -bottom-0.5 -right-0.5", text: "text-xs"    },
-  md: { wrap: "w-11 h-11", img: "w-11 h-11", badge: "w-5 h-5 -bottom-0.5 -right-0.5", text: "text-sm"    },
-  lg: { wrap: "w-14 h-14", img: "w-14 h-14", badge: "w-5 h-5 -bottom-1   -right-1",   text: "text-base"  },
-  xl: { wrap: "w-20 h-20", img: "w-20 h-20", badge: "w-6 h-6 -bottom-1   -right-1",   text: "text-xl"    },
+const sizeMap: Record<
+  AvatarSize,
+  { wrap: string; img: string; badge: string; text: string; ring: string }
+> = {
+  xs: {
+    wrap:  "w-7 h-7",
+    img:   "w-7 h-7",
+    badge: "w-3.5 h-3.5 -bottom-0.5 -right-0.5 border",
+    text:  "text-[9px] font-bold",
+    ring:  "ring-1",
+  },
+  sm: {
+    wrap:  "w-9 h-9",
+    img:   "w-9 h-9",
+    badge: "w-4 h-4 -bottom-0.5 -right-0.5 border",
+    text:  "text-[11px] font-bold",
+    ring:  "ring-1",
+  },
+  md: {
+    wrap:  "w-11 h-11",
+    img:   "w-11 h-11",
+    badge: "w-5 h-5 -bottom-0.5 -right-0.5 border-2",
+    text:  "text-xs font-bold",
+    ring:  "ring-2",
+  },
+  lg: {
+    wrap:  "w-14 h-14",
+    img:   "w-14 h-14",
+    badge: "w-5 h-5 -bottom-1 -right-1 border-2",
+    text:  "text-sm font-bold",
+    ring:  "ring-2",
+  },
+  xl: {
+    wrap:  "w-20 h-20",
+    img:   "w-20 h-20",
+    badge: "w-6 h-6 -bottom-1 -right-1 border-2",
+    text:  "text-lg font-bold",
+    ring:  "ring-2",
+  },
 };
 
-/** Deterministic colour from name — gives each user a consistent avatar colour. */
+const colorPalette = [
+  "bg-blue-600",
+  "bg-violet-600",
+  "bg-emerald-600",
+  "bg-rose-600",
+  "bg-amber-600",
+  "bg-cyan-600",
+  "bg-indigo-600",
+  "bg-pink-600",
+];
+
 function pickColor(name: string | null | undefined): string {
-  const palette = [
-    "bg-blue-600",
-    "bg-emerald-600",
-    "bg-violet-600",
-    "bg-amber-600",
-    "bg-rose-600",
-    "bg-cyan-600",
-  ];
-  if (!name) return palette[0];
-  const idx = [...name].reduce((acc, c) => acc + c.charCodeAt(0), 0) % palette.length;
-  return palette[idx];
+  if (!name) return colorPalette[0];
+  const idx = [...name].reduce((acc, c) => acc + c.charCodeAt(0), 0) % colorPalette.length;
+  return colorPalette[idx];
 }
 
-/** Flat check-circle icon — no lucide dependency, matches flat design language */
-function VerifiedDot({ className }: { className: string }) {
+function initials(name: string | null | undefined): string {
+  if (!name) return "?";
+  return name
+    .trim()
+    .split(/\s+/)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function CheckIcon() {
   return (
-    <span
-      aria-label="Vizinho verificado"
-      className={[
-        "absolute rounded-full bg-secondary flex items-center justify-center",
-        className,
-      ].join(" ")}
-    >
-      <svg viewBox="0 0 12 12" fill="none" className="w-2/3 h-2/3">
-        <path
-          d="M2.5 6L5 8.5L9.5 4"
-          stroke="white"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </span>
+    <svg viewBox="0 0 10 10" fill="none" className="w-[60%] h-[60%]">
+      <path
+        d="M2 5.2L4 7.2L8 3"
+        stroke="white"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 
@@ -61,19 +98,11 @@ export default function Avatar({
   name,
   size = "md",
   verified = false,
+  online = false,
   className = "",
   ...rest
 }: AvatarProps) {
   const s = sizeMap[size];
-  const initials = name
-    ? name
-        .trim()
-        .split(" ")
-        .map((w) => w[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase()
-    : "?";
 
   return (
     <div
@@ -92,18 +121,41 @@ export default function Avatar({
       ) : (
         <span
           className={[
-            "rounded-full flex items-center justify-center text-white font-bold select-none",
+            "rounded-full flex items-center justify-center",
+            "text-white select-none",
             pickColor(name),
             s.img,
             s.text,
           ].join(" ")}
           aria-label={name ?? "Vizinho"}
         >
-          {initials}
+          {initials(name)}
         </span>
       )}
 
-      {verified && <VerifiedDot className={s.badge} />}
+      {verified && (
+        <span
+          aria-label="Vizinho verificado"
+          className={[
+            "absolute rounded-full bg-secondary border-card",
+            "flex items-center justify-center",
+            "animate-badge-pop",
+            s.badge,
+          ].join(" ")}
+        >
+          <CheckIcon />
+        </span>
+      )}
+
+      {online && !verified && (
+        <span
+          aria-label="Online"
+          className={[
+            "absolute rounded-full bg-emerald-400 border-2 border-card",
+            "w-3 h-3 -bottom-0.5 -right-0.5",
+          ].join(" ")}
+        />
+      )}
     </div>
   );
 }

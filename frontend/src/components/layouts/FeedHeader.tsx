@@ -7,34 +7,42 @@ import { useAuthStore } from "@/lib/auth";
 export default function FeedHeader() {
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.isAdmin === true;
+  const bairroName = user?.bairroName ?? `Bairro #${user?.bairroId ?? "?"}`;
 
   return (
-    <header className="flex items-center justify-between bg-bg border border-border rounded-lg p-3 mb-4">
-      <div className="flex items-center gap-4">
-        <Link href="/feed/" className="text-xl font-extrabold text-green-700">
-          BairroNow
-        </Link>
-        <span className="text-sm text-fg/60 font-medium hidden sm:inline">
-          {user?.bairroName ?? `Bairro #${user?.bairroId ?? "?"}`}
-        </span>
+    <div className="flex items-center justify-between mb-6">
+      <div>
+        <p className="text-xs font-semibold text-muted-fg uppercase tracking-widest mb-0.5">
+          Sua comunidade
+        </p>
+        <h1 className="text-2xl font-extrabold tracking-tight text-fg">
+          {bairroName}
+        </h1>
       </div>
-      <nav className="flex items-center gap-3">
+
+      <div className="flex items-center gap-2">
         <Link
           href="/feed/search/"
-          className="text-sm font-semibold text-fg/70 hover:text-green-700"
+          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-muted border border-border text-sm font-semibold text-muted-fg hover:text-fg hover:border-border-strong hover:bg-card transition-all duration-200"
         >
-          Buscar
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <span className="hidden sm:inline">Buscar</span>
         </Link>
+
         {isAdmin && (
           <Link
             href="/admin/moderation/"
-            className="text-sm font-semibold text-fg/70 hover:text-green-700"
+            className="px-3 py-2 rounded-xl text-sm font-semibold text-muted-fg hover:text-fg hover:bg-muted transition-colors"
           >
             Moderação
           </Link>
         )}
+
         <NotificationBell />
-      </nav>
-    </header>
+      </div>
+    </div>
   );
 }

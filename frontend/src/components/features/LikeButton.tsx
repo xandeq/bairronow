@@ -11,7 +11,23 @@ interface LikeButtonProps {
   onChange?: (liked: boolean, count: number) => void;
 }
 
-// Optimistic toggle: setLiked immediately, reconcile with server response.
+function HeartIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      className="w-4 h-4 transition-transform duration-150"
+      style={{ transform: filled ? "scale(1.15)" : "scale(1)" }}
+      viewBox="0 0 24 24"
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
+
 export default function LikeButton({
   postId,
   initialLiked,
@@ -27,14 +43,13 @@ export default function LikeButton({
     if (busy) return;
     const prevLiked = liked;
     const prevCount = count;
-    const optimisticLiked = !prevLiked;
-    const optimisticCount = prevCount + (optimisticLiked ? 1 : -1);
+    const nextLiked = !prevLiked;
+    const nextCount = prevCount + (nextLiked ? 1 : -1);
 
-    // optimistic
-    setLiked(optimisticLiked);
-    setCount(optimisticCount);
-    setStoreLiked(postId, optimisticLiked, optimisticCount);
-    onChange?.(optimisticLiked, optimisticCount);
+    setLiked(nextLiked);
+    setCount(nextCount);
+    setStoreLiked(postId, nextLiked, nextCount);
+    onChange?.(nextLiked, nextCount);
 
     setBusy(true);
     try {
@@ -44,7 +59,6 @@ export default function LikeButton({
       setStoreLiked(postId, res.liked, res.count);
       onChange?.(res.liked, res.count);
     } catch {
-      // revert
       setLiked(prevLiked);
       setCount(prevCount);
       setStoreLiked(postId, prevLiked, prevCount);
@@ -61,11 +75,18 @@ export default function LikeButton({
       disabled={busy}
       aria-pressed={liked}
       aria-label={liked ? "Descurtir" : "Curtir"}
-      className={`inline-flex items-center gap-1.5 text-sm font-semibold transition-colors ${
-        liked ? "text-red-600" : "text-fg/70 hover:text-red-600"
-      }`}
+      className={[
+        "flex items-center gap-1.5 px-3 py-1.5 rounded-xl",
+        "text-xs font-semibold transition-all duration-200 active:scale-90",
+        liked
+          ? "text-rose-600 bg-rose-50 hover:bg-rose-100"
+          : "text-muted-fg hover:text-fg hover:bg-muted",
+        busy ? "opacity-50" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <span aria-hidden>{liked ? "♥" : "♡"}</span>
+      <HeartIcon filled={liked} />
       <span>{count}</span>
     </button>
   );
