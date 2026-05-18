@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/auth";
 import { useChatStore } from "@/stores/chat-store";
 import ThemeToggle from "@/components/ThemeToggle";
+import NotificationBell from "@/components/features/NotificationBell";
 
 const navItems = [
   {
@@ -181,6 +182,7 @@ export default function MainHeader() {
 
         {/* Right controls */}
         <div className="flex items-center gap-2">
+          {isAuthenticated && <NotificationBell />}
           <ThemeToggle />
           <button
             onClick={handleLogout}

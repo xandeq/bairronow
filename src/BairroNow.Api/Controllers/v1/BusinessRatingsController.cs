@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using BairroNow.Api.Data;
 using BairroNow.Api.Models.Entities;
+using BairroNow.Api.Services;
 
 namespace BairroNow.Api.Controllers.v1;
 
@@ -21,7 +22,12 @@ public class CreateBusinessRatingRequest
 public class BusinessRatingsController : ControllerBase
 {
     private readonly AppDbContext _db;
-    public BusinessRatingsController(AppDbContext db) => _db = db;
+    private readonly INotificationService _notifications;
+    public BusinessRatingsController(AppDbContext db, INotificationService notifications)
+    {
+        _db = db;
+        _notifications = notifications;
+    }
 
     // GET /api/v1/users/{businessUserId}/business-ratings
     [HttpGet("/api/v1/users/{businessUserId:guid}/business-ratings")]
@@ -57,6 +63,8 @@ public class BusinessRatingsController : ControllerBase
         var existing = await _db.BusinessRatings
             .FirstOrDefaultAsync(r => r.RaterId == raterId && r.BusinessUserId == businessUserId, ct);
 
+        bool isNewRating = existing == null;
+
         if (existing != null)
         {
             existing.Stars = req.Stars;
@@ -72,6 +80,18 @@ public class BusinessRatingsController : ControllerBase
         }
 
         await _db.SaveChangesAsync(ct);
+
+        if (isNewRating)
+        {
+            var rater = await _db.Users.AsNoTracking()
+                .Where(u => u.Id == raterId)
+                .Select(u => new { u.DisplayName })
+                .FirstOrDefaultAsync(ct);
+
+            var raterDisplayName = rater?.DisplayName ?? "Alguém";
+            await _notifications.NotifyNewRatingAsync(businessUserId, raterDisplayName, req.Stars, ct);
+        }
+
         return Ok(new { saved = true });
     }
 }

@@ -6,6 +6,9 @@ public static class NotificationTypes
     public const string Reply = "reply";
     public const string Like = "like";
     public const string Mention = "mention";
+    public const string GroupJoinApproved = "GroupJoinApproved"; // 16 chars — matches DB max
+    public const string NewRating = "NewRating";
+    public const string GroupEvent = "GroupEvent";               // group event created
 }
 
 public class Notification

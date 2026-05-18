@@ -7,6 +7,7 @@ using BairroNow.Api.Data;
 using BairroNow.Api.Hubs;
 using BairroNow.Api.Models.Entities;
 using BairroNow.Api.Models.Enums;
+using BairroNow.Api.Services;
 
 namespace BairroNow.Api.Controllers.v1;
 
@@ -17,12 +18,14 @@ public class GroupsController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly IHubContext<NotificationHub> _hub;
+    private readonly INotificationService _notifications;
     private const int DefaultPageSize = 20;
 
-    public GroupsController(AppDbContext db, IHubContext<NotificationHub> hub)
+    public GroupsController(AppDbContext db, IHubContext<NotificationHub> hub, INotificationService notifications)
     {
         _db = db;
         _hub = hub;
+        _notifications = notifications;
     }
 
     // GRP-004 — list groups with optional search/filter/pagination
@@ -281,8 +284,17 @@ public class GroupsController : ControllerBase
             m => m.GroupId == id && m.UserId == targetUserId && m.Status == GroupMemberStatus.PendingApproval, ct);
         if (target == null) return NotFound(new { error = "Solicitação não encontrada." });
 
+        var group = await _db.Groups.AsNoTracking()
+            .Where(g => g.Id == id)
+            .Select(g => new { g.Name })
+            .FirstOrDefaultAsync(ct);
+
         target.Status = GroupMemberStatus.Active;
         await _db.SaveChangesAsync(ct);
+
+        if (group != null)
+            await _notifications.NotifyGroupJoinApprovedAsync(targetUserId, group.Name, id, ct);
+
         return Ok(new { approved = true });
     }
 
@@ -684,6 +696,8 @@ public class GroupsController : ControllerBase
         };
         _db.GroupEvents.Add(ev);
         await _db.SaveChangesAsync();
+
+        _ = _notifications.NotifyGroupEventCreatedAsync(id, userId.Value, ev.Title, ev.Id);
 
         return Created($"/api/v1/groups/{id}/events/{ev.Id}", new { ev.Id });
     }

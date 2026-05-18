@@ -13,6 +13,25 @@ import { getPins } from "@/lib/api/map";
 import type { MapPin } from "@/lib/types/map";
 import EventsUpcoming from "@/components/features/EventsUpcoming";
 
+// ─── Trending types ───────────────────────────────────────────────────────────
+interface TrendingAuthor {
+  id: string;
+  displayName: string | null;
+  photoUrl: string | null;
+  isBusinessAccount?: boolean;
+  businessName?: string | null;
+}
+
+interface TrendingPost {
+  id: number;
+  author: TrendingAuthor;
+  body: string;
+  likeCount: number;
+  commentCount: number;
+  createdAt: string;
+  engagementScore?: number;
+}
+
 function PlusIcon() {
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -50,6 +69,140 @@ function SkeletonCard() {
       <div className="flex gap-3 pt-2 border-t border-border/60">
         <div className="h-7 w-16 rounded-xl animate-shimmer" />
         <div className="h-7 w-16 rounded-xl animate-shimmer" />
+      </div>
+    </div>
+  );
+}
+
+// ─── Trending helpers ─────────────────────────────────────────────────────────
+function FlameIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className ?? "w-4 h-4"}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12 2C10.5 4.5 8 6 8 10c0 1.5.5 3 1.5 4-1-.5-2-1.5-2-3 0 3.5 2.5 6 5 6s5-2.5 5-5.5c0-2.5-1.5-4.5-2.5-6C14.5 7 14 8.5 14 10c0-4-2-6.5-2-8z" />
+    </svg>
+  );
+}
+
+function TrendingAuthorAvatar({ author }: { author: TrendingAuthor }) {
+  if (author.photoUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={author.photoUrl}
+        alt={author.displayName ?? ""}
+        className="w-8 h-8 rounded-full object-cover shrink-0"
+      />
+    );
+  }
+  const initials = (author.displayName ?? "V")
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0] ?? "")
+    .join("")
+    .toUpperCase();
+  return (
+    <div className="w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0">
+      {initials}
+    </div>
+  );
+}
+
+function TrendingSkeletonCard() {
+  return (
+    <div className="min-w-[200px] max-w-[220px] shrink-0 bg-card border border-border/70 rounded-2xl p-3 space-y-2">
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 rounded-full animate-shimmer" />
+        <div className="flex-1 space-y-1">
+          <div className="h-2.5 w-20 rounded-full animate-shimmer" />
+          <div className="h-2 w-14 rounded-full animate-shimmer" />
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <div className="h-2.5 w-full rounded-full animate-shimmer" />
+        <div className="h-2.5 w-4/5 rounded-full animate-shimmer" />
+      </div>
+      <div className="flex items-center gap-1.5">
+        <div className="h-3.5 w-14 rounded-full animate-shimmer" />
+      </div>
+    </div>
+  );
+}
+
+function TrendingSection() {
+  const token = useAuthStore((s) => s.accessToken);
+  const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.bairronow.com.br";
+  const [posts, setPosts] = useState<TrendingPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token) { setLoading(false); return; }
+    fetch(`${API}/api/v1/feed/trending`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : Promise.resolve([])))
+      .then((data: TrendingPost[]) => setPosts(Array.isArray(data) ? data : []))
+      .catch(() => setPosts([]))
+      .finally(() => setLoading(false));
+  }, [token, API]);
+
+  if (!loading && posts.length === 0) return null;
+
+  return (
+    <div className="bg-card rounded-2xl border border-border/70 p-4 mb-4 animate-slide-up">
+      {/* Section header */}
+      <div className="flex items-center gap-2 mb-3">
+        <FlameIcon className="w-4 h-4 text-amber-500" />
+        <h2 className="text-sm font-bold text-fg">Em Alta</h2>
+      </div>
+
+      {/* Horizontal scroll row */}
+      <div className="overflow-x-auto flex gap-3 pb-2">
+        {loading
+          ? Array.from({ length: 3 }).map((_, i) => (
+              <TrendingSkeletonCard key={i} />
+            ))
+          : posts.map((post) => {
+              const score =
+                post.engagementScore ?? post.likeCount + post.commentCount;
+              return (
+                <Link
+                  key={post.id}
+                  href={`/feed/post/?id=${post.id}`}
+                  className="min-w-[200px] max-w-[220px] shrink-0 flex flex-col gap-2 p-3 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover-lift transition-all duration-200"
+                >
+                  {/* Author row */}
+                  <div className="flex items-center gap-2">
+                    <TrendingAuthorAvatar author={post.author} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-fg truncate">
+                        {post.author.displayName ?? "Vizinho"}
+                      </p>
+                      {post.author.isBusinessAccount && (
+                        <span className="text-[10px] font-semibold text-accent">
+                          {post.author.businessName ?? "Negócio"}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Post body — 2 line clamp */}
+                  <p className="text-sm text-fg line-clamp-2 leading-snug">
+                    {post.body}
+                  </p>
+
+                  {/* Engagement */}
+                  <div className="flex items-center gap-1 text-xs text-muted-fg mt-auto">
+                    <FlameIcon className="w-3.5 h-3.5 text-amber-500" />
+                    <span className="font-semibold">{score}</span>
+                  </div>
+                </Link>
+              );
+            })}
       </div>
     </div>
   );
@@ -189,6 +342,8 @@ export default function FeedPage() {
       {bairroId !== null && <BusinessSpotlight bairroId={bairroId} />}
 
       <EventsUpcoming bairroId={bairroId} />
+
+      <TrendingSection />
 
       {error && (
         <div className="mb-4 p-4 rounded-2xl bg-danger-light border border-danger/20 text-sm font-semibold text-danger">

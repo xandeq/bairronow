@@ -170,6 +170,53 @@ public class FeedQueryService : IFeedQueryService
         return rows.Select(p => MapPost(p, likeCounts, likedSet, commentCounts)).ToList();
     }
 
+    public async Task<List<PostDto>> GetTrendingAsync(Guid callerId, CancellationToken ct = default)
+    {
+        var caller = await _db.Users.AsNoTracking()
+            .Where(u => u.Id == callerId)
+            .Select(u => new { u.BairroId })
+            .FirstOrDefaultAsync(ct);
+
+        if (caller?.BairroId == null)
+            return new List<PostDto>();
+
+        var since = DateTime.UtcNow.AddDays(-7);
+
+        // Project counts inline so EF can translate the score into SQL
+        var rows = await _db.Posts.AsNoTracking()
+            .Include(p => p.Author)
+            .Include(p => p.Images)
+            .Where(p => p.BairroId == caller.BairroId.Value
+                     && p.IsPublished
+                     && p.CreatedAt >= since)
+            .Select(p => new
+            {
+                Post = p,
+                LikeCount  = p.Likes.Count,
+                CommentCount = p.Comments.Count(c => c.DeletedAt == null),
+                Score = p.Likes.Count * 2 + p.Comments.Count(c => c.DeletedAt == null) * 3
+            })
+            .OrderByDescending(x => x.Score)
+            .Take(10)
+            .ToListAsync(ct);
+
+        if (rows.Count == 0)
+            return new List<PostDto>();
+
+        var postIds = rows.Select(r => r.Post.Id).ToList();
+
+        var likedByMe = await _db.PostLikes.AsNoTracking()
+            .Where(l => postIds.Contains(l.PostId) && l.UserId == callerId)
+            .Select(l => l.PostId)
+            .ToListAsync(ct);
+        var likedSet = new HashSet<int>(likedByMe);
+
+        var likeCounts  = rows.ToDictionary(r => r.Post.Id, r => r.LikeCount);
+        var commentCounts = rows.ToDictionary(r => r.Post.Id, r => r.CommentCount);
+
+        return rows.Select(r => MapPost(r.Post, likeCounts, likedSet, commentCounts)).ToList();
+    }
+
     public static PostDto MapPost(Post p, IReadOnlyDictionary<int, int> likeCounts, HashSet<int> likedSet, IReadOnlyDictionary<int, int> commentCounts)
     {
         return new PostDto
