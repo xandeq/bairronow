@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -16,7 +15,6 @@ public class BusinessesController : ControllerBase
     public BusinessesController(AppDbContext db) => _db = db;
 
     // GET /api/v1/businesses
-    // Paginated list of business accounts, optionally filtered by bairroId and category
     [HttpGet("/api/v1/businesses")]
     [AllowAnonymous]
     [EnableRateLimiting("anonymous")]
@@ -30,57 +28,60 @@ public class BusinessesController : ControllerBase
         pageSize = Math.Clamp(pageSize, 1, 50);
         page = Math.Max(1, page);
 
-        var query = _db.Users.AsNoTracking()
+        var usersQuery = _db.Users.AsNoTracking()
             .Include(u => u.Bairro)
-            .Where(u =>
-                u.IsBusinessAccount &&
-                u.IsActive &&
-                !string.IsNullOrEmpty(u.BusinessName));
+            .Where(u => u.IsBusinessAccount && u.IsActive && u.BusinessName != null && u.BusinessName != "");
 
         if (bairroId.HasValue)
-            query = query.Where(u => u.BairroId == bairroId.Value);
+            usersQuery = usersQuery.Where(u => u.BairroId == bairroId.Value);
 
         if (!string.IsNullOrWhiteSpace(category))
-            query = query.Where(u => u.BusinessCategory == category);
+            usersQuery = usersQuery.Where(u => u.BusinessCategory == category);
 
-        var totalCount = await query.CountAsync(ct);
+        var totalCount = await usersQuery.CountAsync(ct);
         Response.Headers["X-Total-Count"] = totalCount.ToString();
 
-        // Join with BusinessRatings to compute aggregates
-        var items = await query
-            .Select(u => new
-            {
-                u.Id,
+        // 1. Get the business users (no ratings join yet)
+        var users = await usersQuery
+            .OrderBy(u => u.BusinessName)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(u => new {
+                u.Id, u.DisplayName, u.BusinessName, u.BusinessCategory,
+                u.PhotoUrl, u.IsVerified,
+                BairroNome = u.Bairro != null ? u.Bairro.Nome : null,
+            })
+            .ToListAsync(ct);
+
+        if (users.Count == 0)
+            return Ok(Array.Empty<object>());
+
+        // 2. Get ratings aggregates for these users in one query
+        var userIds = users.Select(u => u.Id).ToList();
+        var ratings = await _db.BusinessRatings.AsNoTracking()
+            .Where(r => userIds.Contains(r.BusinessUserId))
+            .GroupBy(r => r.BusinessUserId)
+            .Select(g => new { BusinessUserId = g.Key, Average = g.Average(r => (double)r.Stars), Total = g.Count() })
+            .ToListAsync(ct);
+
+        var ratingsMap = ratings.ToDictionary(r => r.BusinessUserId);
+
+        // 3. Merge and sort by rating descending in memory
+        var result = users
+            .Select(u => new {
+                userId = u.Id,
                 u.DisplayName,
                 u.BusinessName,
                 u.BusinessCategory,
                 u.PhotoUrl,
                 u.IsVerified,
-                BairroNome = u.Bairro != null ? u.Bairro.Nome : null,
-                RatingAverage = _db.BusinessRatings
-                    .Where(r => r.BusinessUserId == u.Id)
-                    .Average(r => (double?)r.Stars),
-                RatingTotal = _db.BusinessRatings
-                    .Count(r => r.BusinessUserId == u.Id),
+                u.BairroNome,
+                RatingAverage = ratingsMap.TryGetValue(u.Id, out var r) ? (double?)r.Average : null,
+                RatingTotal = ratingsMap.TryGetValue(u.Id, out var r2) ? r2.Total : 0,
             })
-            .OrderByDescending(u => u.RatingAverage)
+            .OrderByDescending(u => u.RatingAverage ?? -1)
             .ThenBy(u => u.BusinessName)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(ct);
-
-        var result = items.Select(u => new
-        {
-            userId = u.Id,
-            u.DisplayName,
-            u.BusinessName,
-            u.BusinessCategory,
-            u.PhotoUrl,
-            u.IsVerified,
-            u.BairroNome,
-            u.RatingAverage,
-            u.RatingTotal,
-        });
+            .ToList();
 
         return Ok(result);
     }
