@@ -42,6 +42,8 @@ public class AuthController : ControllerBase
         var (response, refreshToken, error) = await _authService.LoginAsync(request, GetIpAddress());
         if (error != null)
         {
+            if (error.Contains("banida"))
+                return StatusCode(403, new { error });
             if (error.Contains("bloqueada"))
                 return StatusCode(429, new { error });
             return Unauthorized(new { error = "E-mail ou senha incorretos." });

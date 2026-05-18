@@ -1,8 +1,81 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAuthStore } from "@/lib/auth";
 import BusinessRating from "@/components/features/BusinessRating";
+
+interface BusinessPhoto {
+  id: number;
+  url: string;
+  displayOrder: number;
+}
+
+function CameraIcon() {
+  return (
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+      <circle cx="12" cy="13" r="4" />
+    </svg>
+  );
+}
+
+function BusinessGallery({ userId }: { userId: string }) {
+  const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.bairronow.com.br";
+  const [photos, setPhotos] = useState<BusinessPhoto[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API}/api/v1/users/${userId}/business-photos`)
+      .then((r) => {
+        if (!r.ok) throw new Error("not found");
+        return r.json();
+      })
+      .then((d: BusinessPhoto[]) => setPhotos(d))
+      .catch(() => setPhotos([]))
+      .finally(() => setLoading(false));
+  }, [userId, API]);
+
+  if (loading) {
+    return (
+      <div className="bg-card rounded-2xl border border-border/70 p-6 space-y-4">
+        <div className="flex items-center gap-2 text-sm font-bold text-fg uppercase tracking-wide">
+          <CameraIcon />
+          <span>Galeria</span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="aspect-square rounded-xl animate-shimmer" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (photos.length === 0) return null;
+
+  return (
+    <div className="bg-card rounded-2xl border border-border/70 p-6 space-y-4">
+      <div className="flex items-center gap-2 text-sm font-bold text-fg uppercase tracking-wide">
+        <CameraIcon />
+        <span>Galeria</span>
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {photos.map((photo) => (
+          <div key={photo.id} className="overflow-hidden rounded-xl aspect-square relative">
+            <Image
+              src={photo.url}
+              alt="Foto do negócio"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 33vw, 200px"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 interface PublicProfile {
   userId: string;
@@ -256,6 +329,9 @@ export default function BusinessProfileClient({ userId }: Props) {
           <BusinessRating businessUserId={userId} canRate={true} />
         </div>
       )}
+
+      {/* Photo gallery section */}
+      <BusinessGallery userId={userId} />
     </div>
   );
 }

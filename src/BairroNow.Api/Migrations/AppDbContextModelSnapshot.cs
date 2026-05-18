@@ -118,6 +118,39 @@ namespace BairroNow.Api.Migrations
                     b.ToTable("Bairros");
                 });
 
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.BusinessPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("DisplayOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BusinessPhotos");
+                });
+
             modelBuilder.Entity("BairroNow.Api.Models.Entities.BusinessRating", b =>
                 {
                     b.Property<int>("Id")
@@ -1225,6 +1258,11 @@ namespace BairroNow.Api.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsBanned")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsBusinessAccount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -1428,6 +1466,17 @@ namespace BairroNow.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("VerificationVouches");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.BusinessPhoto", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.BusinessRating", b =>

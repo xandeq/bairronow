@@ -6,9 +6,20 @@ import type { ReportDto, ReportTargetType } from "@bairronow/shared-types";
 import FeedHeader from "@/components/layouts/FeedHeader";
 import { feedClient } from "@/lib/feed";
 import { useAuthStore } from "@/lib/auth";
+import api from "@/lib/api";
 
 // Phase 4 Plan 02 Task 2: extended unified moderation queue — posts + comments + listings.
 // Shared queue per Phase 4 D-21 — same endpoint, discriminated by targetType.
+// Wave J: ban button added (targetId-based, backend derives author).
+
+function BanIcon() {
+  return (
+    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+    </svg>
+  );
+}
 
 type TargetFilter = "all" | ReportTargetType;
 
@@ -66,6 +77,24 @@ export default function ModerationPage() {
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erro ao resolver");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleBan = async (report: ReportDto) => {
+    // ReportDto does not expose reportedUserId directly.
+    // reportedUserId is not available in the current DTO shape — skip ban for comments.
+    // For posts and listings the targetId is the content ID (not user ID);
+    // the backend endpoint accepts the content targetId and derives the author to ban.
+    if (!window.confirm("Banir este usuário? Esta ação irá desativar a conta.")) return;
+    setBusyId(report.id);
+    try {
+      // Backend looks up the content author from the report and bans them
+      await api.post(`/api/v1/admin/moderation/reports/${report.id}/ban-author`, {});
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erro ao banir usuário");
     } finally {
       setBusyId(null);
     }
@@ -168,7 +197,7 @@ export default function ModerationPage() {
                   <td className="px-3 py-2 font-medium">{r.reason}</td>
                   <td className="px-3 py-2 text-fg/70">{r.note ?? "—"}</td>
                   <td className="px-3 py-2">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       <button
                         type="button"
                         disabled={busyId === r.id}
@@ -185,6 +214,17 @@ export default function ModerationPage() {
                       >
                         Dispensar
                       </button>
+                      {(r.targetType === "post" || r.targetType === "listing") && (
+                        <button
+                          type="button"
+                          disabled={busyId === r.id}
+                          onClick={() => handleBan(r)}
+                          className="inline-flex items-center gap-1 bg-danger/10 text-danger hover:bg-danger/20 border border-danger/20 text-xs font-semibold rounded px-2 py-1 disabled:opacity-50 transition-colors"
+                        >
+                          <BanIcon />
+                          Banir
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

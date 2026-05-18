@@ -47,6 +47,9 @@ public class AppDbContext : DbContext
     // Wave F — Business Ratings
     public DbSet<BusinessRating> BusinessRatings => Set<BusinessRating>();
 
+    // Wave J — Business Photos
+    public DbSet<BusinessPhoto> BusinessPhotos => Set<BusinessPhoto>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -521,6 +524,25 @@ public class AppDbContext : DbContext
                 .HasForeignKey(e => e.VoucherId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+
+        // Wave J — BusinessPhoto
+        modelBuilder.Entity<BusinessPhoto>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).UseIdentityColumn();
+            entity.Property(e => e.Url).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.DisplayOrder).HasDefaultValue(0);
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => e.UserId);
+        });
+
+        // Wave J — IsBanned on User
+        modelBuilder.Entity<User>()
+            .Property(u => u.IsBanned).HasDefaultValue(false);
 
         // Wave F — BusinessRating
         modelBuilder.Entity<BusinessRating>(e => {

@@ -75,6 +75,9 @@ public class AuthService : IAuthService
         if (user == null)
             return (null, null, "E-mail ou senha incorretos.");
 
+        if (user.IsBanned)
+            return (null, null, "Conta banida.");
+
         if (user.LockoutEnd.HasValue && user.LockoutEnd > DateTime.UtcNow)
             return (null, null, "Conta bloqueada temporariamente. Tente novamente em 15 minutos.");
 

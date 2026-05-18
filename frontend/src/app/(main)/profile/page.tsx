@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 import FormField from "@/components/ui/FormField";
 import Card from "@/components/ui/Card";
@@ -12,6 +13,178 @@ import { profileApi } from "@/lib/api";
 import { updateProfileSchema } from "@bairronow/shared-validators";
 import { useAuthStore } from "@/lib/auth";
 import type { ProfileDto } from "@bairronow/shared-types";
+
+interface BusinessPhoto {
+  id: number;
+  url: string;
+  displayOrder: number;
+}
+
+function UploadIcon() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
+  );
+}
+
+function XIcon() {
+  return (
+    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+function BusinessGalleryUpload({ userId }: { userId: string }) {
+  const token = useAuthStore((s) => s.accessToken);
+  const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.bairronow.com.br";
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [photos, setPhotos] = useState<BusinessPhoto[]>([]);
+  const [loadingPhotos, setLoadingPhotos] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const fetchPhotos = () => {
+    setLoadingPhotos(true);
+    fetch(`${API}/api/v1/users/${userId}/business-photos`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error("Erro ao carregar fotos");
+        return r.json();
+      })
+      .then((d: BusinessPhoto[]) => setPhotos(d))
+      .catch(() => setPhotos([]))
+      .finally(() => setLoadingPhotos(false));
+  };
+
+  useEffect(() => {
+    fetchPhotos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("photo", file);
+      const res = await fetch(`${API}/api/v1/users/${userId}/business-photos`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+      });
+      if (!res.ok) throw new Error("Falha ao enviar foto");
+      fetchPhotos();
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Erro ao enviar foto");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleDelete = async (photoId: number) => {
+    setDeletingId(photoId);
+    try {
+      const res = await fetch(`${API}/api/v1/users/${userId}/business-photos/${photoId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Falha ao remover foto");
+      fetchPhotos();
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Erro ao remover foto");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const atMax = photos.length >= 10;
+
+  return (
+    <div className="space-y-3 pt-4 border-t border-border/60">
+      <h3 className="text-sm font-semibold text-fg">Fotos do negócio</h3>
+
+      {loadingPhotos ? (
+        <div className="flex gap-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="w-16 h-16 rounded-lg bg-muted animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {photos.map((photo) => (
+            <div key={photo.id} className="relative w-16 h-16">
+              <Image
+                src={photo.url}
+                alt="Foto do negócio"
+                width={64}
+                height={64}
+                className="w-16 h-16 object-cover rounded-lg"
+              />
+              <button
+                type="button"
+                disabled={deletingId === photo.id}
+                onClick={() => handleDelete(photo.id)}
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-danger text-white flex items-center justify-center shadow hover:bg-danger/90 disabled:opacity-50 transition-opacity"
+                title="Remover foto"
+              >
+                <XIcon />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {uploadError && (
+        <p className="text-sm text-danger font-semibold">{uploadError}</p>
+      )}
+
+      {atMax ? (
+        <p className="text-xs text-muted-fg">Máximo 10 fotos</p>
+      ) : (
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            id="business-photo-upload"
+            onChange={handleFileChange}
+            disabled={uploading}
+          />
+          <label
+            htmlFor="business-photo-upload"
+            className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-dashed border-border text-sm font-semibold text-muted-fg cursor-pointer hover:border-primary hover:text-primary transition-colors ${uploading ? "opacity-50 pointer-events-none" : ""}`}
+          >
+            {uploading ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" strokeLinecap="round" />
+                </svg>
+                Enviando...
+              </>
+            ) : (
+              <>
+                <UploadIcon />
+                Adicionar foto
+              </>
+            )}
+          </label>
+        </>
+      )}
+    </div>
+  );
+}
 
 function StoreIcon() {
   return (
@@ -222,6 +395,10 @@ export default function ProfilePage() {
                     <h3 className="text-sm font-semibold text-fg mb-3">Avaliações</h3>
                     <BusinessRating businessUserId={userId} canRate={false} />
                   </div>
+                )}
+                {/* Business photo gallery upload */}
+                {userId && (
+                  <BusinessGalleryUpload userId={userId} />
                 )}
               </div>
             )}

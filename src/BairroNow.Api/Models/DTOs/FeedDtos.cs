@@ -95,6 +95,7 @@ public class ReportDto
     public string ReporterEmail { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public string Status { get; set; } = "pending";
+    public string? AuthorUserId { get; set; }
 }
 
 public class NotificationDto

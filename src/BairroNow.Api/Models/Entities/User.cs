@@ -45,6 +45,9 @@ public class User
     public DateTime? DeletedAt { get; set; }
     public bool IsActive { get; set; } = true;
 
+    // Wave J: Ban
+    public bool IsBanned { get; set; }
+
     // Mobile push (Wave A)
     public string? ExpoPushToken { get; set; }
 
