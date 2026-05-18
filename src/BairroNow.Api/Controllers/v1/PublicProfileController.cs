@@ -18,6 +18,7 @@ public class PublicProfileController : ControllerBase
     // GET /api/v1/users/{id}/public
     // Returns public info for any user; full business fields if IsBusinessAccount
     [HttpGet("/api/v1/users/{userId:guid}/public")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetPublic(Guid userId, CancellationToken ct)
     {
         var user = await _db.Users.AsNoTracking()
