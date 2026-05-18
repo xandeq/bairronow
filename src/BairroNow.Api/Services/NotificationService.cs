@@ -66,7 +66,10 @@ public class NotificationService : INotificationService
                 Id = actorId,
                 DisplayName = actor?.DisplayName,
                 PhotoUrl = actor?.PhotoUrl,
-                IsVerified = actor?.IsVerified ?? false
+                IsVerified = actor?.IsVerified ?? false,
+                IsBusinessAccount = actor?.IsBusinessAccount ?? false,
+                BusinessName = actor?.BusinessName,
+                BusinessCategory = actor?.BusinessCategory,
             },
             IsRead = false,
             CreatedAt = notification.CreatedAt

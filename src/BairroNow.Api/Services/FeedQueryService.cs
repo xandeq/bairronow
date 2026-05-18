@@ -180,7 +180,10 @@ public class FeedQueryService : IFeedQueryService
                 Id = p.AuthorId,
                 DisplayName = p.Author?.DisplayName,
                 PhotoUrl = p.Author?.PhotoUrl,
-                IsVerified = p.Author?.IsVerified ?? false
+                IsVerified = p.Author?.IsVerified ?? false,
+                IsBusinessAccount = p.Author?.IsBusinessAccount ?? false,
+                BusinessName = p.Author?.BusinessName,
+                BusinessCategory = p.Author?.BusinessCategory,
             },
             BairroId = p.BairroId,
             Category = p.Category,
@@ -207,7 +210,10 @@ public class FeedQueryService : IFeedQueryService
                 Id = c.AuthorId,
                 DisplayName = c.Author?.DisplayName,
                 PhotoUrl = c.Author?.PhotoUrl,
-                IsVerified = c.Author?.IsVerified ?? false
+                IsVerified = c.Author?.IsVerified ?? false,
+                IsBusinessAccount = c.Author?.IsBusinessAccount ?? false,
+                BusinessName = c.Author?.BusinessName,
+                BusinessCategory = c.Author?.BusinessCategory,
             },
             Body = c.Body,
             CreatedAt = c.CreatedAt,

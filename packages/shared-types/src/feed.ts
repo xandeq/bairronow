@@ -21,6 +21,10 @@ export interface PostAuthorDto {
   displayName: string | null;
   photoUrl: string | null;
   isVerified: boolean;
+  // Wave E:
+  isBusinessAccount?: boolean;
+  businessName?: string | null;
+  businessCategory?: string | null;
 }
 
 export interface PostDto {

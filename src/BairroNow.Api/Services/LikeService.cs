@@ -55,7 +55,10 @@ public class LikeService : ILikeService
                 Id = l.UserId,
                 DisplayName = l.User!.DisplayName,
                 PhotoUrl = l.User.PhotoUrl,
-                IsVerified = l.User.IsVerified
+                IsVerified = l.User.IsVerified,
+                IsBusinessAccount = l.User.IsBusinessAccount,
+                BusinessName = l.User.BusinessName,
+                BusinessCategory = l.User.BusinessCategory,
             })
             .ToListAsync(ct);
     }

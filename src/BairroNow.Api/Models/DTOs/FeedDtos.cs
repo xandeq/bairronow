@@ -14,6 +14,10 @@ public class PostAuthorDto
     public string? DisplayName { get; set; }
     public string? PhotoUrl { get; set; }
     public bool IsVerified { get; set; }
+    // Wave E: business author
+    public bool IsBusinessAccount { get; set; }
+    public string? BusinessName { get; set; }
+    public string? BusinessCategory { get; set; }
 }
 
 public class PostDto

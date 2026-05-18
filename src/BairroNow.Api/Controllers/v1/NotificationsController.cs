@@ -40,7 +40,10 @@ public class NotificationsController : ControllerBase
                     Id = n.ActorUserId,
                     DisplayName = n.Actor!.DisplayName,
                     PhotoUrl = n.Actor.PhotoUrl,
-                    IsVerified = n.Actor.IsVerified
+                    IsVerified = n.Actor.IsVerified,
+                    IsBusinessAccount = n.Actor.IsBusinessAccount,
+                    BusinessName = n.Actor.BusinessName,
+                    BusinessCategory = n.Actor.BusinessCategory,
                 },
                 IsRead = n.IsRead,
                 CreatedAt = n.CreatedAt

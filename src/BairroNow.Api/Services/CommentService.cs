@@ -115,7 +115,10 @@ public class CommentService : ICommentService
                 Id = author.Id,
                 DisplayName = author.DisplayName,
                 PhotoUrl = author.PhotoUrl,
-                IsVerified = author.IsVerified
+                IsVerified = author.IsVerified,
+                IsBusinessAccount = author.IsBusinessAccount,
+                BusinessName = author.BusinessName,
+                BusinessCategory = author.BusinessCategory,
             },
             Body = comment.Body,
             CreatedAt = comment.CreatedAt
@@ -146,7 +149,10 @@ public class CommentService : ICommentService
                 Id = comment.AuthorId,
                 DisplayName = comment.Author?.DisplayName,
                 PhotoUrl = comment.Author?.PhotoUrl,
-                IsVerified = comment.Author?.IsVerified ?? false
+                IsVerified = comment.Author?.IsVerified ?? false,
+                IsBusinessAccount = comment.Author?.IsBusinessAccount ?? false,
+                BusinessName = comment.Author?.BusinessName,
+                BusinessCategory = comment.Author?.BusinessCategory,
             },
             Body = comment.Body,
             CreatedAt = comment.CreatedAt,
