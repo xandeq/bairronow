@@ -25,64 +25,80 @@ public class BusinessesController : ControllerBase
         [FromQuery] int pageSize = 20,
         CancellationToken ct = default)
     {
-        pageSize = Math.Clamp(pageSize, 1, 50);
-        page = Math.Max(1, page);
+        try
+        {
+            pageSize = Math.Clamp(pageSize, 1, 50);
+            page = Math.Max(1, page);
 
-        var usersQuery = _db.Users.AsNoTracking()
-            .Include(u => u.Bairro)
-            .Where(u => u.IsBusinessAccount && u.IsActive && u.BusinessName != null && u.BusinessName != "");
+            var usersQuery = _db.Users.AsNoTracking()
+                .Where(u => u.IsBusinessAccount && u.IsActive && u.BusinessName != null && u.BusinessName != "");
 
-        if (bairroId.HasValue)
-            usersQuery = usersQuery.Where(u => u.BairroId == bairroId.Value);
+            if (bairroId.HasValue)
+                usersQuery = usersQuery.Where(u => u.BairroId == bairroId.Value);
 
-        if (!string.IsNullOrWhiteSpace(category))
-            usersQuery = usersQuery.Where(u => u.BusinessCategory == category);
+            if (!string.IsNullOrWhiteSpace(category))
+                usersQuery = usersQuery.Where(u => u.BusinessCategory == category);
 
-        var totalCount = await usersQuery.CountAsync(ct);
-        Response.Headers["X-Total-Count"] = totalCount.ToString();
+            var totalCount = await usersQuery.CountAsync(ct);
 
-        // 1. Get the business users (no ratings join yet)
-        var users = await usersQuery
-            .OrderBy(u => u.BusinessName)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(u => new {
-                u.Id, u.DisplayName, u.BusinessName, u.BusinessCategory,
-                u.PhotoUrl, u.IsVerified,
-                BairroNome = u.Bairro != null ? u.Bairro.Nome : null,
-            })
-            .ToListAsync(ct);
+            // Fetch users (simple projection, no navigation properties)
+            var users = await usersQuery
+                .OrderBy(u => u.BusinessName)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => new {
+                    u.Id,
+                    u.DisplayName,
+                    u.BusinessName,
+                    u.BusinessCategory,
+                    u.PhotoUrl,
+                    u.IsVerified,
+                    u.BairroId,
+                })
+                .ToListAsync(ct);
 
-        if (users.Count == 0)
-            return Ok(Array.Empty<object>());
+            if (users.Count == 0)
+                return Ok(new { totalCount, items = Array.Empty<object>() });
 
-        // 2. Get ratings aggregates for these users in one query
-        var userIds = users.Select(u => u.Id).ToList();
-        var ratings = await _db.BusinessRatings.AsNoTracking()
-            .Where(r => userIds.Contains(r.BusinessUserId))
-            .GroupBy(r => r.BusinessUserId)
-            .Select(g => new { BusinessUserId = g.Key, Average = g.Average(r => (double)r.Stars), Total = g.Count() })
-            .ToListAsync(ct);
+            // Fetch bairro names separately
+            var bairroIds = users.Where(u => u.BairroId.HasValue).Select(u => u.BairroId!.Value).Distinct().ToList();
+            var bairros = bairroIds.Count > 0
+                ? await _db.Bairros.AsNoTracking()
+                    .Where(b => bairroIds.Contains(b.Id))
+                    .Select(b => new { b.Id, b.Nome })
+                    .ToDictionaryAsync(b => b.Id, b => b.Nome, ct)
+                : new Dictionary<int, string>();
 
-        var ratingsMap = ratings.ToDictionary(r => r.BusinessUserId);
+            // Fetch ratings aggregates
+            var userIds = users.Select(u => u.Id).ToList();
+            var ratingRows = await _db.BusinessRatings.AsNoTracking()
+                .Where(r => userIds.Contains(r.BusinessUserId))
+                .GroupBy(r => r.BusinessUserId)
+                .Select(g => new { UserId = g.Key, Avg = g.Average(r => (double?)r.Stars), Cnt = g.Count() })
+                .ToListAsync(ct);
+            var ratingsMap = ratingRows.ToDictionary(r => r.UserId);
 
-        // 3. Merge and sort by rating descending in memory
-        var result = users
-            .Select(u => new {
-                userId = u.Id,
-                u.DisplayName,
-                u.BusinessName,
-                u.BusinessCategory,
-                u.PhotoUrl,
-                u.IsVerified,
-                u.BairroNome,
-                RatingAverage = ratingsMap.TryGetValue(u.Id, out var r) ? (double?)r.Average : null,
-                RatingTotal = ratingsMap.TryGetValue(u.Id, out var r2) ? r2.Total : 0,
-            })
-            .OrderByDescending(u => u.RatingAverage ?? -1)
-            .ThenBy(u => u.BusinessName)
-            .ToList();
+            var items = users
+                .Select(u => new {
+                    userId = u.Id,
+                    u.DisplayName,
+                    u.BusinessName,
+                    u.BusinessCategory,
+                    u.PhotoUrl,
+                    u.IsVerified,
+                    BairroNome = u.BairroId.HasValue && bairros.TryGetValue(u.BairroId.Value, out var bn) ? bn : null,
+                    RatingAverage = ratingsMap.TryGetValue(u.Id, out var rv) ? rv.Avg : null,
+                    RatingTotal = ratingsMap.TryGetValue(u.Id, out var rv2) ? rv2.Cnt : 0,
+                })
+                .OrderByDescending(u => u.RatingAverage ?? -1)
+                .ThenBy(u => u.BusinessName)
+                .ToList();
 
-        return Ok(result);
+            return Ok(new { totalCount, items });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.GetType().Name, detail = ex.Message });
+        }
     }
 }
