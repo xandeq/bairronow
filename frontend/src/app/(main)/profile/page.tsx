@@ -7,8 +7,10 @@ import FormField from "@/components/ui/FormField";
 import Card from "@/components/ui/Card";
 import Avatar from "@/components/ui/Avatar";
 import VerifiedBadge from "@/components/VerifiedBadge";
+import BusinessRating from "@/components/features/BusinessRating";
 import { profileApi } from "@/lib/api";
 import { updateProfileSchema } from "@bairronow/shared-validators";
+import { useAuthStore } from "@/lib/auth";
 import type { ProfileDto } from "@bairronow/shared-types";
 
 function StoreIcon() {
@@ -39,6 +41,7 @@ function GlobeIcon() {
 }
 
 export default function ProfilePage() {
+  const userId = useAuthStore((s) => s.user?.id);
   const [profile, setProfile] = useState<ProfileDto | null>(null);
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
@@ -213,6 +216,13 @@ export default function ProfilePage() {
                     </div>
                   )}
                 </div>
+                {/* Business ratings — own profile: canRate=false */}
+                {userId && (
+                  <div className="mt-6 pt-5 border-t border-border/60">
+                    <h3 className="text-sm font-semibold text-fg mb-3">Avaliações</h3>
+                    <BusinessRating businessUserId={userId} canRate={false} />
+                  </div>
+                )}
               </div>
             )}
 

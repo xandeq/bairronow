@@ -118,6 +118,45 @@ namespace BairroNow.Api.Migrations
                     b.ToTable("Bairros");
                 });
 
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.BusinessRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("BusinessUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("RaterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessUserId");
+
+                    b.HasIndex("RaterId", "BusinessUserId")
+                        .IsUnique();
+
+                    b.ToTable("BusinessRatings");
+                });
+
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -1389,6 +1428,25 @@ namespace BairroNow.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("VerificationVouches");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.BusinessRating", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "BusinessUser")
+                        .WithMany()
+                        .HasForeignKey("BusinessUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "Rater")
+                        .WithMany()
+                        .HasForeignKey("RaterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BusinessUser");
+
+                    b.Navigation("Rater");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Comment", b =>

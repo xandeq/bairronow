@@ -184,9 +184,39 @@ public class GroupsController : ControllerBase
     }
 
     // GET /api/v1/groups/{id}/members
+    // Optional ?status=pending — returns pending members (owner/admin only)
     [HttpGet("{id:int}/members")]
-    public async Task<IActionResult> GetMembers(int id, [FromQuery] int page = 1)
+    public async Task<IActionResult> GetMembers(int id, [FromQuery] string? status, [FromQuery] int page = 1)
     {
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
+
+        if (string.Equals(status, "pending", StringComparison.OrdinalIgnoreCase))
+        {
+            var callerMember = await _db.GroupMembers.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.GroupId == id && m.UserId == userId.Value && m.Status == GroupMemberStatus.Active);
+            if (callerMember == null || callerMember.Role == GroupMemberRole.Member) return Forbid();
+
+            var pending = await _db.GroupMembers.AsNoTracking()
+                .Where(m => m.GroupId == id && m.Status == GroupMemberStatus.PendingApproval)
+                .OrderBy(m => m.JoinedAt)
+                .Skip((page - 1) * DefaultPageSize)
+                .Take(DefaultPageSize)
+                .Select(m => new
+                {
+                    m.Id,
+                    m.UserId,
+                    m.Role,
+                    m.Status,
+                    m.JoinedAt,
+                    DisplayName = m.User!.DisplayName,
+                    PhotoUrl = m.User.PhotoUrl
+                })
+                .ToListAsync();
+
+            return Ok(pending);
+        }
+
         var members = await _db.GroupMembers
             .AsNoTracking()
             .Where(m => m.GroupId == id && m.Status == GroupMemberStatus.Active)
@@ -206,6 +236,74 @@ public class GroupsController : ControllerBase
             .ToListAsync();
 
         return Ok(members);
+    }
+
+    // GET /api/v1/groups/{id}/pending — list pending join requests (owner/admin only)
+    [HttpGet("{id:int}/pending")]
+    public async Task<IActionResult> GetPending(int id, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
+
+        // Must be Owner or Admin
+        var callerMember = await _db.GroupMembers.AsNoTracking()
+            .FirstOrDefaultAsync(m => m.GroupId == id && m.UserId == userId.Value && m.Status == GroupMemberStatus.Active, ct);
+        if (callerMember == null || callerMember.Role == GroupMemberRole.Member) return Forbid();
+
+        var pending = await _db.GroupMembers.AsNoTracking()
+            .Include(m => m.User)
+            .Where(m => m.GroupId == id && m.Status == GroupMemberStatus.PendingApproval)
+            .OrderBy(m => m.JoinedAt)
+            .Select(m => new {
+                m.UserId,
+                m.User!.DisplayName,
+                m.User.PhotoUrl,
+                m.User.IsVerified,
+                m.JoinedAt
+            })
+            .ToListAsync(ct);
+
+        return Ok(pending);
+    }
+
+    // POST /api/v1/groups/{id}/members/{targetUserId}/approve
+    [HttpPost("{id:int}/members/{targetUserId:guid}/approve")]
+    public async Task<IActionResult> ApproveMember(int id, Guid targetUserId, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
+
+        var callerMember = await _db.GroupMembers.FirstOrDefaultAsync(
+            m => m.GroupId == id && m.UserId == userId.Value && m.Status == GroupMemberStatus.Active, ct);
+        if (callerMember == null || callerMember.Role == GroupMemberRole.Member) return Forbid();
+
+        var target = await _db.GroupMembers.FirstOrDefaultAsync(
+            m => m.GroupId == id && m.UserId == targetUserId && m.Status == GroupMemberStatus.PendingApproval, ct);
+        if (target == null) return NotFound(new { error = "Solicitação não encontrada." });
+
+        target.Status = GroupMemberStatus.Active;
+        await _db.SaveChangesAsync(ct);
+        return Ok(new { approved = true });
+    }
+
+    // POST /api/v1/groups/{id}/members/{targetUserId}/reject
+    [HttpPost("{id:int}/members/{targetUserId:guid}/reject")]
+    public async Task<IActionResult> RejectMember(int id, Guid targetUserId, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
+
+        var callerMember = await _db.GroupMembers.FirstOrDefaultAsync(
+            m => m.GroupId == id && m.UserId == userId.Value && m.Status == GroupMemberStatus.Active, ct);
+        if (callerMember == null || callerMember.Role == GroupMemberRole.Member) return Forbid();
+
+        var target = await _db.GroupMembers.FirstOrDefaultAsync(
+            m => m.GroupId == id && m.UserId == targetUserId && m.Status == GroupMemberStatus.PendingApproval, ct);
+        if (target == null) return NotFound(new { error = "Solicitação não encontrada." });
+
+        _db.GroupMembers.Remove(target);
+        await _db.SaveChangesAsync(ct);
+        return Ok(new { rejected = true });
     }
 
     // POST /api/v1/groups/{id}/members — join group

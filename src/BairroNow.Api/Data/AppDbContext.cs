@@ -44,6 +44,9 @@ public class AppDbContext : DbContext
     public DbSet<MagicLinkToken> MagicLinkTokens => Set<MagicLinkToken>();
     public DbSet<VerificationVouch> VerificationVouches => Set<VerificationVouch>();
 
+    // Wave F — Business Ratings
+    public DbSet<BusinessRating> BusinessRatings => Set<BusinessRating>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -517,6 +520,17 @@ public class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.VoucherId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Wave F — BusinessRating
+        modelBuilder.Entity<BusinessRating>(e => {
+            e.HasKey(r => r.Id);
+            e.Property(r => r.Id).UseIdentityColumn();
+            e.Property(r => r.Comment).HasMaxLength(500);
+            e.Property(r => r.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            e.HasIndex(r => new { r.RaterId, r.BusinessUserId }).IsUnique();
+            e.HasOne(r => r.Rater).WithMany().HasForeignKey(r => r.RaterId).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(r => r.BusinessUser).WithMany().HasForeignKey(r => r.BusinessUserId).OnDelete(DeleteBehavior.Restrict);
         });
 
         // Phase 6 — User new fields config

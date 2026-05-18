@@ -1,11 +1,22 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { getHubConnection } from '@/lib/signalr';
 import { useGroupStore } from '@/stores/group-store';
+import { useAuthStore } from '@/lib/auth';
 import { getGroup, getGroupPosts, createGroupPost, getGroupEvents, rsvpEvent, getGroupMembers } from '@/lib/api/groups';
 import type { GroupMember } from '@/lib/api/groups';
 import type { GroupPost, GroupEvent } from '@/lib/types/groups';
 import Avatar from '@/components/ui/Avatar';
+
+interface PendingMember {
+  userId: string;
+  displayName: string | null;
+  photoUrl: string | null;
+  isVerified: boolean;
+  joinedAt: string;
+}
 
 interface Props {
   groupId: number;
@@ -23,14 +34,27 @@ export default function GroupClient({ groupId }: Props) {
     currentGroup,
     setCurrentGroup,
   } = useGroupStore();
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const currentUserId = useAuthStore((s) => s.user?.id);
   const [composerBody, setComposerBody] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState<'feed' | 'events' | 'members'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'events' | 'members' | 'pending'>('feed');
 
   // Members tab state
   const [members, setMembers] = useState<GroupMember[]>([]);
   const [membersTotal, setMembersTotal] = useState(0);
   const [membersLoading, setMembersLoading] = useState(false);
+
+  // Pending members tab state
+  const [pending, setPending] = useState<PendingMember[]>([]);
+  const [pendingLoading, setPendingLoading] = useState(false);
+
+  const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.bairronow.com.br';
+
+  // Derive current user's role from members list
+  const myMember = members.find((m) => m.userId === currentUserId);
+  const myRole = myMember?.role ?? null;
+  const isAdminOrOwner = myRole === 'owner' || myRole === 'admin';
 
   // Load group detail and initial posts
   useEffect(() => {
@@ -89,6 +113,36 @@ export default function GroupClient({ groupId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, groupId]);
 
+  // Load pending members only when pending tab is active
+  useEffect(() => {
+    if (activeTab !== 'pending') return;
+    setPendingLoading(true);
+    fetch(`${API}/api/v1/groups/${groupId}/pending`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((d: PendingMember[]) => setPending(Array.isArray(d) ? d : []))
+      .catch(() => setPending([]))
+      .finally(() => setPendingLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, groupId]);
+
+  const handleApprove = async (userId: string) => {
+    await fetch(`${API}/api/v1/groups/${groupId}/members/${userId}/approve`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    setPending((prev) => prev.filter((m) => m.userId !== userId));
+  };
+
+  const handleReject = async (userId: string) => {
+    await fetch(`${API}/api/v1/groups/${groupId}/members/${userId}/reject`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    setPending((prev) => prev.filter((m) => m.userId !== userId));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!composerBody.trim()) return;
@@ -105,9 +159,35 @@ export default function GroupClient({ groupId }: Props) {
   return (
     <div className="container mx-auto px-4 py-6 max-w-2xl">
       {currentGroup && (
-        <div className="mb-4">
-          <h1 className="text-2xl font-semibold text-fg">{currentGroup.name}</h1>
-          <p className="text-sm text-muted-fg mt-1">{currentGroup.description}</p>
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold text-fg">{currentGroup.name}</h1>
+            <p className="text-sm text-muted-fg mt-1">{currentGroup.description}</p>
+          </div>
+          {/* Join button / membership status */}
+          {currentGroup.myStatus === 'PendingApproval' ? (
+            <button
+              disabled
+              className="shrink-0 text-sm font-semibold px-4 py-2 rounded-xl bg-muted text-muted-fg cursor-default"
+            >
+              Solicitação enviada
+            </button>
+          ) : currentGroup.myStatus === 'Active' ? (
+            <span className="shrink-0 text-sm font-semibold px-4 py-2 rounded-xl bg-muted text-muted-fg">
+              Membro
+            </span>
+          ) : (
+            <button
+              onClick={async () => {
+                const { joinGroup } = await import('@/lib/api/groups');
+                await joinGroup(groupId);
+                setCurrentGroup({ ...currentGroup, myStatus: currentGroup.joinPolicy === 'Closed' ? 'PendingApproval' : 'Active' });
+              }}
+              className="shrink-0 text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-white hover:bg-primary/90 transition-colors"
+            >
+              {currentGroup.joinPolicy === 'Closed' ? 'Solicitar entrada' : 'Entrar'}
+            </button>
+          )}
         </div>
       )}
 
@@ -133,7 +213,7 @@ export default function GroupClient({ groupId }: Props) {
         ).map(({ key, label, icon }) => (
           <button
             key={key}
-            onClick={() => setActiveTab(key)}
+            onClick={() => setActiveTab(key as typeof activeTab)}
             className={`pb-2 text-sm font-medium flex items-center gap-1.5 ${
               activeTab === key ? 'border-b-2 border-primary text-primary' : 'text-muted-fg'
             }`}
@@ -142,6 +222,25 @@ export default function GroupClient({ groupId }: Props) {
             {label}
           </button>
         ))}
+        {isAdminOrOwner && (
+          <button
+            onClick={() => setActiveTab('pending')}
+            className={`pb-2 text-sm font-medium flex items-center gap-1.5 ${
+              activeTab === 'pending' ? 'border-b-2 border-primary text-primary' : 'text-muted-fg'
+            }`}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Pendentes
+            {pending.length > 0 && (
+              <span className="ml-0.5 bg-danger text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                {pending.length}
+              </span>
+            )}
+          </button>
+        )}
       </div>
 
       {activeTab === 'feed' && (
@@ -201,6 +300,86 @@ export default function GroupClient({ groupId }: Props) {
       )}
 
       {activeTab === 'events' && <GroupEventsTab groupId={groupId} />}
+
+      {activeTab === 'pending' && isAdminOrOwner && (
+        <div className="space-y-3">
+          {/* Header */}
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-semibold text-fg">Solicitações de entrada</p>
+            {!pendingLoading && (
+              <span className="text-xs font-bold bg-muted text-muted-fg px-2 py-0.5 rounded-full">
+                {pending.length}
+              </span>
+            )}
+          </div>
+
+          {/* Skeleton loader */}
+          {pendingLoading && (
+            <div className="space-y-3">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="bg-card rounded-xl border border-border shadow-sm p-4 flex items-center gap-3 animate-pulse">
+                  <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-muted rounded w-32" />
+                    <div className="h-2.5 bg-muted rounded w-20" />
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="h-8 w-20 bg-muted rounded-xl" />
+                    <div className="h-8 w-20 bg-muted rounded-xl" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!pendingLoading && pending.length === 0 && (
+            <div className="text-center py-10">
+              <svg className="w-10 h-10 text-muted-fg mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <p className="text-sm text-muted-fg">Nenhuma solicitação pendente</p>
+            </div>
+          )}
+
+          {/* Pending list */}
+          {!pendingLoading && pending.map((m) => (
+            <div key={m.userId} className="bg-card rounded-xl border border-border shadow-sm p-4 flex items-center gap-3">
+              <Avatar src={m.photoUrl} name={m.displayName} size="sm" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <p className="text-sm font-medium text-fg truncate">
+                    {m.displayName ?? 'Vizinho'}
+                  </p>
+                  {m.isVerified && (
+                    <span className="shrink-0 text-[10px] font-bold bg-secondary/20 text-secondary px-1.5 py-0.5 rounded-full">
+                      Verificado
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-muted-fg">
+                  Há {formatDistanceToNow(new Date(m.joinedAt), { locale: ptBR })}
+                </p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => handleApprove(m.userId)}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-xl border border-primary text-primary hover:bg-primary/10 transition-colors"
+                >
+                  Aprovar
+                </button>
+                <button
+                  onClick={() => handleReject(m.userId)}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-xl border border-danger text-danger hover:bg-danger/10 transition-colors"
+                >
+                  Rejeitar
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {activeTab === 'members' && (
         <div className="space-y-3">
