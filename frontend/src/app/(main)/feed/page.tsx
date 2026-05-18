@@ -210,8 +210,7 @@ export default function FeedPage() {
           {items.map((post, i) => (
             <div
               key={post.id}
-              className="animate-fade-up"
-              style={{ animationDelay: `${Math.min(i * 40, 300)}ms` }}
+              className={`stagger-slide-${Math.min((i % 5) + 1, 5)}`}
             >
               <PostCard post={post} />
             </div>

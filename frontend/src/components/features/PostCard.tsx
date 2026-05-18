@@ -95,7 +95,7 @@ export default function PostCard({
   const gridCols = imageGridClass[Math.min(post.images.length, 4)] ?? "grid-cols-2";
 
   return (
-    <article className="bg-card rounded-2xl border border-border/70 overflow-hidden transition-all duration-200 hover:border-border-strong hover:shadow-sm animate-fade-up">
+    <article className="bg-card rounded-2xl border border-border/70 overflow-hidden transition-all duration-200 hover:border-border-strong hover:shadow-sm animate-slide-up hover-lift">
       <div className="p-5">
         {/* Header */}
         <header className="flex items-start gap-3 mb-4">
@@ -150,7 +150,7 @@ export default function PostCard({
       )}
 
       {/* Footer */}
-      <div className="px-5 py-3 border-t border-border/60 flex items-center gap-1">
+      <div className="px-5 py-3 border-t border-border/60 flex items-center gap-1 transition-all duration-200">
         <LikeButton
           postId={post.id}
           initialLiked={post.likedByMe}
@@ -161,7 +161,7 @@ export default function PostCard({
         {linkToDetail ? (
           <Link
             href={`/feed/post/?id=${post.id}`}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-fg hover:text-primary hover:bg-primary-light transition-all duration-200"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-fg hover:text-primary hover:bg-primary-light transition-all duration-200 active:scale-95"
             aria-label="Ver comentários"
           >
             <CommentIcon />
@@ -179,7 +179,7 @@ export default function PostCard({
         <button
           type="button"
           onClick={() => setReportOpen(true)}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-fg hover:text-danger hover:bg-danger-light transition-all duration-200"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-fg hover:text-danger hover:bg-danger-light transition-all duration-200 active:scale-95"
         >
           <FlagIcon />
           <span className="hidden sm:inline">Denunciar</span>
@@ -190,7 +190,7 @@ export default function PostCard({
             type="button"
             onClick={handleDelete}
             disabled={busy}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-fg hover:text-danger hover:bg-danger-light transition-all duration-200 disabled:opacity-40"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-fg hover:text-danger hover:bg-danger-light transition-all duration-200 active:scale-95 disabled:opacity-40"
           >
             <TrashIcon />
             <span className="hidden sm:inline">Excluir</span>

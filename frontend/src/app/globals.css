@@ -145,12 +145,67 @@ html, body {
   animation: badge-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-/* Stagger helpers */
+/* Stagger helpers (legacy — kept for existing usage) */
 .stagger-1 { animation-delay: 60ms; }
 .stagger-2 { animation-delay: 120ms; }
 .stagger-3 { animation-delay: 180ms; }
 .stagger-4 { animation-delay: 240ms; }
 .stagger-5 { animation-delay: 300ms; }
+
+/* ─── Premium micro-animations ───────────────────────────── */
+
+/* Card entrance — stagger with CSS custom property */
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.stagger-slide-1 { animation-delay: 50ms; }
+.stagger-slide-2 { animation-delay: 100ms; }
+.stagger-slide-3 { animation-delay: 150ms; }
+.stagger-slide-4 { animation-delay: 200ms; }
+.stagger-slide-5 { animation-delay: 250ms; }
+
+/* Hover lift */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -8px rgba(0,0,0,0.12);
+}
+
+/* Pulse dot (status indicators) */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.7; }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Number count-up shimmer overlay for stat cards */
+@keyframes count-shimmer {
+  from { background-position: -200% center; }
+  to   { background-position: 200% center; }
+}
+
+/* Map marker pulse ring */
+.marker-pulse-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid #2563EB;
+  animation: marker-pulse 2s ease-out infinite;
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes marker-pulse {
+  0%   { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
 
 /* ─── Dark mode overrides ────────────────────────────────── */
 .dark {

@@ -1,16 +1,19 @@
 import { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import Footer from "./Footer";
 
 export interface AuthLayoutProps {
   title: string;
   subtitle?: string;
+  illustration?: string; // path to /illustrations/*.webp
   children: ReactNode;
 }
 
 export default function AuthLayout({
   title,
   subtitle,
+  illustration,
   children,
 }: AuthLayoutProps) {
   return (
@@ -39,6 +42,19 @@ export default function AuthLayout({
 
       <main className="relative flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md animate-fade-up">
+          {/* Illustration */}
+          {illustration && (
+            <div className="mb-5 rounded-2xl overflow-hidden shadow-md">
+              <Image
+                src={illustration}
+                alt=""
+                width={896}
+                height={504}
+                className="w-full object-cover"
+                priority
+              />
+            </div>
+          )}
           {/* Card */}
           <div className="bg-card border border-border/70 rounded-3xl p-8 shadow-lg">
             <div className="mb-7 text-center">

@@ -15,9 +15,12 @@ function createMarkerIcon(isBusinessAccount?: boolean) {
   const svgPath = isBusinessAccount
     ? 'M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z M3 6h18 M16 10a4 4 0 0 1-8 0'
     : 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10';
+  const pulseRing = isBusinessAccount
+    ? ''
+    : '<div class="marker-pulse-ring"></div>';
   return L.divIcon({
     className: '',
-    html: `<div style="width:32px;height:32px;border-radius:${isBusinessAccount ? '6px' : '50%'};background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${svgPath}"/></svg></div>`,
+    html: `<div style="position:relative;overflow:visible;width:32px;height:32px;border-radius:${isBusinessAccount ? '6px' : '50%'};background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25)">${pulseRing}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${svgPath}"/></svg></div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 16],
   });

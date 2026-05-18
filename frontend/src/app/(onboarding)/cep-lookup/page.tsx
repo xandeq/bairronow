@@ -59,6 +59,7 @@ export default function CEPLookupPage() {
     <AuthLayout
       title="Onde você mora?"
       subtitle="Confirme seu endereço para entrar na comunidade"
+      illustration="/illustrations/neighborhood-community.webp"
     >
       <div className="space-y-5">
         {/* Step progress */}

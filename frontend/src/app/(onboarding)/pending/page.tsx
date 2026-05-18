@@ -26,6 +26,7 @@ export default function PendingPage() {
     <AuthLayout
       title="Aguardando verificacao"
       subtitle="Recebemos seu comprovante"
+      illustration="/illustrations/marketplace-local.webp"
     >
       <div className="space-y-5">
         {current === "pending" && (

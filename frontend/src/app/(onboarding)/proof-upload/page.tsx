@@ -51,6 +51,7 @@ export default function ProofUploadPage() {
     <AuthLayout
       title="Comprovante de residência"
       subtitle="Quase lá! Envie um documento que comprove seu endereço"
+      illustration="/illustrations/map-connect.webp"
     >
       <div className="space-y-5">
         {/* Step progress */}
