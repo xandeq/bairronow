@@ -17,7 +17,7 @@ public class BusinessesController : ControllerBase
     // GET /api/v1/businesses
     [HttpGet("/api/v1/businesses")]
     [AllowAnonymous]
-    [EnableRateLimiting("anonymous")]
+    [EnableRateLimiting("public")]
     public async Task<IActionResult> List(
         [FromQuery] int? bairroId,
         [FromQuery] string? category,
