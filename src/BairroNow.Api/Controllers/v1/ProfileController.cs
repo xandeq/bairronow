@@ -15,6 +15,12 @@ public class ProfileDto
     public string? Bio { get; set; }
     public string? BairroNome { get; set; }
     public bool IsVerified { get; set; }
+    public bool IsBusinessAccount { get; set; }
+    public string? BusinessName { get; set; }
+    public string? BusinessCategory { get; set; }
+    public string? BusinessDescription { get; set; }
+    public string? BusinessPhone { get; set; }
+    public string? BusinessWebsite { get; set; }
 }
 
 public class UpdateProfileRequest
@@ -25,6 +31,23 @@ public class UpdateProfileRequest
 
     [StringLength(160)]
     public string Bio { get; set; } = string.Empty;
+
+    public bool IsBusinessAccount { get; set; }
+
+    [StringLength(120)]
+    public string? BusinessName { get; set; }
+
+    [StringLength(80)]
+    public string? BusinessCategory { get; set; }
+
+    [StringLength(500)]
+    public string? BusinessDescription { get; set; }
+
+    [StringLength(30)]
+    public string? BusinessPhone { get; set; }
+
+    [StringLength(200)]
+    public string? BusinessWebsite { get; set; }
 }
 
 [ApiController]
@@ -58,7 +81,13 @@ public class ProfileController : ControllerBase
             PhotoUrl = user.PhotoUrl,
             Bio = user.Bio,
             BairroNome = user.Bairro?.Nome,
-            IsVerified = user.IsVerified
+            IsVerified = user.IsVerified,
+            IsBusinessAccount = user.IsBusinessAccount,
+            BusinessName = user.BusinessName,
+            BusinessCategory = user.BusinessCategory,
+            BusinessDescription = user.BusinessDescription,
+            BusinessPhone = user.BusinessPhone,
+            BusinessWebsite = user.BusinessWebsite
         });
     }
 
@@ -73,6 +102,25 @@ public class ProfileController : ControllerBase
 
         user.DisplayName = req.DisplayName;
         user.Bio = string.IsNullOrWhiteSpace(req.Bio) ? null : req.Bio;
+        user.IsBusinessAccount = req.IsBusinessAccount;
+
+        if (req.IsBusinessAccount)
+        {
+            user.BusinessName = req.BusinessName;
+            user.BusinessCategory = req.BusinessCategory;
+            user.BusinessDescription = req.BusinessDescription;
+            user.BusinessPhone = req.BusinessPhone;
+            user.BusinessWebsite = req.BusinessWebsite;
+        }
+        else
+        {
+            user.BusinessName = null;
+            user.BusinessCategory = null;
+            user.BusinessDescription = null;
+            user.BusinessPhone = null;
+            user.BusinessWebsite = null;
+        }
+
         await _db.SaveChangesAsync(ct);
 
         return Ok(new ProfileDto
@@ -80,7 +128,13 @@ public class ProfileController : ControllerBase
             DisplayName = user.DisplayName,
             PhotoUrl = user.PhotoUrl,
             Bio = user.Bio,
-            IsVerified = user.IsVerified
+            IsVerified = user.IsVerified,
+            IsBusinessAccount = user.IsBusinessAccount,
+            BusinessName = user.BusinessName,
+            BusinessCategory = user.BusinessCategory,
+            BusinessDescription = user.BusinessDescription,
+            BusinessPhone = user.BusinessPhone,
+            BusinessWebsite = user.BusinessWebsite
         });
     }
 

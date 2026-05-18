@@ -50,6 +50,11 @@ public class User
 
     // Wave B: Business account type
     public bool IsBusinessAccount { get; set; }
+    public string? BusinessName { get; set; }
+    public string? BusinessCategory { get; set; }
+    public string? BusinessDescription { get; set; }
+    public string? BusinessPhone { get; set; }
+    public string? BusinessWebsite { get; set; }
 
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

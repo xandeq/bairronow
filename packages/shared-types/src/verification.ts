@@ -31,9 +31,21 @@ export interface ProfileDto {
   bio: string | null;
   bairroNome: string | null;
   isVerified: boolean;
+  isBusinessAccount: boolean;
+  businessName: string | null;
+  businessCategory: string | null;
+  businessDescription: string | null;
+  businessPhone: string | null;
+  businessWebsite: string | null;
 }
 
 export interface UpdateProfileRequest {
   displayName: string;
   bio: string;
+  isBusinessAccount: boolean;
+  businessName?: string;
+  businessCategory?: string;
+  businessDescription?: string;
+  businessPhone?: string;
+  businessWebsite?: string;
 }

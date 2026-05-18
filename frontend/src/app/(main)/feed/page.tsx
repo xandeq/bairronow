@@ -2,18 +2,30 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import FeedHeader from "@/components/layouts/FeedHeader";
 import PostCard from "@/components/features/PostCard";
 import PostComposer from "@/components/features/PostComposer";
 import EmptyState from "@/components/ui/EmptyState";
 import { useFeedStore } from "@/stores/feed-store";
 import { useAuthStore } from "@/lib/auth";
+import { getPins } from "@/lib/api/map";
+import type { MapPin } from "@/lib/types/map";
 
 function PlusIcon() {
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="5" x2="12" y2="19" />
       <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
+function StoreIcon() {
+  return (
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
     </svg>
   );
 }
@@ -42,6 +54,84 @@ function SkeletonCard() {
   );
 }
 
+function BusinessAvatarCircle({ name }: { name: string }) {
+  const initials = name
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0] ?? "")
+    .join("")
+    .toUpperCase();
+  return (
+    <div className="w-8 h-8 rounded-full bg-accent/20 text-accent flex items-center justify-center text-xs font-bold shrink-0">
+      {initials || "N"}
+    </div>
+  );
+}
+
+function BusinessSpotlight({ bairroId }: { bairroId: number }) {
+  const [businesses, setBusinesses] = useState<MapPin[]>([]);
+  const [spotlightLoading, setSpotlightLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    getPins(bairroId, "businesses")
+      .then((pins) => {
+        if (!mounted) return;
+        setBusinesses(pins.filter((p) => p.isBusinessAccount).slice(0, 4));
+      })
+      .catch(() => {
+        if (mounted) setBusinesses([]);
+      })
+      .finally(() => {
+        if (mounted) setSpotlightLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [bairroId]);
+
+  if (!spotlightLoading && businesses.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="bg-card rounded-2xl border border-border/70 p-4 mb-4">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-accent">
+          <StoreIcon />
+        </span>
+        <h2 className="text-sm font-bold text-fg">Negocios do Bairro</h2>
+      </div>
+
+      {spotlightLoading ? (
+        <div className="flex gap-2 flex-wrap">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/70 animate-shimmer">
+              <div className="w-6 h-6 rounded-full bg-muted" />
+              <div className="w-16 h-3 rounded-full bg-muted" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex gap-2 flex-wrap">
+          {businesses.map((biz) => (
+            <Link
+              key={biz.userId}
+              href="/map/"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/70 bg-muted hover:border-accent/50 hover:bg-accent/5 transition-colors duration-150"
+            >
+              <BusinessAvatarCircle name={biz.displayName ?? "N"} />
+              <span className="text-xs font-semibold text-fg truncate max-w-[100px]">
+                {biz.displayName ?? "Negocio"}
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function FeedPage() {
   const router = useRouter();
   const items = useFeedStore((s) => s.items);
@@ -52,17 +142,19 @@ export default function FeedPage() {
   const loadMore = useFeedStore((s) => s.loadMore);
 
   const [composerOpen, setComposerOpen] = useState(false);
+  const [bairroId, setBairroId] = useState<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => {
       const u = useAuthStore.getState().user;
-      const bairroId = u?.bairroId ?? null;
-      if (!bairroId) {
+      const id = u?.bairroId ?? null;
+      if (!id) {
         router.replace("/cep-lookup/");
         return;
       }
-      loadFirst(bairroId);
+      setBairroId(id);
+      loadFirst(id);
     }, 0);
     return () => clearTimeout(t);
   }, [router, loadFirst]);
@@ -70,10 +162,10 @@ export default function FeedPage() {
   const onIntersect = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const u = useAuthStore.getState().user;
-      const bairroId = u?.bairroId ?? null;
-      if (!bairroId) return;
+      const id = u?.bairroId ?? null;
+      if (!id) return;
       if (entries[0]?.isIntersecting && hasMore && !loading) {
-        loadMore(bairroId);
+        loadMore(id);
       }
     },
     [hasMore, loading, loadMore]
@@ -93,6 +185,8 @@ export default function FeedPage() {
     <div className="max-w-2xl mx-auto">
       <FeedHeader />
 
+      {bairroId !== null && <BusinessSpotlight bairroId={bairroId} />}
+
       {error && (
         <div className="mb-4 p-4 rounded-2xl bg-danger-light border border-danger/20 text-sm font-semibold text-danger">
           {error}
@@ -108,7 +202,7 @@ export default function FeedPage() {
       ) : items.length === 0 ? (
         <EmptyState
           title="Nenhum post ainda no seu bairro"
-          description="Seja o primeiro a compartilhar uma novidade com a vizinhança."
+          description="Seja o primeiro a compartilhar uma novidade com a vizinhanca."
           action={{ label: "Criar post", onClick: () => setComposerOpen(true) }}
         />
       ) : (
