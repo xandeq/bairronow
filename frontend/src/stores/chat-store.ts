@@ -115,7 +115,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
         });
       });
 
-      // Re-join active conversation group after reconnect so messages keep arriving
+      // Re-join active conversation group after reconnect so messages keep arriving.
+      // Also reload conversations so listing status (expired/sold) is fresh in the UI.
       hub.onreconnected(async () => {
         set({ connected: true });
         const { activeConversationId } = get();
@@ -126,6 +127,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
             // best-effort
           }
         }
+        void get().loadConversations();
       });
 
       // Update connected state when hub permanently closes (all reconnect attempts exhausted)

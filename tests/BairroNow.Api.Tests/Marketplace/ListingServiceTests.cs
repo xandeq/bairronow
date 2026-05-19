@@ -224,4 +224,142 @@ public class ListingServiceTests
         var dto = await svc.GetByIdAsync(sellerId, created.Id);
         dto!.DaysUntilExpiry.Should().Be(1);
     }
+
+    // ─── Wave M hardening regression: concurrent & notification edge cases ─────
+
+    [Fact]
+    public async Task UpdateAsync_ExpiredListing_DoesNotNotifyFavoriters()
+    {
+        // Expired listings can be edited (seller prepares content before renewing),
+        // but price-change notifications must NOT fire — favoriters should not be
+        // notified about price changes on listings they can't buy anyway.
+        var (svc, db, sellerId) = BuildSut();
+        var notifMock = new Mock<INotificationService>();
+        notifMock.Setup(n => n.NotifyMentionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        // Rebuild svc with the verifiable mock
+        var config = new Mock<IConfiguration>();
+        config.Setup(c => c.GetSection("Features")["FullTextSearchEnabled"]).Returns("false");
+        var svcWithMock = new ListingService(
+            db, new Mock<IFileStorageService>().Object,
+            new CreateListingRequestValidator(),
+            new UpdateListingRequestValidator(),
+            notifMock.Object,
+            new MemoryCache(new MemoryCacheOptions()),
+            NullLogger<ListingService>.Instance,
+            config.Object);
+
+        var buyerId = Guid.NewGuid();
+        db.Users.Add(new User { Id = buyerId, Email = "buyer@x.com", PasswordHash = "h", DisplayName = "Buyer", BairroId = 1, IsVerified = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow });
+        await db.SaveChangesAsync();
+
+        // Create listing and add a favorite
+        db.Listings.Add(new Listing
+        {
+            SellerId = sellerId, BairroId = 1, Title = "Test", Description = "desc",
+            Price = 100m, CategoryCode = "outros", SubcategoryCode = "diversos",
+            Status = ListingStatus.Expired, ExpiresAt = DateTime.UtcNow.AddDays(-1),
+            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        });
+        await db.SaveChangesAsync();
+        var listingId = db.Listings.First().Id;
+        db.ListingFavorites.Add(new ListingFavorite { ListingId = listingId, UserId = buyerId, SnapshotPrice = 100m, CreatedAt = DateTime.UtcNow });
+        await db.SaveChangesAsync();
+
+        // Change price on expired listing — notification must NOT fire
+        await svcWithMock.UpdateAsync(sellerId, listingId, new UpdateListingRequest { Price = 50m });
+
+        notifMock.Verify(
+            n => n.NotifyMentionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_RemovedListing_ThrowsValidationException()
+    {
+        var (svc, db, sellerId) = BuildSut();
+        db.Listings.Add(new Listing
+        {
+            SellerId = sellerId, BairroId = 1, Title = "Removed", Description = "desc",
+            Price = 100m, CategoryCode = "outros", SubcategoryCode = "diversos",
+            Status = ListingStatus.Removed, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        });
+        await db.SaveChangesAsync();
+        var id = db.Listings.First().Id;
+
+        var act = () => svc.UpdateAsync(sellerId, id, new UpdateListingRequest { Price = 50m });
+        await act.Should().ThrowAsync<ListingValidationException>().WithMessage("*removidos*");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_SoldListing_ThrowsValidationException()
+    {
+        var (svc, db, sellerId) = BuildSut();
+        db.Listings.Add(new Listing
+        {
+            SellerId = sellerId, BairroId = 1, Title = "Sold", Description = "desc",
+            Price = 100m, CategoryCode = "outros", SubcategoryCode = "diversos",
+            Status = ListingStatus.Sold, SoldAt = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        });
+        await db.SaveChangesAsync();
+        var id = db.Listings.First().Id;
+
+        var act = () => svc.UpdateAsync(sellerId, id, new UpdateListingRequest { Price = 50m });
+        await act.Should().ThrowAsync<ListingValidationException>().WithMessage("*vendidos*");
+    }
+
+    [Fact]
+    public async Task RenewAsync_SimultaneousCalls_BothSucceedAndListingIsActive()
+    {
+        // Simulate two tabs calling RenewAsync on the same expired listing simultaneously.
+        // Both should succeed (load-then-save with EF in-memory — no concurrency exception),
+        // and the final state must be active with ExpiresAt ~30 days out.
+        var (svc, db, sellerId) = BuildSut();
+        db.Listings.Add(new Listing
+        {
+            SellerId = sellerId, BairroId = 1, Title = "Concurrent", Description = "desc",
+            Price = 50m, CategoryCode = "outros", SubcategoryCode = "diversos",
+            Status = ListingStatus.Expired, ExpiresAt = DateTime.UtcNow.AddDays(-2),
+            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        });
+        await db.SaveChangesAsync();
+        var id = db.Listings.First().Id;
+
+        // Fire both concurrently (in-memory db serializes, but tests the idempotency of outcome)
+        var t1 = svc.RenewAsync(sellerId, id);
+        var t2 = svc.RenewAsync(sellerId, id);
+        var results = await Task.WhenAll(t1, t2);
+
+        results[0].Status.Should().Be("active");
+        results[1].Status.Should().Be("active");
+        var final = await db.Listings.FindAsync(id);
+        final!.Status.Should().Be(ListingStatus.Active);
+        final.ExpiresAt.Should().BeCloseTo(DateTime.UtcNow.AddDays(30), TimeSpan.FromSeconds(10));
+    }
+
+    [Fact]
+    public async Task ToggleFavorite_UnfavoritingExpiredListing_AlwaysSucceeds()
+    {
+        // Unfavoriting must always be permitted regardless of listing status —
+        // the check is reordered so existing favorites are removed before status guard.
+        var (svc, db, sellerId) = BuildSut();
+        var buyerId = Guid.NewGuid();
+        db.Users.Add(new User { Id = buyerId, Email = "b@x.com", PasswordHash = "h", DisplayName = "B", BairroId = 1, IsVerified = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow });
+        db.Listings.Add(new Listing
+        {
+            Id = 999, SellerId = sellerId, BairroId = 1, Title = "Exp", Description = "d",
+            Price = 1m, CategoryCode = "outros", SubcategoryCode = "diversos",
+            Status = ListingStatus.Expired, ExpiresAt = DateTime.UtcNow.AddDays(-1),
+            CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        });
+        db.ListingFavorites.Add(new ListingFavorite { ListingId = 999, UserId = buyerId, SnapshotPrice = 1m, CreatedAt = DateTime.UtcNow });
+        await db.SaveChangesAsync();
+
+        // Unfavoriting an expired listing must succeed (returns false = unfavorited)
+        var result = await svc.ToggleFavoriteAsync(buyerId, 999);
+        result.Should().BeFalse();
+        db.ListingFavorites.Should().BeEmpty();
+    }
 }

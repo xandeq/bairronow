@@ -153,8 +153,8 @@ public class ListingService : IListingService
         await _db.SaveChangesAsync(ct);
         InvalidateGridCache(listing.BairroId);
 
-        // MKT-009: notify favoriters on price change (Open Question 1)
-        if (dto.Price.HasValue && dto.Price.Value != oldPrice)
+        // MKT-009: notify favoriters on price change — only while listing is active (not expired/sold/removed)
+        if (dto.Price.HasValue && dto.Price.Value != oldPrice && listing.Status == ListingStatus.Active)
         {
             var favoriterIds = await _db.ListingFavorites
                 .Where(f => f.ListingId == listingId && f.UserId != sellerId)

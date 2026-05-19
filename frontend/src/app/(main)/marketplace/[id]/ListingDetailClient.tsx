@@ -145,12 +145,12 @@ export default function ListingDetailClient() {
             {listing.title}
           </h1>
           {isSold && (
-            <span className="bg-danger text-white font-extrabold px-3 py-1 rounded-xl">
+            <span role="status" aria-label="Anuncio vendido" className="bg-danger text-white font-extrabold px-3 py-1 rounded-xl">
               VENDIDO
             </span>
           )}
           {isExpired && (
-            <span className="bg-gray-600 text-white font-extrabold px-3 py-1 rounded-xl">
+            <span role="status" aria-label="Anuncio expirado" className="bg-gray-600 text-white font-extrabold px-3 py-1 rounded-xl">
               EXPIRADO
             </span>
           )}

@@ -132,6 +132,7 @@ public class ListingsController : ControllerBase
 
     [HttpPost("{id:int}/renew")]
     [EnableRateLimiting("feed-write")]
+    [Idempotent]
     public async Task<IActionResult> Renew(int id, CancellationToken ct)
     {
         var userId = GetUserId();
