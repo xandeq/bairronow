@@ -15,4 +15,7 @@ public interface INotificationService
     // Wave N: marketplace seller + favoriter alerts
     Task NotifyListingExpiredAsync(Guid sellerId, string listingTitle, int listingId, CancellationToken ct = default);
     Task NotifyPriceDropAsync(Guid favoriterId, Guid sellerId, string listingTitle, int listingId, decimal oldPrice, decimal newPrice, CancellationToken ct = default);
+
+    // Wave P: DM push — fired when recipient is offline (not in SignalR conv room)
+    Task NotifyNewMessageAsync(Guid recipientId, Guid senderId, int conversationId, CancellationToken ct = default);
 }

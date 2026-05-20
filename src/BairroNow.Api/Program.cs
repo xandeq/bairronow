@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using BairroNow.Api.Data;
 using BairroNow.Api.Data.Seed;
+using Microsoft.AspNetCore.SignalR;
 using BairroNow.Api.Hubs;
 using BairroNow.Api.Middleware;
 using BairroNow.Api.Services;

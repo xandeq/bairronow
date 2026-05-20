@@ -13,6 +13,10 @@ public class NotificationHub : Hub
     private readonly AppDbContext _db;
     private readonly ILogger<NotificationHub> _logger;
 
+    // Rate limit: max 15 join/leave calls per method per connection per 60s window
+    private const int RlMax = 15;
+    private const long RlWindowMs = 60_000;
+
     public NotificationHub(AppDbContext db, ILogger<NotificationHub> logger)
     {
         _db = db;
@@ -21,6 +25,7 @@ public class NotificationHub : Hub
 
     public async Task JoinBairro(string bairroId)
     {
+        ThrottleOrThrow("JoinBairro");
         await Groups.AddToGroupAsync(Context.ConnectionId, $"bairro-{bairroId}");
     }
 
@@ -28,6 +33,7 @@ public class NotificationHub : Hub
     // No parallel ChatHub is created.
     public async Task JoinConversation(int conversationId)
     {
+        ThrottleOrThrow("JoinConversation");
         var userId = GetUserId();
         if (userId == null) throw new HubException("Unauthorized");
 
@@ -48,12 +54,14 @@ public class NotificationHub : Hub
 
     public async Task LeaveConversation(int conversationId)
     {
+        ThrottleOrThrow("LeaveConversation");
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"conv:{conversationId}");
     }
 
     // Phase 5 (05-01): Group rooms for group feed real-time updates
     public async Task JoinGroup(int groupId)
     {
+        ThrottleOrThrow("JoinGroup");
         var userId = GetUserId();
         if (userId == null) throw new HubException("Unauthorized");
 
@@ -68,7 +76,34 @@ public class NotificationHub : Hub
 
     public async Task LeaveGroup(int groupId)
     {
+        ThrottleOrThrow("LeaveGroup");
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"group:{groupId}");
+    }
+
+    private void ThrottleOrThrow(string method)
+    {
+        var key = $"rl:{method}";
+        var nowMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        if (Context.Items.TryGetValue(key, out var raw) && raw is long[] window)
+        {
+            // window[0] = count, window[1] = resetAt epoch ms
+            if (nowMs > window[1])
+            {
+                window[0] = 1;
+                window[1] = nowMs + RlWindowMs;
+            }
+            else
+            {
+                window[0]++;
+                if (window[0] > RlMax)
+                    throw new HubException("Too many requests.");
+            }
+        }
+        else
+        {
+            Context.Items[key] = new long[] { 1, nowMs + RlWindowMs };
+        }
     }
 
     private Guid? GetUserId()

@@ -318,6 +318,17 @@ public class NotificationService : INotificationService
         _ = SendExpoPushAsync(recipientId, type, actor?.DisplayName, postId, ct);
     }
 
+    // Wave P: DM push notification
+    public async Task NotifyNewMessageAsync(Guid recipientId, Guid senderId, int conversationId, CancellationToken ct = default)
+    {
+        var sender = await _db.Users.AsNoTracking()
+            .Where(u => u.Id == senderId)
+            .Select(u => new { u.DisplayName })
+            .FirstOrDefaultAsync(ct);
+        var name = sender?.DisplayName ?? "Alguém";
+        _ = SendExpoPushBodyAsync(recipientId, $"{name} te enviou uma mensagem", "NewMessage", conversationId, ct);
+    }
+
     private async Task SendExpoPushAsync(Guid recipientId, string type, string? actorName, int? postId, CancellationToken ct)
     {
         try

@@ -14,17 +14,20 @@ public class ChatService : IChatService
     private readonly AppDbContext _db;
     private readonly IFileStorageService _files;
     private readonly IHubContext<NotificationHub> _hub;
+    private readonly INotificationService _notifications;
     private readonly ILogger<ChatService> _logger;
 
     public ChatService(
         AppDbContext db,
         IFileStorageService files,
         IHubContext<NotificationHub> hub,
+        INotificationService notifications,
         ILogger<ChatService> logger)
     {
         _db = db;
         _files = files;
         _hub = hub;
+        _notifications = notifications;
         _logger = logger;
     }
 
@@ -204,10 +207,10 @@ public class ChatService : IChatService
 
         var dto = MapMsg(msg);
 
+        var recipientId = conv.BuyerId == senderId ? conv.SellerId : conv.BuyerId;
         try
         {
             await _hub.Clients.Group($"conv:{conversationId}").SendAsync("MessageReceived", dto, ct);
-            var recipientId = conv.BuyerId == senderId ? conv.SellerId : conv.BuyerId;
             var newUnread = await GetUnreadCountAsync(recipientId, ct);
             await _hub.Clients.User(recipientId.ToString()).SendAsync("UnreadChanged", new { total = newUnread }, ct);
         }
@@ -215,6 +218,9 @@ public class ChatService : IChatService
         {
             _logger.LogWarning(ex, "Failed to broadcast chat message {MessageId}", msg.Id);
         }
+
+        // Fire-and-forget Expo push so offline recipients are notified
+        _ = _notifications.NotifyNewMessageAsync(recipientId, senderId, conversationId, ct);
 
         return dto;
     }
