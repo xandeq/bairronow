@@ -111,6 +111,20 @@ html, body {
   40%           { transform: translateY(-4px); }
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-6px); }
+  30%       { transform: translateX(5px); }
+  45%       { transform: translateX(-4px); }
+  60%       { transform: translateX(3px); }
+  75%       { transform: translateX(-2px); }
+}
+
+@keyframes entrance-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 @keyframes badge-pop {
   0%   { transform: scale(0.6); opacity: 0; }
   70%  { transform: scale(1.15); }
@@ -143,6 +157,14 @@ html, body {
 
 .animate-badge-pop {
   animation: badge-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.animate-entrance-right {
+  animation: entrance-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Stagger helpers (legacy — kept for existing usage) */
