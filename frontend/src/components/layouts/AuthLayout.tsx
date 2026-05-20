@@ -59,8 +59,11 @@ export default function AuthLayout({
                   <p className="mt-1.5 text-sm text-muted-fg">{subtitle}</p>
                 )}
               </div>
-              <div className="bg-card border border-border/60 rounded-3xl p-8 shadow-lg">
-                {children}
+              {/* gradient-card-border for premium border effect */}
+              <div className="gradient-card-border rounded-3xl">
+                <div className="bg-card rounded-3xl p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08),0_4px_16px_-4px_rgba(37,99,235,0.06)]">
+                  {children}
+                </div>
               </div>
             </div>
           </div>
