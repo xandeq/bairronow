@@ -6,7 +6,13 @@ test.describe("login auth flow", () => {
     const errors: string[] = [];
 
     page.on("console", (msg) => {
-      if (msg.type() === "error") errors.push(msg.text());
+      if (msg.type() === "error") {
+        const text = msg.text();
+        // Ignore expected network errors (browser logs 4xx/5xx as console errors)
+        if (!text.includes("401") && !text.includes("Failed to load resource")) {
+          errors.push(text);
+        }
+      }
     });
     page.on("pageerror", (err) => errors.push(err.message));
     page.on("response", async (resp) => {
