@@ -120,6 +120,8 @@ public class GroupsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
+        var userId = GetUserId();
+
         var group = await _db.Groups
             .AsNoTracking()
             .Where(g => g.Id == id && g.DeletedAt == null)
@@ -134,7 +136,12 @@ public class GroupsController : ControllerBase
                 g.Rules,
                 g.CoverImageUrl,
                 g.CreatedAt,
-                MemberCount = g.Members.Count(m => m.Status == GroupMemberStatus.Active)
+                MemberCount = g.Members.Count(m => m.Status == GroupMemberStatus.Active),
+                MyStatus = userId == null ? null :
+                    g.Members
+                        .Where(m => m.UserId == userId.Value)
+                        .Select(m => m.Status.ToString())
+                        .FirstOrDefault()
             })
             .FirstOrDefaultAsync();
 
