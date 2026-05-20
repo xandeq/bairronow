@@ -4,6 +4,25 @@
 # This rewrite serves the pre-rendered placeholder shell; the client component
 # reads the real ID from window.location via useParams() and fetches via API.
 
+# ─── Cache Control ────────────────────────────────────────────────────────────
+# HTML pages: always revalidate so stale HTML never references deleted CSS/JS
+<FilesMatch "\.(html|htm)$">
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  Header set Pragma "no-cache"
+  Header set Expires "0"
+</FilesMatch>
+
+# Content-hashed assets: cache forever (filename changes with every build)
+<FilesMatch "^.*\.[a-f0-9]{8,}\.(js|css)$">
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+
+# Service worker: must never be cached so updates reach users immediately
+<FilesMatch "^sw\.js$">
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  Header set Service-Worker-Allowed "/"
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
