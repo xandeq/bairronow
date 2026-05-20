@@ -22,10 +22,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+const AUTH_ENDPOINTS = ['/auth/login', '/auth/refresh', '/auth/register'];
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401 && !error.config._retry) {
+    const url = error.config?.url ?? '';
+    const isAuthEndpoint = AUTH_ENDPOINTS.some((ep) => url.includes(ep));
+    if (error.response?.status === 401 && !error.config._retry && !isAuthEndpoint) {
       error.config._retry = true;
       try {
         const { data } = await api.post('/api/v1/auth/refresh');
