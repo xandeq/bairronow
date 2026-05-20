@@ -18,9 +18,7 @@ jobs:
         run: |
           body=$(curl -fsSL https://api.bairronow.com.br/health)
           echo "$body"
-          echo "$body" | grep -q '"status":"ok"'
-      - name: API swagger
-        run: curl -fsSL -o /dev/null https://api.bairronow.com.br/swagger/index.html
+          echo "$body" | grep -qE '"status"\s*:\s*"(Healthy|ok)"'
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

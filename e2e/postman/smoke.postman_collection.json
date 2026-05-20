@@ -22,7 +22,7 @@
             "type": "text/javascript",
             "exec": [
               "pm.test('status 200', function () { pm.response.to.have.status(200); });",
-              "pm.test('status ok', function () { pm.expect(pm.response.json().status).to.eql('ok'); });"
+              "pm.test('status ok', function () { var s = pm.response.json().status; pm.expect(['ok','Healthy']).to.include(s); });"
             ]
           }
         }
