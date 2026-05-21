@@ -25,7 +25,7 @@ test.describe("auth flow", () => {
     // Login
     await page.goto("/login/");
     await page.getByLabel(/e-?mail/i).fill(email);
-    await page.getByLabel(/senha/i).fill(STRONG_PASSWORD);
+    await page.getByLabel(/^senha$/i).fill(STRONG_PASSWORD);
     await page.getByRole("button", { name: /entrar/i }).click();
 
     // Should leave /login — a new unverified user lands on /cep-lookup.

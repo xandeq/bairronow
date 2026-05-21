@@ -71,6 +71,7 @@ import { joinGroup, createGroupPost, getGroupEvents, rsvpEvent } from '@/lib/api
 
 describe('GroupCard (via GroupsPage)', () => {
   it('renders group name, member count, and category badge', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { getGroups } = require('@/lib/api/groups');
     (getGroups as jest.Mock).mockResolvedValue([
       {

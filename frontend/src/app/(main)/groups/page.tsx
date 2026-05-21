@@ -24,6 +24,7 @@ export default function GroupsPage() {
 
   useEffect(() => {
     if (!user?.bairroId) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     getGroups(user.bairroId, { search: search || undefined })
       .then(setGroups)

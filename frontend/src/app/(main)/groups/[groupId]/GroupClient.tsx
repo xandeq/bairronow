@@ -590,7 +590,7 @@ function GroupPollsTab({
         headers: { Authorization: `Bearer ${accessToken}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
         body,
       });
-      if (res.ok) onPollUpdated(await res.json());
+      if (res.ok && res.status !== 204) onPollUpdated(await res.json());
     } finally {
       setVotingId(null);
     }
