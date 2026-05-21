@@ -5,7 +5,7 @@ import '@testing-library/jest-dom';
 // Mock API clients
 jest.mock('@/lib/api/groups', () => ({
   getGroups: jest.fn().mockResolvedValue([]),
-  getGroup: jest.fn().mockResolvedValue({ id: 1, name: 'Test Group', description: 'A group', category: 'Outros', joinPolicy: 'Open', scope: 'Bairro', rules: null, coverImageUrl: null, memberCount: 5, createdAt: '2024-01-01', bairroId: 1 }),
+  getGroup: jest.fn().mockResolvedValue({ id: 1, name: 'Test Group', description: 'A group', category: 'Outros', joinPolicy: 'Open', scope: 'Bairro', rules: null, coverImageUrl: null, memberCount: 5, createdAt: '2024-01-01', bairroId: 1, myStatus: 'Active', myRole: 'Owner' }),
   joinGroup: jest.fn().mockResolvedValue(undefined),
   leaveGroup: jest.fn().mockResolvedValue(undefined),
   createGroupPost: jest.fn().mockResolvedValue({ id: 1, body: 'test', category: 'Outros', authorId: 'u1', author: { displayName: 'Test', photoUrl: null, isVerified: false }, isFlagged: false, likeCount: 0, commentCount: 0, images: [], createdAt: new Date().toISOString(), editedAt: null }),
@@ -99,6 +99,15 @@ describe('GroupCard (via GroupsPage)', () => {
 });
 
 describe('GroupClient', () => {
+  beforeEach(() => {
+    // GroupClient reads groupId from window.location.pathname
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/groups/1/' },
+      writable: true,
+      configurable: true,
+    });
+  });
+
   it('renders group feed tab', async () => {
     render(<GroupClient />);
     await waitFor(() => {
@@ -128,6 +137,14 @@ describe('GroupClient', () => {
 });
 
 describe('GroupEventsTab', () => {
+  beforeEach(() => {
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/groups/1/' },
+      writable: true,
+      configurable: true,
+    });
+  });
+
   it('shows title, startsAt in pt-BR, and RSVP button', async () => {
     (getGroupEvents as jest.Mock).mockResolvedValue([
       {

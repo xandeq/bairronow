@@ -141,6 +141,11 @@ public class GroupsController : ControllerBase
                     g.Members
                         .Where(m => m.UserId == userId.Value)
                         .Select(m => m.Status.ToString())
+                        .FirstOrDefault(),
+                MyRole = userId == null ? null :
+                    g.Members
+                        .Where(m => m.UserId == userId.Value && m.Status == GroupMemberStatus.Active)
+                        .Select(m => m.Role.ToString())
                         .FirstOrDefault()
             })
             .FirstOrDefaultAsync();

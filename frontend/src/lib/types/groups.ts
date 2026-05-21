@@ -16,6 +16,7 @@ export interface Group {
   coverImageUrl: string | null;
   memberCount: number;
   myStatus?: GroupMemberStatus | null;
+  myRole?: GroupMemberRole | null;
   createdAt: string;
 }
 

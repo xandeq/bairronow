@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { getHubConnection } from '@/lib/signalr';
@@ -20,8 +19,15 @@ interface PendingMember {
 }
 
 export default function GroupClient() {
-  const params = useParams();
-  const groupId = parseInt(params.groupId as string, 10);
+  // Read groupId from window.location — Next.js static export serves placeholder HTML
+  // for all /groups/{id}/ URLs, so useParams()/usePathname() return 'placeholder'.
+  // window.location always reflects the real browser URL.
+  const [groupId, setGroupId] = useState<number>(0);
+  useEffect(() => {
+    const match = window.location.pathname.match(/\/groups\/(\d+)/);
+    if (match) setGroupId(parseInt(match[1], 10));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const {
     posts,
     appendPosts,
@@ -54,13 +60,15 @@ export default function GroupClient() {
 
   const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.bairronow.com.br';
 
-  // Derive current user's role from members list
+  // Derive role from group detail (always available) with members-tab fallback
   const myMember = members.find((m) => m.userId === currentUserId);
-  const myRole = myMember?.role ?? null;
-  const isAdminOrOwner = myRole === 'owner' || myRole === 'admin';
+  const myRoleFromMembers = myMember?.role ?? null;
+  const myRole = currentGroup?.myRole ?? myRoleFromMembers;
+  const isAdminOrOwner = myRole === 'Owner' || myRole === 'Admin' || myRole === 'owner' || myRole === 'admin';
 
   // Load group detail and initial posts
   useEffect(() => {
+    if (!groupId) return;
     resetFeed();
     Promise.all([getGroup(groupId), getGroupPosts(groupId, 1)]).then(([g, p]) => {
       setCurrentGroup(g);
@@ -71,13 +79,14 @@ export default function GroupClient() {
 
   // Infinite scroll — load more pages
   useEffect(() => {
-    if (page === 1) return;
+    if (!groupId || page === 1) return;
     getGroupPosts(groupId, page).then(appendPosts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   // SignalR — join group room, listen for new posts
   useEffect(() => {
+    if (!groupId) return;
     let cancelled = false;
     getHubConnection().then((hub) => {
       if (cancelled) return;
@@ -122,7 +131,7 @@ export default function GroupClient() {
 
   // Load members only when members tab is active
   useEffect(() => {
-    if (activeTab !== 'members') return;
+    if (!groupId || activeTab !== 'members') return;
     setMembersLoading(true);
     getGroupMembers(groupId)
       .then((d) => {
@@ -135,7 +144,7 @@ export default function GroupClient() {
 
   // Load polls when polls tab is active
   useEffect(() => {
-    if (activeTab !== 'polls') return;
+    if (!groupId || activeTab !== 'polls') return;
     setPollsLoading(true);
     fetch(`${API}/api/v1/groups/${groupId}/polls`, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -149,7 +158,7 @@ export default function GroupClient() {
 
   // Load pending members only when pending tab is active
   useEffect(() => {
-    if (activeTab !== 'pending') return;
+    if (!groupId || activeTab !== 'pending') return;
     setPendingLoading(true);
     fetch(`${API}/api/v1/groups/${groupId}/pending`, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -592,7 +601,14 @@ function GroupPollsTab({
       method: 'POST',
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    if (res.ok) onPollUpdated(await res.json());
+    if (res.ok) {
+      if (res.status === 204) {
+        const poll = polls.find((p) => p.id === pollId);
+        if (poll) onPollUpdated({ ...poll, isClosed: true });
+      } else {
+        onPollUpdated(await res.json());
+      }
+    }
   };
 
   const handleDelete = async (pollId: number) => {

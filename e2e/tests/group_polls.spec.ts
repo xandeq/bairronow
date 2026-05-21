@@ -84,14 +84,19 @@ test("polls tab is reachable for group owner", async ({ page }) => {
   await browserLogin(page);
   await page.goto(`/groups/${groupId}/`);
   await page.waitForLoadState("domcontentloaded");
+  // Wait for the group header (h1) to appear — this signals React hydrated + group data loaded.
+  // The h1 is inside {currentGroup && (...)} so it's absent from the pre-rendered HTML.
+  await page.waitForSelector("h1", { state: "visible", timeout: 10_000 });
 
   // Click the Enquetes tab
   await page.getByRole("button", { name: /enquetes/i }).click();
 
-  // Either empty state or poll list must appear
+  // Either empty state or poll list must appear.
+  // Both can be in the DOM simultaneously (button + empty state text), so use .first()
+  // to avoid strict mode violation when both match.
   const emptyState = page.getByText(/nenhuma enquete/i);
   const createBtn = page.getByRole("button", { name: /criar enquete/i });
-  await expect(createBtn.or(emptyState)).toBeVisible({ timeout: 8_000 });
+  await expect(createBtn.or(emptyState).first()).toBeVisible({ timeout: 12_000 });
 });
 
 // ---------------------------------------------------------------------------
@@ -101,6 +106,7 @@ test("create a poll — UI submit returns new poll card", async ({ page }) => {
   await browserLogin(page);
   await page.goto(`/groups/${groupId}/`);
   await page.waitForLoadState("domcontentloaded");
+  await page.waitForSelector("h1", { state: "visible", timeout: 10_000 });
   await page.getByRole("button", { name: /enquetes/i }).click();
 
   // Open creation form
@@ -145,6 +151,7 @@ test("voting on a poll option updates percentages", async ({ page }) => {
   await browserLogin(page);
   await page.goto(`/groups/${groupId}/`);
   await page.waitForLoadState("domcontentloaded");
+  await page.waitForSelector("h1", { state: "visible", timeout: 10_000 });
   await page.getByRole("button", { name: /enquetes/i }).click();
 
   // Wait for the poll card to appear
@@ -179,6 +186,7 @@ test("owner can close a poll", async ({ page }) => {
   await browserLogin(page);
   await page.goto(`/groups/${groupId}/`);
   await page.waitForLoadState("domcontentloaded");
+  await page.waitForSelector("h1", { state: "visible", timeout: 10_000 });
   await page.getByRole("button", { name: /enquetes/i }).click();
 
   const pollCard = page.locator(".bg-card").filter({ hasText: "Sim" }).first();
@@ -196,7 +204,7 @@ test("owner can close a poll", async ({ page }) => {
   await closeBtn.click();
 
   const resp = await closeResponse;
-  expect(resp.status()).toBe(200);
+  expect(resp.ok()).toBeTruthy(); // 200 or 204
 
   // Badge should change to "Encerrada"
   await expect(pollCard.getByText("Encerrada")).toBeVisible({ timeout: 5_000 });
