@@ -44,6 +44,7 @@ export default function ModerationPage() {
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
   const [filter, setFilter] = useState<TargetFilter>("all");
+  const [banTarget, setBanTarget] = useState<ReportDto | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -82,12 +83,10 @@ export default function ModerationPage() {
     }
   };
 
-  const handleBan = async (report: ReportDto) => {
-    // ReportDto does not expose reportedUserId directly.
-    // reportedUserId is not available in the current DTO shape — skip ban for comments.
-    // For posts and listings the targetId is the content ID (not user ID);
-    // the backend endpoint accepts the content targetId and derives the author to ban.
-    if (!window.confirm("Banir este usuário? Esta ação irá desativar a conta.")) return;
+  const handleBanConfirm = async () => {
+    if (!banTarget) return;
+    const report = banTarget;
+    setBanTarget(null);
     setBusyId(report.id);
     try {
       // Backend looks up the content author from the report and bans them
@@ -228,7 +227,7 @@ export default function ModerationPage() {
                         <button
                           type="button"
                           disabled={busyId === r.id}
-                          onClick={() => handleBan(r)}
+                          onClick={() => setBanTarget(r)}
                           className="inline-flex items-center gap-1 bg-danger/10 text-danger hover:bg-danger/20 border border-danger/20 text-xs font-semibold rounded px-2 py-1 disabled:opacity-50 transition-colors"
                         >
                           <BanIcon />
@@ -241,6 +240,31 @@ export default function ModerationPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {banTarget !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-card rounded-2xl border border-border shadow-xl p-6 w-full max-w-sm mx-4">
+            <h3 className="text-base font-semibold text-fg mb-2">Confirmar ação</h3>
+            <p className="text-sm text-muted-fg mb-5">
+              Banir este usuário? Esta ação irá desativar a conta permanentemente.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setBanTarget(null)}
+                className="px-4 py-2 text-sm rounded-xl text-muted-fg hover:bg-muted transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleBanConfirm}
+                className="px-4 py-2 text-sm rounded-xl bg-danger text-white hover:bg-danger/90 transition-colors"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

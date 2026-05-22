@@ -337,16 +337,16 @@ try
     var app = builder.Build();
 
     // Apply migrations and seed Vila Velha bairros
-    using (var scope = app.Services.CreateScope())
+    await using (var scope = app.Services.CreateAsyncScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         try
         {
             db.Database.Migrate();
-            if (!db.Bairros.Any())
+            if (!await db.Bairros.AnyAsync())
             {
                 db.Bairros.AddRange(VilaVelhaBairros.All);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
 
             // Optional admin promotion via env var BAIRRONOW_ADMIN_EMAIL.
@@ -356,11 +356,11 @@ try
             if (!string.IsNullOrWhiteSpace(adminEmail))
             {
                 var normalized = adminEmail.Trim().ToLowerInvariant();
-                var user = db.Users.FirstOrDefault(u => u.Email.ToLower() == normalized);
+                var user = await db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == normalized);
                 if (user != null && !user.IsAdmin)
                 {
                     user.IsAdmin = true;
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     Log.Information("Promoted {Email} to admin via BAIRRONOW_ADMIN_EMAIL", normalized);
                 }
             }

@@ -128,7 +128,6 @@ public class NotificationService : INotificationService
             .Where(m => m.GroupId == groupId
                      && m.Status == Models.Enums.GroupMemberStatus.Active
                      && m.UserId != creatorId)
-            .Take(50)
             .Select(m => m.UserId)
             .ToListAsync(ct);
 
@@ -166,6 +165,14 @@ public class NotificationService : INotificationService
             BusinessName = creator?.BusinessName,
             BusinessCategory = creator?.BusinessCategory
         };
+
+        // Process push notifications in batches of 50 to stay within Expo batch limits
+        // while ensuring ALL members are notified (no silent cap).
+        const int BatchSize = 50;
+        if (recipients.Count > BatchSize)
+            _logger.LogInformation(
+                "NotifyGroupEventCreatedAsync: notifying {Total} members for group {GroupId} in batches of {BatchSize}",
+                recipients.Count, groupId, BatchSize);
 
         foreach (var (uid, notif) in recipients.Zip(notifications))
         {

@@ -14,6 +14,8 @@ export default function AdminVerificationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [forbidden, setForbidden] = useState(false);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [rejectModalId, setRejectModalId] = useState<number | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -50,9 +52,12 @@ export default function AdminVerificationsPage() {
     }
   };
 
-  const handleReject = async (id: number) => {
-    const reason = window.prompt("Motivo da rejeicao:");
-    if (!reason) return;
+  const handleRejectConfirm = async () => {
+    if (!rejectModalId || !rejectReason.trim()) return;
+    const id = rejectModalId;
+    const reason = rejectReason.trim();
+    setRejectModalId(null);
+    setRejectReason("");
     setBusyId(id);
     try {
       await adminVerificationApi.reject(id, reason);
@@ -156,7 +161,7 @@ export default function AdminVerificationsPage() {
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => handleReject(it.id)}
+                        onClick={() => { setRejectModalId(it.id); setRejectReason(""); }}
                         loading={busyId === it.id}
                       >
                         Rejeitar
@@ -167,6 +172,37 @@ export default function AdminVerificationsPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+      {rejectModalId !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-card rounded-2xl border border-border shadow-xl p-6 w-full max-w-sm mx-4">
+            <h3 className="text-base font-semibold text-fg mb-2">Rejeitar verificação</h3>
+            <p className="text-sm text-muted-fg mb-3">Informe o motivo da rejeição:</p>
+            <textarea
+              className="w-full rounded-xl border border-border bg-bg text-fg text-sm p-2 mb-5 resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+              rows={3}
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Ex: Comprovante ilegível, endereço não confere..."
+              autoFocus
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => { setRejectModalId(null); setRejectReason(""); }}
+                className="px-4 py-2 text-sm rounded-xl text-muted-fg hover:bg-muted transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleRejectConfirm}
+                disabled={!rejectReason.trim()}
+                className="px-4 py-2 text-sm rounded-xl bg-danger text-white hover:bg-danger/90 transition-colors disabled:opacity-50"
+              >
+                Rejeitar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
