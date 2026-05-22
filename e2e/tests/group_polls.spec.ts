@@ -2,7 +2,12 @@ import { test, expect, APIRequestContext } from "@playwright/test";
 
 const TEST_EMAIL = process.env.E2E_TEST_EMAIL ?? "e2e-test-2026@bairronow-ci.com";
 const TEST_PASSWORD = process.env.E2E_TEST_PASSWORD ?? "Teste@2026!";
-const API_BASE = "https://api.bairronow.com.br";
+// Resolve API base from env (set by playwright.config.ts environment) —
+// never hardcode the production URL here.
+const API_BASE =
+  process.env.PLAYWRIGHT_API_URL ??
+  process.env.BAIRRONOW_API_URL ??
+  "http://localhost:5000";
 
 // Serial — each test builds on state from the previous one
 test.describe.configure({ mode: "serial" });
@@ -51,14 +56,37 @@ test.beforeAll(async ({ playwright }) => {
 });
 
 // ---------------------------------------------------------------------------
-// Teardown: clean up the test group
+// Teardown: clean up the poll (if created) then the test group
+// Deleting the group does NOT cascade-delete polls via the current API, so
+// we explicitly delete the poll first to avoid orphaned production data.
 // ---------------------------------------------------------------------------
 test.afterAll(async ({ playwright }) => {
-  if (!groupId || !apiToken) return;
+  if (!apiToken) return;
   const ctx = await playwright.request.newContext({ baseURL: API_BASE });
-  await ctx.delete(`/api/v1/groups/${groupId}`, {
-    headers: { Authorization: `Bearer ${apiToken}` },
-  });
+
+  // 1. Delete poll created during the test run
+  if (pollId) {
+    try {
+      await ctx.delete(`/api/v1/groups/${groupId}/polls/${pollId}`, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+      });
+    } catch {
+      // Best-effort — log but don't block group cleanup
+      console.warn(`[E2E] Could not delete test poll ${pollId} — manual cleanup may be needed`);
+    }
+  }
+
+  // 2. Delete test group
+  if (groupId) {
+    try {
+      await ctx.delete(`/api/v1/groups/${groupId}`, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+      });
+    } catch {
+      console.warn(`[E2E] Could not delete test group ${groupId} — manual cleanup may be needed`);
+    }
+  }
+
   await ctx.dispose();
 });
 

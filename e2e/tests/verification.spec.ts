@@ -2,7 +2,11 @@ import { test, expect, request } from "@playwright/test";
 import path from "path";
 
 const STRONG_PASSWORD = "TestPass123!";
-const API_URL = process.env.BAIRRONOW_API_URL || "https://api.bairronow.com.br";
+// Resolve API base from env — never hardcode production URL.
+const API_URL =
+  process.env.PLAYWRIGHT_API_URL ??
+  process.env.BAIRRONOW_API_URL ??
+  "http://localhost:5000";
 const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD;
 
@@ -17,6 +21,7 @@ test.describe("verification flow", () => {
 
     const timestamp = Date.now();
     const email = `e2e+v${timestamp}@bairronow.test`;
+    let userAccessToken: string | undefined;
 
     // Register via API to avoid the email-confirmation success screen.
     const apiContext = await request.newContext({ baseURL: API_URL });
@@ -29,6 +34,15 @@ test.describe("verification flow", () => {
       },
     });
     expect(regRes.ok()).toBeTruthy();
+
+    // Capture user token immediately so we can clean up after the test
+    const loginForCleanup = await apiContext.post("/api/v1/auth/login", {
+      data: { email, password: STRONG_PASSWORD },
+    });
+    if (loginForCleanup.ok()) {
+      const loginBody = await loginForCleanup.json();
+      userAccessToken = loginBody.accessToken;
+    }
 
     // Login in UI
     await page.goto("/login/");
@@ -88,5 +102,38 @@ test.describe("verification flow", () => {
     await expect(page.getByText(/vizinho verificado/i)).toBeVisible({
       timeout: 15_000,
     });
+
+    // ---------------------------------------------------------------------------
+    // Cleanup: delete the test user account
+    // Uses DELETE /api/v1/account/me (self-delete) or admin endpoint as fallback.
+    // Best-effort — test result is not affected if cleanup fails.
+    // ---------------------------------------------------------------------------
+    try {
+      if (userAccessToken) {
+        // Preferred: self-delete (no admin rights needed)
+        const selfDelete = await apiContext.delete("/api/v1/account/me", {
+          headers: { Authorization: `Bearer ${userAccessToken}` },
+        });
+        if (!selfDelete.ok()) {
+          // Fallback: admin hard-delete by email
+          const { accessToken: adminToken } = await (
+            await apiContext.post("/api/v1/auth/login", {
+              data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
+            })
+          ).json();
+          await apiContext.delete(`/api/v1/admin/users/by-email/${encodeURIComponent(email)}`, {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          });
+        }
+      }
+    } catch {
+      console.warn(
+        `[E2E] Could not delete test user ${email} — ` +
+          "manual cleanup may be needed. Check DELETE /api/v1/account/me or " +
+          "DELETE /api/v1/admin/users/by-email/:email"
+      );
+    } finally {
+      await apiContext.dispose();
+    }
   });
 });

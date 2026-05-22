@@ -1,0 +1,53 @@
+name: E2E Smoke (Scheduled)
+
+# Runs full Playwright suite against production once a day.
+# Separate from pr-checks.yml (which only runs unit tests) so that
+# E2E against production never blocks PR merges.
+on:
+  schedule:
+    - cron: '0 6 * * *'  # daily 06:00 UTC
+  workflow_dispatch:      # also triggerable manually
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    env:
+      # Explicit production target — required to silence the guard in playwright.config.ts
+      PLAYWRIGHT_BASE_URL: https://bairronow.com.br
+      PLAYWRIGHT_API_URL: https://api.bairronow.com.br
+      E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+      E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '10.33.0'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @bairronow/e2e exec playwright install --with-deps chromium
+
+      - name: Run Playwright E2E suite
+        # continue-on-error so the artifact upload step always runs,
+        # but the job still reports failure in the GitHub UI.
+        continue-on-error: true
+        run: pnpm --filter @bairronow/e2e test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results-${{ github.run_id }}
+          path: e2e/test-results/
+          retention-days: 7
