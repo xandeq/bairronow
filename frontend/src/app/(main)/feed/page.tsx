@@ -140,6 +140,7 @@ function TrendingSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!token) { setLoading(false); return; }
     fetch(`${API}/api/v1/feed/trending`, {
       headers: { Authorization: `Bearer ${token}` },

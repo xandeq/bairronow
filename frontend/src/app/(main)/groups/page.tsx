@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/auth';
 import { getGroups } from '@/lib/api/groups';
@@ -66,7 +67,7 @@ export default function GroupsPage() {
               className="bg-card rounded-xl shadow-sm border border-border p-4 flex flex-col gap-2"
             >
               {g.coverImageUrl && (
-                <img src={g.coverImageUrl} alt={g.name} className="h-24 w-full object-cover rounded-lg" />
+                <Image unoptimized src={g.coverImageUrl} alt={g.name} width={400} height={96} className="h-24 w-full object-cover rounded-lg" />
               )}
               <div className="flex items-start justify-between">
                 <Link href={`/groups/${g.id}`} className="font-semibold text-fg hover:text-primary leading-tight">

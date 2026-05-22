@@ -3,13 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import api from "@/lib/api";
-import { useAuthStore } from "@/lib/auth";
 import { useSettingsStore } from "@/stores/settings-store";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
 export default function SettingsPage() {
-  const logout = useAuthStore((s) => s.logout);
   const { digestOptOut, loadSettings, toggleDigest, loading } =
     useSettingsStore();
 

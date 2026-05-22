@@ -26,6 +26,7 @@ export default function EventsUpcoming({ bairroId }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!bairroId || !token) { setLoading(false); return; }
     fetch(`${API}/api/v1/events/upcoming`, {
       headers: { Authorization: `Bearer ${token}` }

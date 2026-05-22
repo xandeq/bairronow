@@ -84,9 +84,8 @@ export async function resetHubConnection(): Promise<void> {
  * Legacy factory kept for backward-compat with Phase 3 NotificationBell.
  * @deprecated Use getHubConnection() instead.
  */
-export function createNotificationHub(
-  _opts: NotificationHubOptions
-): HubConnection {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function createNotificationHub(_opts: NotificationHubOptions): HubConnection {
   // Return a fresh (unstarted) connection for callers that still want explicit lifecycle.
   // New code should use `getHubConnection()` so connections are shared.
   return buildConnection();

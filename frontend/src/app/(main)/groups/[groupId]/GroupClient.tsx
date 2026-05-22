@@ -26,7 +26,6 @@ export default function GroupClient() {
   useEffect(() => {
     const match = window.location.pathname.match(/\/groups\/(\d+)/);
     if (match) setGroupId(parseInt(match[1], 10));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const {
     posts,
@@ -139,7 +138,6 @@ export default function GroupClient() {
         setMembersTotal(d.total);
       })
       .finally(() => setMembersLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, groupId]);
 
   // Load polls when polls tab is active

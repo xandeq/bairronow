@@ -67,7 +67,7 @@ jest.mock('@/stores/group-store', () => ({
 
 import GroupsPage from '../page';
 import GroupClient from '../[groupId]/GroupClient';
-import { joinGroup, createGroupPost, getGroupEvents, rsvpEvent } from '@/lib/api/groups';
+import { createGroupPost, getGroupEvents } from '@/lib/api/groups';
 
 describe('GroupCard (via GroupsPage)', () => {
   it('renders group name, member count, and category badge', async () => {

@@ -2,6 +2,7 @@
 
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import Link from 'next/link';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useEffect, useState } from 'react';
@@ -27,7 +28,7 @@ function createMarkerIcon(isBusinessAccount?: boolean) {
 }
 
 // Fix webpack-broken default icon paths (MAP-001 pitfall)
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete (L.Icon.Default.prototype as L.Icon.Default & { _getIconUrl?: unknown })._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: '/leaflet/marker-icon.png',
   iconRetinaUrl: '/leaflet/marker-icon-2x.png',
@@ -48,6 +49,7 @@ export default function MapClient() {
 
   useEffect(() => {
     if (!user?.bairroId) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     Promise.all([
       getPins(user.bairroId, filter === 'all' ? undefined : filter),
@@ -140,12 +142,12 @@ export default function MapClient() {
                     </div>
                   </div>
                   {pin.bio && <p className="text-xs text-muted-fg">{pin.bio}</p>}
-                  <a
-                    href="/marketplace"
+                  <Link
+                    href="/marketplace/"
                     className="block text-center text-xs bg-primary text-white py-1 px-2 rounded-xl mt-1 hover:bg-primary/90"
                   >
                     Ver perfil
-                  </a>
+                  </Link>
                 </div>
               </Popup>
             </Marker>

@@ -127,6 +127,7 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     if (!user?.id || !token) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     fetch(`${API}/api/v1/users/${user.id}/analytics`, {
       headers: { Authorization: `Bearer ${token}` },

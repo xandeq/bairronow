@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
+
 export default function GlobalError({
-  error,
   reset,
 }: {
   error: Error & { digest?: string };
@@ -21,12 +22,12 @@ export default function GlobalError({
         >
           Tentar novamente
         </button>
-        <a
+        <Link
           href="/"
           className="rounded-lg border border-border px-4 py-2 font-medium text-fg hover:bg-muted"
         >
           Pagina inicial
-        </a>
+        </Link>
       </div>
     </div>
   );
