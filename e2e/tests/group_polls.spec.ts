@@ -1,7 +1,7 @@
 import { test, expect, APIRequestContext } from "@playwright/test";
 
-const TEST_EMAIL = "e2e-test-2026@bairronow-ci.com";
-const TEST_PASSWORD = "Teste@2026!";
+const TEST_EMAIL = process.env.E2E_TEST_EMAIL ?? "e2e-test-2026@bairronow-ci.com";
+const TEST_PASSWORD = process.env.E2E_TEST_PASSWORD ?? "Teste@2026!";
 const API_BASE = "https://api.bairronow.com.br";
 
 // Serial — each test builds on state from the previous one

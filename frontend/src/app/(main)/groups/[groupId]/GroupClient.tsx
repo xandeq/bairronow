@@ -534,32 +534,38 @@ function GroupPollsTab({
 }) {
   const [creating, setCreating] = useState(false);
   const [question, setQuestion] = useState('');
-  const [options, setOptions] = useState(['', '']);
+  const [options, setOptions] = useState(() => [
+    { id: crypto.randomUUID(), text: '' },
+    { id: crypto.randomUUID(), text: '' },
+  ]);
   const [expiresAt, setExpiresAt] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [votingId, setVotingId] = useState<number | null>(null);
   const [pollError, setPollError] = useState<string | null>(null);
 
   const addOption = () => {
-    if (options.length < 6) setOptions((o) => [...o, '']);
+    if (options.length < 6) setOptions((o) => [...o, { id: crypto.randomUUID(), text: '' }]);
   };
 
-  const removeOption = (i: number) => {
-    if (options.length > 2) setOptions((o) => o.filter((_, idx) => idx !== i));
+  const removeOption = (id: string) => {
+    if (options.length > 2) setOptions((o) => o.filter((opt) => opt.id !== id));
   };
 
-  const updateOption = (i: number, v: string) =>
-    setOptions((o) => o.map((x, idx) => (idx === i ? v : x)));
+  const updateOption = (id: string, text: string) =>
+    setOptions((o) => o.map((opt) => (opt.id === id ? { ...opt, text } : opt)));
 
   const resetForm = () => {
     setCreating(false);
     setQuestion('');
-    setOptions(['', '']);
+    setOptions([
+      { id: crypto.randomUUID(), text: '' },
+      { id: crypto.randomUUID(), text: '' },
+    ]);
     setExpiresAt('');
   };
 
   const handleCreate = async () => {
-    const validOpts = options.map((o) => o.trim()).filter(Boolean);
+    const validOpts = options.map((o) => o.text.trim()).filter(Boolean);
     if (!question.trim() || validOpts.length < 2) return;
     setSubmitting(true);
     try {
@@ -684,17 +690,17 @@ function GroupPollsTab({
             <label className="text-xs font-medium text-muted-fg mb-1 block">Opções ({options.length}/6)</label>
             <div className="space-y-2">
               {options.map((opt, i) => (
-                <div key={i} className="flex items-center gap-2">
+                <div key={opt.id} className="flex items-center gap-2">
                   <input
-                    value={opt}
-                    onChange={(e) => updateOption(i, e.target.value)}
+                    value={opt.text}
+                    onChange={(e) => updateOption(opt.id, e.target.value)}
                     placeholder={`Opção ${i + 1}`}
                     maxLength={100}
                     className="flex-1 text-sm rounded-lg border border-border bg-bg px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
                   />
                   {options.length > 2 && (
                     <button
-                      onClick={() => removeOption(i)}
+                      onClick={() => removeOption(opt.id)}
                       aria-label="Remover opção"
                       className="text-danger hover:text-danger/70 p-1 rounded-lg transition-colors"
                     >
@@ -738,7 +744,7 @@ function GroupPollsTab({
             </button>
             <button
               onClick={handleCreate}
-              disabled={submitting || !question.trim() || options.filter((o) => o.trim()).length < 2}
+              disabled={submitting || !question.trim() || options.filter((o) => o.text.trim()).length < 2}
               className="text-sm px-4 py-2 rounded-xl bg-primary text-white font-medium disabled:opacity-40 hover:bg-primary/90 transition-colors"
             >
               {submitting ? 'Publicando...' : 'Publicar enquete'}
@@ -924,7 +930,7 @@ function GroupEventsTab({ groupId }: { groupId: number }) {
           <p className="text-xs text-muted-fg">{ev.rsvpCount} confirmados</p>
           <button
             onClick={() => handleRsvp(ev)}
-            className={`mt-2 text-sm px-3 py-1 rounded-xl ${
+            className={`mt-2 text-sm px-3 py-2.5 rounded-xl min-h-[44px] ${
               ev.myRsvp ? 'bg-secondary text-secondary-fg' : 'bg-muted text-muted-fg'
             }`}
           >

@@ -108,18 +108,26 @@ function formatShortDate(dateStr: string) {
 
 const STAR_COLORS = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#059669"];
 
-const CHART_THEME = {
-  primary: "#2563EB",
-  border: "#E2E8F0",
-  fg: "#0F172A",
-  mutedFg: "#64748B",
-  card: "#FFFFFF",
-};
+function getCssVar(name: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
+function getChartTheme() {
+  return {
+    primary: getCssVar("--color-primary", "#2563EB"),
+    border: getCssVar("--color-border", "#E2E8F0"),
+    fg: getCssVar("--color-fg", "#0F172A"),
+    mutedFg: getCssVar("--color-muted-fg", "#64748B"),
+    card: getCssVar("--color-card", "#FFFFFF"),
+  };
+}
 
 export default function AnalyticsPage() {
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.accessToken);
   const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.bairronow.com.br";
+  const CHART_THEME = getChartTheme();
 
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);

@@ -117,6 +117,7 @@ export default function MainHeader() {
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 8);
+    handler(); // initialize from current scroll position (e.g., after browser back)
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
