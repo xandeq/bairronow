@@ -257,7 +257,7 @@ public class AuthService : IAuthService
             await _db.SaveChangesAsync();
         }
 
-        return IssueTokens(user, "google-oauth");
+        return await IssueTokensAsync(user, "google-oauth");
     }
 
     public async Task<(AuthResponse? Response, string? RefreshToken, string? Error)> GoogleSignInMobileAsync(string idToken)
@@ -340,7 +340,7 @@ public class AuthService : IAuthService
             if (stored?.User == null)
                 return (null, null, "Link invalido ou expirado.");
 
-            return IssueTokens(stored.User, "magic-link");
+            return await IssueTokensAsync(stored.User, "magic-link");
         }
         catch (FormatException)
         {
@@ -417,7 +417,7 @@ public class AuthService : IAuthService
             var totp = new Totp(Base32Encoding.ToBytes(user.TotpSecret));
             if (totp.VerifyTotp(code, out _, new VerificationWindow(previous: 1, future: 1)))
             {
-                return IssueTokens(user, "totp-verified");
+                return await IssueTokensAsync(user, "totp-verified");
             }
 
             // Try backup codes
@@ -434,7 +434,7 @@ public class AuthService : IAuthService
                         var newHashes = storedHashes.Where((_, i) => i != idx).ToArray();
                         user.TotpBackupCodes = JsonSerializer.Serialize(newHashes);
                         await _db.SaveChangesAsync();
-                        return IssueTokens(user, "totp-backup");
+                        return await IssueTokensAsync(user, "totp-backup");
                     }
                 }
             }
@@ -449,7 +449,7 @@ public class AuthService : IAuthService
 
     // ── Private helpers ──
 
-    private (AuthResponse Response, string RefreshToken, string? Error) IssueTokens(User user, string method)
+    private async Task<(AuthResponse Response, string RefreshToken, string? Error)> IssueTokensAsync(User user, string method)
     {
         var accessToken = _tokenService.GenerateAccessToken(user);
         var rawRefreshToken = _tokenService.GenerateRefreshToken();
@@ -464,7 +464,7 @@ public class AuthService : IAuthService
         };
 
         _db.RefreshTokens.Add(refreshToken);
-        _db.SaveChanges(); // Sync — called from non-async context too
+        await _db.SaveChangesAsync();
 
         var response = new AuthResponse(accessToken, new UserInfo(user.Id, user.Email, user.DisplayName, user.EmailConfirmed, user.BairroId, user.IsVerified, user.IsAdmin));
         return (response, rawRefreshToken, null);

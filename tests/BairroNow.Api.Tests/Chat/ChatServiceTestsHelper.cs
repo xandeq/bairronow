@@ -38,7 +38,8 @@ internal static class ChatTestBuilder
         hubMock.SetupGet(h => h.Clients).Returns(clientsMock.Object);
 
         var files = new Mock<IFileStorageService>();
-        var svc = new ChatService(db, files.Object, hubMock.Object, NullLogger<ChatService>.Instance);
+        var notifications = new Mock<INotificationService>();
+        var svc = new ChatService(db, files.Object, hubMock.Object, notifications.Object, NullLogger<ChatService>.Instance);
         return (svc, db, buyerId, sellerId, listing.Id);
     }
 }

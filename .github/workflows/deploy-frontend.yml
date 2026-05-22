@@ -26,6 +26,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Type check
+        run: pnpm --filter @bairronow/frontend exec tsc --noEmit
+        env:
+          NEXT_PUBLIC_API_URL: https://api.bairronow.com.br
+
       - name: Build (static export)
         run: pnpm --filter @bairronow/frontend build
         env:
@@ -40,7 +45,6 @@ jobs:
           local-dir: ./frontend/out/
           server-dir: /bairronow.com.br/
           protocol: ftp
-          dangerous-clean-slate: true
 
       - name: Smoke test
         run: |

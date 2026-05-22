@@ -15,7 +15,8 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @bairronow/frontend lint || true
+      - run: pnpm --filter @bairronow/frontend lint
+      - run: pnpm --filter @bairronow/frontend exec tsc --noEmit
       - run: pnpm --filter @bairronow/frontend build
         env:
           NEXT_PUBLIC_API_URL: https://api.bairronow.com.br
