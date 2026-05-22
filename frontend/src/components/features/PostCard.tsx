@@ -152,7 +152,7 @@ export default function PostCard({
           {post.images.map((img, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              key={i}
+              key={img.url}
               src={img.url}
               alt={`Imagem ${i + 1}`}
               className="w-full h-48 object-cover"
@@ -191,6 +191,7 @@ export default function PostCard({
         <button
           type="button"
           onClick={() => setReportOpen(true)}
+          aria-label="Denunciar post"
           className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-fg hover:text-danger hover:bg-danger-light transition-all duration-200 active:scale-95"
         >
           <FlagIcon />
@@ -202,6 +203,7 @@ export default function PostCard({
             type="button"
             onClick={handleDelete}
             disabled={busy}
+            aria-label="Excluir post"
             className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-fg hover:text-danger hover:bg-danger-light transition-all duration-200 active:scale-95 disabled:opacity-40"
           >
             <TrashIcon />

@@ -162,7 +162,7 @@ export default function ChatRoom({
       </div>
 
       {sendError && (
-        <p className="text-xs text-red-600 font-semibold text-center py-1 bg-red-50">
+        <p className="text-xs text-danger font-semibold text-center py-1 bg-danger-light">
           {sendError}
         </p>
       )}

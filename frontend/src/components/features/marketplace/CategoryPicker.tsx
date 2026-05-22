@@ -74,7 +74,7 @@ export default function CategoryPicker({
       )}
 
       {error && (
-        <p className="text-sm text-red-600 font-semibold">{error}</p>
+        <p className="text-sm text-danger font-semibold">{error}</p>
       )}
     </div>
   );

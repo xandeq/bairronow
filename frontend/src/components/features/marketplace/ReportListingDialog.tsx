@@ -98,7 +98,7 @@ export default function ReportListingDialog({
             />
 
             {error && (
-              <p className="text-sm text-red-600 font-semibold">{error}</p>
+              <p className="text-sm text-danger font-semibold">{error}</p>
             )}
 
             <div className="flex gap-2">
@@ -113,7 +113,7 @@ export default function ReportListingDialog({
                 type="button"
                 onClick={submit}
                 disabled={!reason || submitting}
-                className="flex-1 bg-red-600 text-white font-extrabold py-2 rounded-lg disabled:opacity-50"
+                className="flex-1 bg-danger text-white font-extrabold py-2 rounded-lg disabled:opacity-50"
               >
                 {submitting ? "Enviando..." : "Denunciar"}
               </button>

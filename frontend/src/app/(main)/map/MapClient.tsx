@@ -74,7 +74,7 @@ export default function MapClient() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1 text-sm rounded-full border ${filter === f ? 'bg-primary text-white border-primary' : 'bg-card text-muted-fg border-border'}`}
+              className={`px-3 py-2 text-sm rounded-full border ${filter === f ? 'bg-primary text-white border-primary' : 'bg-card text-muted-fg border-border'}`}
             >
               {f === 'all' ? 'Todos' : f === 'verified' ? 'Verificados' : 'Novos'}
             </button>

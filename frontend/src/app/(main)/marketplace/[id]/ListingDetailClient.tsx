@@ -171,7 +171,7 @@ export default function ListingDetailClient() {
             </span>
           )}
           {isExpired && (
-            <span role="status" aria-label="Anuncio expirado" className="bg-gray-600 text-white font-extrabold px-3 py-1 rounded-xl">
+            <span role="status" aria-label="Anuncio expirado" className="bg-muted-fg text-white font-extrabold px-3 py-1 rounded-xl">
               EXPIRADO
             </span>
           )}

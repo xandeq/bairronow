@@ -126,7 +126,7 @@ export default function AdminVerificationsPage() {
             <tbody>
               {items.map((it) => (
                 <tr key={it.id} className="border-b border-border">
-                  <td className="px-3 py-2 font-medium">{it.userEmail}</td>
+                  <td className="px-3 py-2 font-medium max-w-[150px] truncate">{it.userEmail}</td>
                   <td className="px-3 py-2 font-medium">{it.cep}</td>
                   <td className="px-3 py-2 font-medium">
                     {it.bairroNome ?? "—"}

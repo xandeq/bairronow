@@ -48,10 +48,10 @@ export default function EditListingClient() {
     );
   }
   if (error || !listing)
-    return <p className="text-red-600 font-semibold">{error ?? "Não encontrado"}</p>;
+    return <p className="text-danger font-semibold">{error ?? "Não encontrado"}</p>;
   if (user?.id !== listing.sellerId)
     return (
-      <p className="text-red-600 font-semibold">
+      <p className="text-danger font-semibold">
         Você não tem permissão para editar este anúncio.
       </p>
     );

@@ -80,7 +80,7 @@ export default function ListingForm({
           placeholder="Ex: Bicicleta aro 26 seminova"
         />
         {errors.title && (
-          <p className="text-sm text-red-600 font-semibold mt-1">
+          <p className="text-sm text-danger font-semibold mt-1">
             {errors.title.message}
           </p>
         )}
@@ -100,7 +100,7 @@ export default function ListingForm({
           placeholder="Conte sobre o produto, estado, motivo da venda..."
         />
         {errors.description && (
-          <p className="text-sm text-red-600 font-semibold mt-1">
+          <p className="text-sm text-danger font-semibold mt-1">
             {errors.description.message}
           </p>
         )}
@@ -118,7 +118,7 @@ export default function ListingForm({
           placeholder="450"
         />
         {errors.price && (
-          <p className="text-sm text-red-600 font-semibold mt-1">
+          <p className="text-sm text-danger font-semibold mt-1">
             {errors.price.message}
           </p>
         )}
@@ -162,7 +162,7 @@ export default function ListingForm({
       />
 
       {apiError && (
-        <p className="text-sm text-red-600 font-semibold">{apiError}</p>
+        <p className="text-sm text-danger font-semibold">{apiError}</p>
       )}
 
       <button

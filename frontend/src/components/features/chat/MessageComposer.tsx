@@ -48,7 +48,7 @@ export default function MessageComposer({
           <button
             type="button"
             onClick={() => setImage(null)}
-            className="text-red-600 font-bold"
+            className="text-danger font-bold"
           >
             ×
           </button>

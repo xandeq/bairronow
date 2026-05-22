@@ -81,7 +81,7 @@ export default function RatingForm({
         className="w-full border-2 border-border rounded px-3 py-2 text-sm"
       />
 
-      {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+      {error && <p className="text-sm text-danger font-semibold">{error}</p>}
 
       <button
         type="button"

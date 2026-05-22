@@ -21,7 +21,7 @@ export default function ChatRoomClient() {
     conversations.find((c) => c.id === conversationId) ?? null;
 
   if (!conversationId || Number.isNaN(conversationId)) {
-    return <p className="text-red-600 font-semibold">Conversa inválida</p>;
+    return <p className="text-danger font-semibold">Conversa inválida</p>;
   }
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/auth";
 import {
@@ -127,7 +127,17 @@ export default function AnalyticsPage() {
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.accessToken);
   const API = process.env.NEXT_PUBLIC_API_URL ?? "https://api.bairronow.com.br";
-  const CHART_THEME = getChartTheme();
+  // Defer CSS-var reads to after mount to avoid SSR/client hydration mismatch.
+  const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setMounted(true), []);
+  const CHART_THEME = useMemo(() => (mounted ? getChartTheme() : {
+    primary: "#2563EB",
+    border: "#E2E8F0",
+    fg: "#0F172A",
+    mutedFg: "#64748B",
+    card: "#FFFFFF",
+  }), [mounted]);
 
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);

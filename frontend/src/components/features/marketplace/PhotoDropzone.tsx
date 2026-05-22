@@ -116,7 +116,7 @@ export default function PhotoDropzone({
                   type="button"
                   aria-label="Remover"
                   onClick={() => remove(idx)}
-                  className="bg-red-600 text-white rounded px-1 text-xs font-bold"
+                  className="bg-danger text-white rounded px-1 text-xs font-bold"
                 >
                   ×
                 </button>
@@ -127,7 +127,7 @@ export default function PhotoDropzone({
       )}
 
       {error && (
-        <p className="text-sm text-red-600 font-semibold">{error}</p>
+        <p className="text-sm text-danger font-semibold">{error}</p>
       )}
     </div>
   );

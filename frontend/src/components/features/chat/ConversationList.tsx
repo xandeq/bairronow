@@ -90,7 +90,7 @@ export default function ConversationList({
                 )}
               </div>
               {c.unreadCount > 0 && (
-                <span className="bg-red-600 text-white text-xs font-extrabold rounded-full min-w-[22px] h-[22px] flex items-center justify-center px-1">
+                <span className="bg-danger text-white text-xs font-extrabold rounded-full min-w-[22px] h-[22px] flex items-center justify-center px-1">
                   {c.unreadCount > 99 ? "99+" : c.unreadCount}
                 </span>
               )}

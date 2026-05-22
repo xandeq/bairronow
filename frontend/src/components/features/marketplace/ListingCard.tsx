@@ -43,14 +43,14 @@ export default function ListingCard({ listing }: ListingCardProps) {
         )}
         {isSold && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <span role="status" aria-label="Anuncio vendido" className="bg-red-600 text-white text-lg font-extrabold px-4 py-2 rounded-md border-2 border-white">
+            <span role="status" aria-label="Anuncio vendido" className="bg-danger text-white text-lg font-extrabold px-4 py-2 rounded-md border-2 border-white">
               VENDIDO
             </span>
           </div>
         )}
         {isExpired && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <span role="status" aria-label="Anuncio expirado" className="bg-gray-700 text-white text-lg font-extrabold px-4 py-2 rounded-md border-2 border-white">
+            <span role="status" aria-label="Anuncio expirado" className="bg-muted-fg text-white text-lg font-extrabold px-4 py-2 rounded-md border-2 border-white">
               EXPIRADO
             </span>
           </div>

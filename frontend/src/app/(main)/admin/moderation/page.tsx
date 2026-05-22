@@ -202,9 +202,9 @@ export default function ModerationPage() {
                       `#${r.targetId}`
                     )}
                   </td>
-                  <td className="px-3 py-2 font-medium">{r.reporterEmail}</td>
-                  <td className="px-3 py-2 font-medium">{r.reason}</td>
-                  <td className="px-3 py-2 text-fg/70">{r.note ?? "—"}</td>
+                  <td className="px-3 py-2 font-medium max-w-[120px] truncate">{r.reporterEmail}</td>
+                  <td className="px-3 py-2 font-medium max-w-[100px] truncate">{r.reason}</td>
+                  <td className="px-3 py-2 text-fg/70 max-w-[100px] truncate">{r.note ?? "—"}</td>
                   <td className="px-3 py-2">
                     <div className="flex gap-2 flex-wrap">
                       <button

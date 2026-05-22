@@ -71,7 +71,7 @@ function PostDetailContent() {
       {notFound && (
         <p className="text-fg/70 font-semibold">Post não encontrado.</p>
       )}
-      {error && <p className="text-red-600 font-semibold">{error}</p>}
+      {error && <p className="text-danger font-semibold">{error}</p>}
       {post && (
         <>
           <PostCard post={post} linkToDetail={false} />

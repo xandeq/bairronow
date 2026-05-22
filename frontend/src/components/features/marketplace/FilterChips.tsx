@@ -65,7 +65,7 @@ export default function FilterChips({ filters, onChange }: FilterChipsProps) {
               type="button"
               aria-pressed={activeSort === opt.value}
               onClick={() => onChange({ sort: opt.value })}
-              className={`px-3 py-1 rounded text-xs font-semibold border-2 ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold border-2 ${
                 activeSort === opt.value
                   ? "bg-fg text-bg border-fg"
                   : "bg-bg text-fg/70 border-border"
@@ -89,7 +89,7 @@ export default function FilterChips({ filters, onChange }: FilterChipsProps) {
           Apenas verificados
         </label>
         {!filters.verifiedOnly && (
-          <span className="text-xs text-amber-700 font-semibold">
+          <span className="text-xs text-accent font-semibold">
             ⚠️ Vendedor não verificado pode aparecer
           </span>
         )}

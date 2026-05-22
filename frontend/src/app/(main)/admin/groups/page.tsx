@@ -66,7 +66,7 @@ export default function AdminGroupsPage() {
                         setFlaggedPosts((ps) => ps.filter((x) => x.id !== p.id))
                       )
                     }
-                    className="text-red-600 hover:underline text-xs"
+                    className="text-danger hover:underline text-xs"
                   >
                     Remover
                   </button>
