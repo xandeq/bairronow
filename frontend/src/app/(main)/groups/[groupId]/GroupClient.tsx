@@ -5,7 +5,7 @@ import { ptBR } from 'date-fns/locale';
 import { getHubConnection } from '@/lib/signalr';
 import { useGroupStore } from '@/stores/group-store';
 import { useAuthStore } from '@/lib/auth';
-import { getGroup, getGroupPosts, createGroupPost, getGroupEvents, rsvpEvent, getGroupMembers, toggleGroupPostLike, createGroupEvent } from '@/lib/api/groups';
+import { getGroup, getGroupPosts, createGroupPost, getGroupEvents, rsvpEvent, getGroupMembers, toggleGroupPostLike, createGroupEvent, deleteGroupPost } from '@/lib/api/groups';
 import type { GroupMember } from '@/lib/api/groups';
 import type { GroupPost, GroupEvent, GroupPoll } from '@/lib/types/groups';
 import Avatar from '@/components/ui/Avatar';
@@ -32,6 +32,7 @@ export default function GroupClient() {
     appendPosts,
     prependPost,
     updatePost,
+    removePost,
     resetFeed,
     incrementPage,
     page,
@@ -196,6 +197,16 @@ export default function GroupClient() {
     } catch {
       // Rollback on failure
       updatePost(postId, { isLikedByMe: currentlyLiked, likeCount: currentCount });
+    }
+  };
+
+  const handleDeletePost = async (postId: number) => {
+    if (!confirm('Excluir esta publicação?')) return;
+    try {
+      await deleteGroupPost(groupId, postId);
+      removePost(postId);
+    } catch {
+      // best-effort — post stays in list if delete fails
     }
   };
 
@@ -376,6 +387,21 @@ export default function GroupClient() {
                     </svg>
                     {p.commentCount > 0 && <span>{p.commentCount}</span>}
                   </span>
+                  {(p.authorId === currentUserId || isAdminOrOwner) && (
+                    <button
+                      type="button"
+                      aria-label="Excluir publicação"
+                      onClick={() => handleDeletePost(p.id)}
+                      className="ml-auto text-danger/40 hover:text-danger transition-colors p-1 rounded-lg"
+                    >
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14H6L5 6"/>
+                        <path d="M10 11v6"/><path d="M14 11v6"/>
+                        <path d="M9 6V4h6v2"/>
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
