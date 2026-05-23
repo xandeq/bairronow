@@ -28,7 +28,7 @@ export default function BottomTabBar({ tabs }: BottomTabBarProps) {
       aria-label="Navegação principal"
       className={[
         "fixed bottom-0 inset-x-0 z-40 md:hidden",
-        "bg-bg border-t-2 border-border",
+        "bg-bg/90 backdrop-blur-md border-t border-border/50",
         "flex items-center justify-around px-2 py-2 pb-safe",
       ].join(" ")}
     >

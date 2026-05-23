@@ -125,16 +125,29 @@ export default function MarketplacePage() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="bg-bg border-2 border-border rounded-xl p-8 text-center">
-          <p className="text-fg/70 font-semibold mb-3">
-            Nenhum anúncio encontrado.
-          </p>
+        <div className="flex flex-col items-center gap-4 py-16 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+            <svg className="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <div>
+            <p className="font-extrabold text-fg text-lg">Sem anúncios ainda</p>
+            <p className="text-sm text-muted-fg mt-1">
+              {filters.q ? `Nenhum resultado para "${filters.q}"` : "Seja o primeiro a publicar no seu bairro"}
+            </p>
+          </div>
           {user?.isVerified && (
             <Link
               href="/marketplace/new/"
-              className="inline-block bg-primary text-white font-extrabold px-4 py-2 rounded-lg"
+              className="inline-flex items-center gap-2 bg-primary text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-primary-hover transition-colors text-sm"
             >
-              Criar o primeiro anúncio
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Criar anúncio
             </Link>
           )}
         </div>
@@ -156,7 +169,7 @@ export default function MarketplacePage() {
               type="button"
               onClick={() => loadPage(false)}
               disabled={loading}
-              className="mx-auto block border-2 border-border text-fg font-semibold px-4 py-2 rounded-lg disabled:opacity-50"
+              className="mx-auto flex items-center gap-2 border border-border/50 shadow-sm bg-card text-fg font-semibold px-5 py-2.5 rounded-xl hover:border-primary/30 hover:text-primary transition-all duration-200 disabled:opacity-50 text-sm"
             >
               {loading ? "Carregando..." : "Carregar mais"}
             </button>

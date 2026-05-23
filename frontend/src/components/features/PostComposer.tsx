@@ -23,6 +23,14 @@ const MAX_IMAGES = 4;
 
 const CATEGORIES = ["Geral", "Dica", "Alerta", "Pergunta", "Evento"] as const;
 
+const CATEGORY_STYLE: Record<string, { active: string; idle: string }> = {
+  Geral:    { active: "bg-muted-fg text-white border-muted-fg",                       idle: "bg-muted text-muted-fg border-border hover:border-muted-fg/40 hover:text-fg" },
+  Dica:     { active: "bg-secondary text-white border-secondary",                     idle: "bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/20" },
+  Alerta:   { active: "bg-danger text-white border-danger",                           idle: "bg-danger-light text-danger border-danger/20 hover:bg-danger/15" },
+  Pergunta: { active: "bg-primary text-white border-primary shadow-sm",               idle: "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20" },
+  Evento:   { active: "bg-accent text-white border-accent",                           idle: "bg-accent/10 text-accent border-accent/20 hover:bg-accent/20" },
+};
+
 function XIcon() {
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -185,8 +193,8 @@ export default function PostComposer({ open, onClose }: PostComposerProps) {
                   className={[
                     "px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200",
                     selectedCategory === cat
-                      ? "bg-primary text-white border-primary shadow-blue"
-                      : "bg-muted text-muted-fg border-border hover:border-border-strong hover:text-fg",
+                      ? CATEGORY_STYLE[cat]?.active ?? "bg-primary text-white border-primary"
+                      : CATEGORY_STYLE[cat]?.idle ?? "bg-muted text-muted-fg border-border hover:text-fg",
                   ].join(" ")}
                 >
                   {cat}

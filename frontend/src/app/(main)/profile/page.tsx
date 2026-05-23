@@ -336,33 +336,39 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex items-start justify-between">
-        <div className="flex items-center gap-4">
-          <Avatar
-            name={profile.displayName ?? profile.bairroNome ?? "?"}
-            verified={profile.isVerified}
-            size="xl"
-          />
-          <div>
-            <h1 className="text-3xl font-extrabold text-fg leading-tight">
-              {profile.displayName ?? "(sem nome)"}
-            </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-sm text-muted-fg font-medium">
-                {profile.bairroNome ?? "Bairro nao definido"}
-              </span>
-              <VerifiedBadge verified={profile.isVerified} />
+    <div className="space-y-6 animate-slide-up">
+      {/* Profile header card */}
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden">
+        {/* Cover gradient */}
+        <div className="h-20 bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/10" />
+        {/* Avatar + info row */}
+        <div className="px-5 pb-5">
+          <div className="flex items-end justify-between -mt-8 mb-3">
+            <div className="ring-4 ring-card rounded-full shadow-md">
+              <Avatar
+                name={profile.displayName ?? profile.bairroNome ?? "?"}
+                verified={profile.isVerified}
+                size="xl"
+              />
             </div>
+            <Link
+              href="/profile/settings/"
+              className="mb-1 text-xs font-semibold text-muted-fg border border-border/50 bg-card px-3 py-1.5 rounded-xl hover:text-primary hover:border-primary/30 transition-all duration-200"
+            >
+              Configurações
+            </Link>
+          </div>
+          <h1 className="text-2xl font-extrabold text-fg leading-tight">
+            {profile.displayName ?? "(sem nome)"}
+          </h1>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-sm text-muted-fg font-medium">
+              {profile.bairroNome ?? "Bairro não definido"}
+            </span>
+            <VerifiedBadge verified={profile.isVerified} />
           </div>
         </div>
-        <Link
-          href="/profile/settings/"
-          className="text-sm text-primary font-semibold hover:underline mt-1"
-        >
-          Configuracoes
-        </Link>
-      </header>
+      </div>
 
       <Card padding="md">
         {!editing ? (
