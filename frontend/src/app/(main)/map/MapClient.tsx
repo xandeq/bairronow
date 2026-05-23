@@ -142,7 +142,7 @@ export default function MapClient() {
                       )}
                       {pin.isBusinessAccount && (
                         <>
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-accent/10 text-accent0 rounded px-1.5 py-0.5 mt-1">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-accent/10 text-accent rounded px-1.5 py-0.5 mt-1">
                             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
                             Negócio local
                           </span>
@@ -154,12 +154,6 @@ export default function MapClient() {
                     </div>
                   </div>
                   {pin.bio && <p className="text-xs text-muted-fg">{pin.bio}</p>}
-                  <Link
-                    href="/marketplace/"
-                    className="block text-center text-xs bg-primary text-white py-1 px-2 rounded-xl mt-1 hover:bg-primary/90"
-                  >
-                    Ver perfil
-                  </Link>
                 </div>
               </Popup>
             </Marker>

@@ -37,6 +37,7 @@ public class NotificationsController : ControllerBase
                 Type = n.Type,
                 PostId = n.PostId,
                 CommentId = n.CommentId,
+                GroupId = n.GroupId,
                 Actor = new PostAuthorDto
                 {
                     Id = n.ActorUserId,

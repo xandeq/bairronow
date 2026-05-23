@@ -40,7 +40,7 @@ function notificationHref(n: NotificationDto): string {
       return n.postId ? `/marketplace/${n.postId}/` : "/marketplace/";
     case "GroupJoinApproved":
     case "GroupEvent":
-      return "/groups/";
+      return n.groupId ? `/groups/${n.groupId}/` : "/groups/";
     case "NewRating":
       return "/profile/";
     default:
