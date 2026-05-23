@@ -85,12 +85,12 @@ export default function ChatRoom({
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] bg-bg border-2 border-border rounded-lg overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-12rem)] bg-card border border-border/50 shadow-sm rounded-2xl overflow-hidden">
       {conversation && (
         conversation.listingId != null ? (
           <Link
             href={`/marketplace/${conversation.listingId}/`}
-            className="flex items-center gap-3 p-3 border-b-2 border-border hover:bg-muted"
+            className="flex items-center gap-3 p-3 border-b border-border/50 hover:bg-muted transition-colors"
           >
             {conversation.listingThumbnailUrl && (
               // eslint-disable-next-line @next/next/no-img-element
@@ -112,7 +112,7 @@ export default function ChatRoom({
         ) : (
           <Link
             href={`/business/${conversation.otherUserId}/`}
-            className="flex items-center gap-3 p-3 border-b-2 border-border hover:bg-muted"
+            className="flex items-center gap-3 p-3 border-b border-border/50 hover:bg-muted transition-colors"
           >
             {conversation.otherUserPhotoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element

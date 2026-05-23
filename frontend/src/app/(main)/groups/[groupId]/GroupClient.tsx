@@ -662,7 +662,7 @@ function GroupPollsTab({
       {isMember && !creating && (
         <button
           onClick={() => setCreating(true)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-border text-sm font-medium text-muted-fg hover:border-primary hover:text-primary transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-border/60 text-sm font-semibold text-muted-fg hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-all duration-200"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>

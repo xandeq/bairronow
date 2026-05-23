@@ -196,7 +196,7 @@ export default function ListingDetailClient() {
         )}
       </div>
 
-      <div className="bg-bg border-2 border-border rounded-xl p-4 space-y-2">
+      <div className="bg-card border border-border/50 shadow-sm rounded-2xl p-4 space-y-2">
         <h2 className="font-bold text-fg">Vendedor</h2>
         <div className="flex items-center gap-2">
           <span className="font-semibold text-fg">
@@ -211,7 +211,7 @@ export default function ListingDetailClient() {
         )}
       </div>
 
-      <div className="bg-bg border-2 border-border rounded-xl p-4">
+      <div className="bg-card border border-border/50 shadow-sm rounded-2xl p-4">
         <h2 className="font-bold text-fg mb-2">Descrição</h2>
         <p className="text-fg/80 whitespace-pre-wrap">{listing.description}</p>
       </div>
@@ -230,14 +230,14 @@ export default function ListingDetailClient() {
             type="button"
             onClick={onFavorite}
             aria-label="Favoritar"
-            className="border-2 border-border rounded-xl px-4 text-2xl"
+            className="border border-border/50 shadow-sm rounded-2xl px-4 text-2xl hover:border-primary/30 transition-colors"
           >
             {favorited ? "❤️" : "🤍"}
           </button>
           <button
             type="button"
             onClick={() => setShowReport(true)}
-            className="border-2 border-danger text-danger font-semibold rounded-xl px-4"
+            className="border border-danger/50 text-danger font-semibold rounded-xl px-4 hover:bg-danger-light transition-colors"
           >
             Denunciar
           </button>
@@ -248,7 +248,7 @@ export default function ListingDetailClient() {
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/marketplace/${listing.id}/edit/`}
-            className="border-2 border-border font-semibold px-4 py-2 rounded-xl"
+            className="border border-border/50 shadow-sm font-semibold px-4 py-2 rounded-xl hover:border-primary/30 hover:text-primary transition-all duration-200"
           >
             Editar
           </Link>

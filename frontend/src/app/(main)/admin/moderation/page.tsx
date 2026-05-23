@@ -103,7 +103,7 @@ export default function ModerationPage() {
     return (
       <div className="space-y-4">
         <FeedHeader />
-        <div className="bg-bg rounded-lg border-2 border-border p-6">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6">
           <h1 className="text-xl font-extrabold text-fg">Acesso negado</h1>
         </div>
       </div>
@@ -128,11 +128,12 @@ export default function ModerationPage() {
             key={f.code}
             type="button"
             onClick={() => setFilter(f.code)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold border-2 ${
+            className={[
+              "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200",
               filter === f.code
-                ? "bg-primary text-white border-primary"
-                : "bg-bg text-fg border-border"
-            }`}
+                ? "bg-primary text-white border-primary shadow-sm"
+                : "bg-muted text-muted-fg border-border hover:border-primary/30 hover:text-primary",
+            ].join(" ")}
           >
             {f.label}
           </button>
@@ -144,7 +145,7 @@ export default function ModerationPage() {
       {loading ? (
         <div className="space-y-2">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center gap-4 bg-bg border-2 border-border rounded-lg p-3 animate-pulse">
+            <div key={i} className="flex items-center gap-4 bg-card border border-border/50 shadow-sm rounded-2xl p-3 animate-pulse">
               <div className="h-5 bg-muted rounded-full w-16" />
               <div className="h-4 bg-muted rounded w-12" />
               <div className="h-4 bg-muted rounded w-36" />
@@ -154,11 +155,11 @@ export default function ModerationPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-bg rounded-lg border-2 border-border p-6">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6">
           <p className="text-fg/60 font-medium">Nenhuma denúncia pendente.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto bg-bg rounded-lg border-2 border-border">
+        <div className="overflow-x-auto bg-card rounded-2xl border border-border/50 shadow-sm">
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-left font-bold text-fg/70 border-b-2 border-border">
@@ -219,7 +220,7 @@ export default function ModerationPage() {
                         type="button"
                         disabled={busyId === r.id}
                         onClick={() => handleResolve(r.id, "dismiss")}
-                        className="border-2 border-border text-fg text-xs font-semibold rounded px-2 py-1 disabled:opacity-50"
+                        className="border border-border/50 text-fg text-xs font-semibold rounded-lg px-2 py-1 disabled:opacity-50"
                       >
                         Dispensar
                       </button>

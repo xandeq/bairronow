@@ -25,7 +25,7 @@ export default function ChatListPage() {
       {loading ? (
         <div className="space-y-2">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center gap-3 p-3 bg-bg border-2 border-border rounded-lg animate-pulse">
+            <div key={i} className="flex items-center gap-3 p-4 bg-card border border-border/50 shadow-sm rounded-2xl animate-pulse">
               <div className="w-14 h-14 rounded-full bg-muted shrink-0" />
               <div className="flex-1 space-y-2">
                 <div className="h-4 bg-muted rounded w-1/2" />

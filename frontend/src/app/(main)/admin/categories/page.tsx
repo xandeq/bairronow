@@ -50,7 +50,7 @@ export default function AdminCategoriesPage() {
 
   if (!isAdmin) {
     return (
-      <div className="bg-bg rounded-lg border-2 border-border p-6">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6">
         <h1 className="text-xl font-extrabold text-fg">Acesso negado</h1>
       </div>
     );
@@ -71,7 +71,7 @@ export default function AdminCategoriesPage() {
       {loading ? (
         <div className="space-y-2">
           {[0, 1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex items-center justify-between bg-bg border-2 border-border rounded-lg p-3 animate-pulse">
+            <div key={i} className="flex items-center justify-between bg-card border border-border/50 shadow-sm rounded-2xl p-3 animate-pulse">
               <div className="space-y-1.5">
                 <div className="h-4 bg-muted rounded w-32" />
                 <div className="h-3 bg-muted rounded w-24" />
@@ -85,7 +85,7 @@ export default function AdminCategoriesPage() {
           {categories.map((c) => (
             <li
               key={c.code}
-              className="flex items-center justify-between bg-bg border-2 border-border rounded-lg p-3"
+              className="flex items-center justify-between bg-card border border-border/50 shadow-sm rounded-2xl p-3"
             >
               <div>
                 <p className="font-bold text-fg">{c.displayName}</p>

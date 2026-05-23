@@ -60,7 +60,7 @@ export default function MessageComposer({
           onClick={() => fileRef.current?.click()}
           disabled={disabled || submitting}
           aria-label="Anexar imagem"
-          className="border-2 border-border rounded p-2 text-lg"
+          className="border border-border/50 rounded-xl p-2 text-lg hover:border-primary/30 hover:bg-primary/5 transition-colors"
         >
           📷
         </button>

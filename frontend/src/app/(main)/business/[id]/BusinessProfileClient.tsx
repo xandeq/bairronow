@@ -160,7 +160,7 @@ function AvatarCircle({ photoUrl, name }: { photoUrl: string | null; name: strin
       <img
         src={photoUrl}
         alt={name}
-        className="w-16 h-16 rounded-full object-cover border-2 border-border shrink-0"
+        className="w-16 h-16 rounded-full object-cover ring-2 ring-border/50 shrink-0"
       />
     );
   }

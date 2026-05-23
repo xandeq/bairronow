@@ -57,7 +57,7 @@ export default function PostPreviewClient({ postId }: { postId: string }) {
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-6 py-8">
-          <div className="bg-bg border-2 border-border rounded-lg p-6 space-y-4 animate-pulse">
+          <div className="bg-card border border-border/50 shadow-sm rounded-2xl p-6 space-y-4 animate-pulse">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-muted" />
               <div className="space-y-2">
@@ -124,7 +124,7 @@ export default function PostPreviewClient({ postId }: { postId: string }) {
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8">
-        <article className="bg-bg border-2 border-border rounded-lg p-6 space-y-4">
+        <article className="bg-card border border-border/50 shadow-sm rounded-2xl p-6 space-y-4">
           <header className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">
               {post.author.name.charAt(0)}

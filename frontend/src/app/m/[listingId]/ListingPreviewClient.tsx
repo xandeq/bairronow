@@ -67,7 +67,7 @@ export default function ListingPreviewClient({
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-6 py-8">
-          <div className="bg-bg border-2 border-border rounded-lg overflow-hidden animate-pulse">
+          <div className="bg-card border border-border/50 shadow-sm rounded-2xl overflow-hidden animate-pulse">
             <div className="aspect-video w-full bg-muted" />
             <div className="p-6 space-y-4">
               <div className="space-y-2">
@@ -134,7 +134,7 @@ export default function ListingPreviewClient({
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-8">
-        <article className="bg-bg border-2 border-border rounded-lg overflow-hidden">
+        <article className="bg-card border border-border/50 shadow-sm rounded-2xl overflow-hidden">
           {cover && (
             <div className="aspect-video w-full bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
