@@ -744,6 +744,13 @@ public class GroupsController : ControllerBase
         var userId = GetUserId();
         if (userId == null) return Unauthorized();
 
+        if (string.IsNullOrWhiteSpace(req.Title) || req.Title.Length > 120)
+            return BadRequest(new { error = "O título do evento deve ter entre 1 e 120 caracteres." });
+        if (req.StartsAt <= DateTime.UtcNow)
+            return BadRequest(new { error = "A data de início deve ser no futuro." });
+        if (req.EndsAt.HasValue && req.EndsAt <= req.StartsAt)
+            return BadRequest(new { error = "A data de término deve ser após o início." });
+
         var isMember = await _db.GroupMembers
             .AsNoTracking()
             .AnyAsync(m => m.GroupId == id && m.UserId == userId.Value && m.Status == GroupMemberStatus.Active, ct);
