@@ -143,6 +143,7 @@ export default function ListingPreviewClient({
                 src={cover.url}
                 alt={listing.title}
                 className="w-full h-full object-cover"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
               />
             </div>
           )}
