@@ -79,7 +79,7 @@ export default function LikeButton({
         "flex items-center gap-1.5 px-3 py-1.5 rounded-xl",
         "text-xs font-semibold transition-all duration-200 active:scale-90",
         liked
-          ? "text-rose-600 bg-rose-50 hover:bg-rose-100"
+          ? "text-danger bg-danger-light hover:bg-danger-light/80"
           : "text-muted-fg hover:text-fg hover:bg-muted",
         busy ? "opacity-50" : "",
       ]
