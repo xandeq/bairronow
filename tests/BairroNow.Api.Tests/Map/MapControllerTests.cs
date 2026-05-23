@@ -82,7 +82,7 @@ public class MapControllerTests
         SeedVerifiedUser(db, showOnMap: false);
 
         var controller = BuildController(db);
-        var result = await controller.GetPins(bairroId: 1, filter: null);
+        var result = await controller.GetPins(bairroId: 1, filter: null, ct: CancellationToken.None);
 
         var ok = result.Should().BeOfType<OkObjectResult>().Subject;
         var pins = ok.Value as IEnumerable<object>;
@@ -96,7 +96,7 @@ public class MapControllerTests
         SeedVerifiedUser(db, showOnMap: true);
 
         var controller = BuildController(db);
-        var result = await controller.GetPins(bairroId: 1, filter: null);
+        var result = await controller.GetPins(bairroId: 1, filter: null, ct: CancellationToken.None);
 
         var ok = result.Should().BeOfType<OkObjectResult>().Subject;
         // Should have 1 pin
@@ -118,7 +118,7 @@ public class MapControllerTests
                 .Returns((-20.316, -40.313));
 
         var controller = BuildController(db, fuzzMock.Object);
-        var result = await controller.GetPins(bairroId: 1, filter: null);
+        var result = await controller.GetPins(bairroId: 1, filter: null, ct: CancellationToken.None);
 
         var ok = result.Should().BeOfType<OkObjectResult>().Subject;
         var pins = (ok.Value as System.Collections.IEnumerable)!.Cast<object>().ToList();
@@ -161,7 +161,7 @@ public class MapControllerTests
         db.SaveChanges();
 
         var controller = BuildController(db);
-        var result = await controller.GetPins(bairroId: 1, filter: "verified");
+        var result = await controller.GetPins(bairroId: 1, filter: "verified", ct: CancellationToken.None);
 
         var ok = result.Should().BeOfType<OkObjectResult>().Subject;
         var pins = (ok.Value as System.Collections.IEnumerable)!.Cast<object>().ToList();

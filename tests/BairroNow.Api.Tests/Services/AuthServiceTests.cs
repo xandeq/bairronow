@@ -83,7 +83,7 @@ public class AuthServiceTests : IDisposable
         });
         await _db.SaveChangesAsync();
 
-        var (response, refreshToken, error) = await _service.LoginAsync(new LoginRequest("user@test.com", "ValidPass1!"), "127.0.0.1");
+        var (response, refreshToken, _, _, error) = await _service.LoginAsync(new LoginRequest("user@test.com", "ValidPass1!"), "127.0.0.1");
 
         Assert.NotNull(response);
         Assert.NotNull(refreshToken);
@@ -138,7 +138,7 @@ public class AuthServiceTests : IDisposable
         });
         await _db.SaveChangesAsync();
 
-        var (response, _, error) = await _service.LoginAsync(new LoginRequest("user@test.com", "ValidPass1!"), "127.0.0.1");
+        var (response, _, _, _, error) = await _service.LoginAsync(new LoginRequest("user@test.com", "ValidPass1!"), "127.0.0.1");
 
         Assert.Null(response);
         Assert.Contains("bloqueada", error);
