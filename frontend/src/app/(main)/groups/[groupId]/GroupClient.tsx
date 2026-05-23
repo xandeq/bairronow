@@ -318,12 +318,16 @@ export default function GroupClient() {
             >
               <textarea
                 value={composerBody}
-                onChange={(e) => setComposerBody(e.target.value)}
+                onChange={(e) => setComposerBody(e.target.value.slice(0, 2000))}
                 placeholder="Compartilhe algo com o grupo..."
                 rows={3}
+                maxLength={2000}
                 className="w-full resize-none text-sm text-muted-fg outline-none"
               />
-              <div className="flex justify-end mt-2">
+              <div className="flex items-center justify-between mt-2">
+                <span className={['text-xs', composerBody.length > 1800 ? 'text-danger font-semibold' : 'text-muted-fg'].join(' ')}>
+                  {composerBody.length}/2000
+                </span>
                 <button
                   type="submit"
                   disabled={submitting || !composerBody.trim()}
