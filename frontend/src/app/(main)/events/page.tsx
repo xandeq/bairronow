@@ -77,7 +77,7 @@ function UsersIcon() {
 
 function SkeletonCard() {
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-5 flex gap-4 animate-pulse">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-5 flex gap-4 animate-pulse">
       <div className="w-12 h-14 rounded-xl bg-muted shrink-0" />
       <div className="flex-1 space-y-2.5">
         <div className="h-4 w-48 rounded-full bg-muted" />

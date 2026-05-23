@@ -36,7 +36,7 @@ interface StatsResponse {
 
 function SkeletonCard() {
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-5 animate-pulse">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-5 animate-pulse">
       <div className="h-3 w-24 bg-muted rounded mb-3" />
       <div className="h-8 w-16 bg-muted rounded" />
     </div>
@@ -45,7 +45,7 @@ function SkeletonCard() {
 
 function SkeletonChart() {
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-5 animate-pulse">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-5 animate-pulse">
       <div className="h-3 w-36 bg-muted rounded mb-4" />
       <div className="h-48 bg-muted rounded-xl" />
     </div>
@@ -61,7 +61,7 @@ interface StatCardProps {
 
 function StatCard({ label, value, icon, colorClass }: StatCardProps) {
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-5 flex items-center gap-4">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-5 flex items-center gap-4">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${colorClass}`}>
         {icon}
       </div>
@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
     return (
       <div className="space-y-4">
         <FeedHeader />
-        <div className="bg-card rounded-2xl border border-border/70 p-6">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6">
           <h1 className="text-xl font-extrabold text-fg">Acesso negado</h1>
         </div>
       </div>
@@ -219,7 +219,7 @@ export default function AdminDashboardPage() {
       ) : stats ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Posts per day — Area chart */}
-          <div className="bg-card rounded-2xl border border-border/70 p-5">
+          <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-5">
             <h2 className="text-sm font-bold text-fg mb-4">Posts por dia (7 dias)</h2>
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={stats.postsPerDay} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -251,7 +251,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* New users per day — Bar chart */}
-          <div className="bg-card rounded-2xl border border-border/70 p-5">
+          <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-5">
             <h2 className="text-sm font-bold text-fg mb-4">Novos usuários por dia (7 dias)</h2>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={stats.usersPerDay} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>

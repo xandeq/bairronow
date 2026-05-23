@@ -52,7 +52,7 @@ function StoreIcon() {
 
 function SkeletonCard() {
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-5 space-y-3">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-5 space-y-3">
       <div className="flex items-center gap-3">
         <div className="w-11 h-11 rounded-full animate-shimmer" />
         <div className="flex-1 space-y-2">
@@ -114,7 +114,7 @@ function TrendingAuthorAvatar({ author }: { author: TrendingAuthor }) {
 
 function TrendingSkeletonCard() {
   return (
-    <div className="min-w-[200px] max-w-[220px] shrink-0 bg-card border border-border/70 rounded-2xl p-3 space-y-2">
+    <div className="min-w-[200px] max-w-[220px] shrink-0 bg-card border border-border/50 shadow-sm rounded-2xl p-3 space-y-2">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-full animate-shimmer" />
         <div className="flex-1 space-y-1">
@@ -154,7 +154,7 @@ function TrendingSection() {
   if (!loading && posts.length === 0) return null;
 
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-4 mb-4 animate-slide-up">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 mb-4 animate-slide-up">
       {/* Section header */}
       <div className="flex items-center gap-2 mb-3">
         <FlameIcon className="w-4 h-4 text-amber-500" />
@@ -250,7 +250,7 @@ function BusinessSpotlight({ bairroId }: { bairroId: number }) {
   }
 
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-4 mb-4">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 mb-4">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-accent">
           <StoreIcon />
@@ -261,7 +261,7 @@ function BusinessSpotlight({ bairroId }: { bairroId: number }) {
       {spotlightLoading ? (
         <div className="flex gap-2 flex-wrap">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/70 animate-shimmer">
+            <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 shadow-sm animate-shimmer">
               <div className="w-6 h-6 rounded-full bg-muted" />
               <div className="w-16 h-3 rounded-full bg-muted" />
             </div>
@@ -273,7 +273,7 @@ function BusinessSpotlight({ bairroId }: { bairroId: number }) {
             <Link
               key={biz.userId}
               href={`/business/${biz.userId}/`}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/70 bg-muted hover:border-accent/50 hover:bg-accent/5 transition-colors duration-150"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 shadow-sm bg-muted hover:border-accent/50 hover:bg-accent/5 transition-colors duration-150"
             >
               <BusinessAvatarCircle name={biz.displayName ?? "N"} />
               <span className="text-xs font-semibold text-fg truncate max-w-[100px]">

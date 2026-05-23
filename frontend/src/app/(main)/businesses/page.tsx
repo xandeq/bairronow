@@ -104,7 +104,7 @@ function AvatarCircle({
 
 function SkeletonCard() {
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-5 space-y-3 animate-pulse">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-5 space-y-3 animate-pulse">
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-muted shrink-0" />
         <div className="flex-1 space-y-2">
@@ -229,7 +229,7 @@ export default function BusinessesPage() {
               <Link
                 key={biz.userId}
                 href={`/business/${biz.userId}/`}
-                className="hover-lift block bg-card rounded-2xl border border-border/70 p-5 space-y-3 transition-all duration-200 hover:border-primary/30 hover:shadow-md"
+                className="hover-lift block bg-card rounded-2xl border border-border/50 shadow-sm p-5 space-y-3 transition-all duration-200 hover:border-primary/30 hover:shadow-md"
               >
                 {/* Avatar + name */}
                 <div className="flex items-center gap-3">

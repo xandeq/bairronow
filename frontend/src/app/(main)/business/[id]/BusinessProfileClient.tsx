@@ -39,7 +39,7 @@ function BusinessGallery({ userId }: { userId: string }) {
 
   if (loading) {
     return (
-      <div className="bg-card rounded-2xl border border-border/70 p-6 space-y-4">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6 space-y-4">
         <div className="flex items-center gap-2 text-sm font-bold text-fg uppercase tracking-wide">
           <CameraIcon />
           <span>Galeria</span>
@@ -56,7 +56,7 @@ function BusinessGallery({ userId }: { userId: string }) {
   if (photos.length === 0) return null;
 
   return (
-    <div className="bg-card rounded-2xl border border-border/70 p-6 space-y-4">
+    <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6 space-y-4">
       <div className="flex items-center gap-2 text-sm font-bold text-fg uppercase tracking-wide">
         <CameraIcon />
         <span>Galeria</span>
@@ -132,7 +132,7 @@ function MapPinIcon() {
 function ProfileSkeleton() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <div className="bg-card rounded-2xl border border-border/70 p-6 space-y-4">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6 space-y-4">
         <div className="flex items-start gap-4">
           <div className="w-16 h-16 rounded-full animate-shimmer shrink-0" />
           <div className="flex-1 space-y-3">
@@ -279,7 +279,7 @@ export default function BusinessProfileClient({ userId }: Props) {
       </button>
 
       {/* Header card */}
-      <div className="bg-card rounded-2xl border border-border/70 p-6 space-y-4">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6 space-y-4">
         <div className="flex items-start gap-4">
           <AvatarCircle photoUrl={data.photoUrl} name={displayTitle} />
 
@@ -328,7 +328,7 @@ export default function BusinessProfileClient({ userId }: Props) {
 
       {/* Contact / Description card */}
       {hasContact && (
-        <div className="bg-card rounded-2xl border border-border/70 p-6 space-y-4">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6 space-y-4">
           <h2 className="text-sm font-bold text-fg uppercase tracking-wide">Informações</h2>
 
           {data.businessDescription && (
@@ -364,7 +364,7 @@ export default function BusinessProfileClient({ userId }: Props) {
 
       {/* Ratings section */}
       {data.isBusinessAccount && (
-        <div className="bg-card rounded-2xl border border-border/70 p-6">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-6">
           <h2 className="text-sm font-bold text-fg uppercase tracking-wide mb-4">Avaliações</h2>
           <BusinessRating businessUserId={userId} canRate={true} />
         </div>
