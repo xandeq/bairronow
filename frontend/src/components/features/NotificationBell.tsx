@@ -20,22 +20,33 @@ function relTime(date: string): string {
 function notificationBody(n: NotificationDto): string {
   const who = n.actor.displayName ?? "Alguém";
   switch (n.type) {
-    case "like":            return `${who} curtiu seu post`;
-    case "comment":         return `${who} comentou no seu post`;
-    case "reply":           return `${who} respondeu seu comentário`;
-    case "mention":         return `${who} mencionou você`;
-    case "listing_expired": return `Seu anúncio "${who}" expirou`;
-    case "price_drop":      return `Queda de preço em "${who}"`;
-    default:                return `${who} interagiu com você`;
+    case "like":               return `${who} curtiu seu post`;
+    case "comment":            return `${who} comentou no seu post`;
+    case "reply":              return `${who} respondeu seu comentário`;
+    case "mention":            return `${who} mencionou você`;
+    case "GroupJoinApproved":  return "Sua entrada no grupo foi aprovada";
+    case "NewRating":          return `${who} avaliou seu negócio`;
+    case "GroupEvent":         return `${who} criou um evento no grupo`;
+    case "listing_expired":    return "Seu anúncio expirou";
+    case "price_drop":         return `Queda de preço em um anúncio favorito`;
+    default:                   return `${who} interagiu com você`;
   }
 }
 
 // ─── notification link target ─────────────────────────────────────────────────
 function notificationHref(n: NotificationDto): string {
-  if (n.type === "listing_expired" || n.type === "price_drop") {
-    return n.postId ? `/marketplace/${n.postId}/` : "/marketplace/";
+  switch (n.type) {
+    case "listing_expired":
+    case "price_drop":
+      return n.postId ? `/marketplace/${n.postId}/` : "/marketplace/";
+    case "GroupJoinApproved":
+    case "GroupEvent":
+      return "/groups/";
+    case "NewRating":
+      return "/profile/";
+    default:
+      return n.postId ? `/feed/post/?id=${n.postId}` : "/feed/";
   }
-  return n.postId ? `/feed/post/?id=${n.postId}` : "/feed/";
 }
 
 // ─── type → icon ─────────────────────────────────────────────────────────────

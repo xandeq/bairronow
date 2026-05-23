@@ -100,7 +100,7 @@ public class NotificationService : INotificationService
             Type = NotificationTypes.NewRating,
             PostId = null,
             CommentId = null,
-            Actor = new Models.DTOs.PostAuthorDto { Id = businessOwnerId },
+            Actor = new Models.DTOs.PostAuthorDto { Id = businessOwnerId, DisplayName = raterName },
             IsRead = false,
             CreatedAt = notification.CreatedAt
         };
