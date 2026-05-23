@@ -97,7 +97,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
             <span
               role="status"
               aria-label={`Expira em ${expiresInDays} dias`}
-              className="bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm"
+              className="bg-accent text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm"
             >
               ⏱ {expiresInDays}d
             </span>

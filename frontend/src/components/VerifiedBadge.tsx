@@ -15,7 +15,7 @@ export default function VerifiedBadge({ verified, size = "md" }: VerifiedBadgePr
 
   return (
     <span
-      className={`inline-flex items-center rounded-full bg-emerald-100 text-emerald-700 font-semibold ${sizeClasses}`}
+      className={`inline-flex items-center rounded-full bg-secondary-light text-secondary font-semibold ${sizeClasses}`}
       aria-label="Vizinho verificado"
     >
       <svg

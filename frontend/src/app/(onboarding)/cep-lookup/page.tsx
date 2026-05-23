@@ -109,11 +109,11 @@ export default function CEPLookupPage() {
               </p>
               <p className="text-muted-fg">CEP: {result.cep}</p>
               {result.bairroId !== null ? (
-                <p className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
+                <p className="mt-2 inline-block rounded-full bg-secondary-light px-3 py-1 text-xs font-bold text-secondary">
                   Bairro reconhecido: {result.bairroNome}
                 </p>
               ) : (
-                <p className="mt-2 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
+                <p className="mt-2 inline-block rounded-full bg-accent-light px-3 py-1 text-xs font-bold text-accent">
                   Fora de Vila Velha — verificacao manual sera necessaria
                 </p>
               )}

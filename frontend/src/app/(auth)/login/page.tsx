@@ -122,7 +122,7 @@ function BairroNowPanel() {
         <div className="space-y-5">
           {/* Live badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/18 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] text-xs font-semibold text-white/90 backdrop-blur-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-dot" />
+            <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse-dot" />
             Comunidade ativa agora
           </div>
 

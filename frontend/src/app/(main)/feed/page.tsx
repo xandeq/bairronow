@@ -157,7 +157,7 @@ function TrendingSection() {
     <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 mb-4 animate-slide-up">
       {/* Section header */}
       <div className="flex items-center gap-2 mb-3">
-        <FlameIcon className="w-4 h-4 text-amber-500" />
+        <FlameIcon className="w-4 h-4 text-accent" />
         <h2 className="text-sm font-bold text-fg">Em Alta</h2>
       </div>
 
@@ -198,7 +198,7 @@ function TrendingSection() {
 
                   {/* Engagement */}
                   <div className="flex items-center gap-1 text-xs text-muted-fg mt-auto">
-                    <FlameIcon className="w-3.5 h-3.5 text-amber-500" />
+                    <FlameIcon className="w-3.5 h-3.5 text-accent" />
                     <span className="font-semibold">{score}</span>
                   </div>
                 </Link>
