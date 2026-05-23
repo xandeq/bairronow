@@ -95,7 +95,7 @@ export default function PostCard({
   const gridCols = imageGridClass[Math.min(post.images.length, 4)] ?? "grid-cols-2";
 
   return (
-    <article className="bg-card rounded-2xl border border-border/70 overflow-hidden transition-all duration-200 hover:border-border-strong hover:shadow-sm animate-slide-up hover-lift">
+    <article className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md hover:border-primary/20 animate-slide-up">
       <div className="p-5">
         {/* Header */}
         <header className="flex items-start gap-3 mb-4">
