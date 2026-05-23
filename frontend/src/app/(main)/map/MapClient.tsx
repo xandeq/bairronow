@@ -136,7 +136,7 @@ export default function MapClient() {
                     <div>
                       <p className="font-medium text-sm text-fg">{pin.displayName ?? 'Vizinho'}</p>
                       {pin.isVerified && (
-                        <span className="inline-flex items-center gap-1 bg-secondary text-secondary-fg text-xs px-2 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 bg-secondary text-white text-xs px-2 py-0.5 rounded-full">
                           Verificado
                         </span>
                       )}

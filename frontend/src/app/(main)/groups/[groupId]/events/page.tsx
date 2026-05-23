@@ -1,10 +1,15 @@
-// Static export: redirect to group detail which has events tab
-export function generateStaticParams() {
-  return [{ groupId: 'placeholder' }];
-}
+"use client";
 
-export default function GroupEventsPage({ params }: { params: { groupId: string } }) {
-  return (
-    <meta httpEquiv="refresh" content={`0; url=/groups/${params.groupId}`} />
-  );
+import { useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+
+export default function GroupEventsRedirectPage() {
+  const router = useRouter();
+  const params = useParams<{ groupId: string }>();
+
+  useEffect(() => {
+    router.replace(`/groups/${params.groupId}/`);
+  }, [router, params.groupId]);
+
+  return null;
 }
