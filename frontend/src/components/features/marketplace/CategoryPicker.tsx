@@ -33,7 +33,7 @@ export default function CategoryPicker({
                 key={c.code}
                 type="button"
                 onClick={() => onChange(c.code, undefined)}
-                className={`px-3 py-1.5 rounded-full text-sm font-semibold border-2 transition ${
+                className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200 ${
                   selected
                     ? "bg-primary text-white border-primary"
                     : "bg-bg text-fg border-border hover:bg-muted"
@@ -59,7 +59,7 @@ export default function CategoryPicker({
                   key={s.code}
                   type="button"
                   onClick={() => onChange(categoryCode, s.code)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-semibold border-2 transition ${
+                  className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200 ${
                     selected
                       ? "bg-primary text-white border-primary"
                       : "bg-bg text-fg border-border hover:bg-muted"

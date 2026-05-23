@@ -86,7 +86,7 @@ export default function MessageComposer({
           onKeyDown={onKey}
           placeholder="Escreva uma mensagem..."
           disabled={disabled || submitting}
-          className="flex-1 border-2 border-border rounded px-3 py-2 text-sm font-medium resize-none"
+          className="flex-1 border border-border/50 rounded-xl px-3 py-2.5 text-sm font-medium resize-none bg-muted text-fg focus:border-primary focus:bg-card focus:outline-none transition-colors"
         />
         <button
           type="button"

@@ -66,7 +66,7 @@ export default function ListingForm({
   return (
     <form
       onSubmit={handleSubmit(submit)}
-      className="space-y-5 bg-bg border-2 border-border rounded-lg p-5"
+      className="space-y-5 bg-card border border-border/50 shadow-sm rounded-2xl p-5"
       noValidate
     >
       <div>
@@ -76,7 +76,7 @@ export default function ListingForm({
         <input
           type="text"
           {...register("title")}
-          className="w-full border-2 border-border rounded px-3 py-2 font-medium"
+          className="w-full border border-border/50 rounded-xl px-3 py-2 font-medium bg-muted text-fg focus:border-primary focus:bg-card focus:outline-none transition-colors"
           placeholder="Ex: Bicicleta aro 26 seminova"
         />
         {errors.title && (
@@ -96,7 +96,7 @@ export default function ListingForm({
         <textarea
           {...register("description")}
           rows={4}
-          className="w-full border-2 border-border rounded px-3 py-2 font-medium"
+          className="w-full border border-border/50 rounded-xl px-3 py-2 font-medium bg-muted text-fg focus:border-primary focus:bg-card focus:outline-none transition-colors"
           placeholder="Conte sobre o produto, estado, motivo da venda..."
         />
         {errors.description && (
@@ -114,7 +114,7 @@ export default function ListingForm({
           type="number"
           step="0.01"
           {...register("price", { valueAsNumber: true })}
-          className="w-full border-2 border-border rounded px-3 py-2 font-medium"
+          className="w-full border border-border/50 rounded-xl px-3 py-2 font-medium bg-muted text-fg focus:border-primary focus:bg-card focus:outline-none transition-colors"
           placeholder="450"
         />
         {errors.price && (

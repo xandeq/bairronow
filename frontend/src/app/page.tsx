@@ -337,7 +337,7 @@ export default function LandingPage() {
             <div aria-hidden className="absolute w-40 h-40 rounded-full bg-primary/5 opacity-60 -top-4 -right-4" />
 
             {/* Badge showcase card */}
-            <div className="relative bg-bg rounded-lg p-8 max-w-xs w-full border-2 border-border">
+            <div className="relative bg-card rounded-2xl p-8 max-w-xs w-full border border-border/50 shadow-md">
               {/* Fake avatar + name */}
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white font-extrabold text-xl">

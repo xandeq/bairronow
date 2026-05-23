@@ -49,7 +49,7 @@ export default function RatingForm({
   };
 
   return (
-    <div className="bg-bg border-2 border-border rounded-lg p-5 space-y-3">
+    <div className="bg-card border border-border/50 shadow-sm rounded-2xl p-5 space-y-3">
       <h3 className="font-extrabold text-fg">
         {existing ? "Editar avaliação" : "Avaliar vendedor"}
       </h3>

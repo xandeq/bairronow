@@ -11,7 +11,7 @@ export default function NewListingPage() {
 
   if (!user?.isVerified) {
     return (
-      <div className="bg-bg border-2 border-accent rounded-xl p-6 space-y-3">
+      <div className="bg-accent/5 border border-accent/40 rounded-2xl p-6 space-y-3">
         <h1 className="text-2xl font-extrabold text-fg">
           Verificação necessária
         </h1>

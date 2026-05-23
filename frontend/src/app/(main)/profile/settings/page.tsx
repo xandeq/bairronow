@@ -190,7 +190,7 @@ export default function SettingsPage() {
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className="px-4 py-2 border-2 border-danger text-danger font-bold rounded-lg hover:bg-danger hover:text-white transition-colors"
+            className="px-4 py-2 border border-danger/60 text-danger font-bold rounded-xl hover:bg-danger hover:text-white transition-all duration-200"
           >
             Solicitar exclusao da conta
           </button>

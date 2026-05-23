@@ -93,7 +93,7 @@ export default function MarketplacePage() {
         ) : (
           <Link
             href="/profile/"
-            className="border-2 border-accent text-accent-fg font-semibold px-4 py-2 rounded-xl text-sm"
+            className="border border-accent/50 text-accent font-semibold px-4 py-2 rounded-xl text-sm bg-accent/5"
           >
             Verifique seu endereço
           </Link>
