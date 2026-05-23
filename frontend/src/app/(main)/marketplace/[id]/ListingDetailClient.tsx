@@ -257,7 +257,7 @@ export default function ListingDetailClient() {
               type="button"
               onClick={onRenew}
               disabled={busy}
-              className="bg-amber-500 text-white font-extrabold px-4 py-2 rounded-xl disabled:opacity-50"
+              className="bg-accent text-white font-extrabold px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50"
             >
               {isExpired ? "Reativar anúncio" : "Renovar (+30 dias)"}
             </button>
@@ -267,7 +267,7 @@ export default function ListingDetailClient() {
               type="button"
               onClick={onMarkSold}
               disabled={busy}
-              className="bg-accent text-accent-fg font-extrabold px-4 py-2 rounded-xl disabled:opacity-50"
+              className="bg-accent text-white font-extrabold px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50"
             >
               Marcar como vendido
             </button>
