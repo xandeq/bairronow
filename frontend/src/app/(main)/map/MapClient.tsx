@@ -10,6 +10,27 @@ import { useAuthStore } from '@/lib/auth';
 import { getPins, getPois, updateMapPreference } from '@/lib/api/map';
 import type { MapPin, PointOfInterest, MapFilter } from '@/lib/types/map';
 
+function MapPinAvatar({ photoUrl, displayName }: { photoUrl?: string | null; displayName?: string | null }) {
+  const [failed, setFailed] = useState(false);
+  const initial = (displayName?.[0] ?? '?').toUpperCase();
+  if (photoUrl && !failed) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={photoUrl}
+        alt={displayName ?? ''}
+        className="w-8 h-8 rounded-full object-cover"
+        onError={() => setFailed(true)}
+      />
+    );
+  }
+  return (
+    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-fg text-xs">
+      {initial}
+    </div>
+  );
+}
+
 // Custom marker icons for resident vs business accounts
 function createMarkerIcon(isBusinessAccount?: boolean) {
   const color = isBusinessAccount ? '#D97706' : '#2563EB';
@@ -111,17 +132,7 @@ export default function MapClient() {
               <Popup>
                 <div className="min-w-[180px] space-y-1">
                   <div className="flex items-center gap-2">
-                    {pin.photoUrl ? (
-                      <img
-                        src={pin.photoUrl}
-                        alt={pin.displayName ?? ''}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-fg text-xs">
-                        {pin.displayName?.[0] ?? '?'}
-                      </div>
-                    )}
+                    <MapPinAvatar photoUrl={pin.photoUrl} displayName={pin.displayName} />
                     <div>
                       <p className="font-medium text-sm text-fg">{pin.displayName ?? 'Vizinho'}</p>
                       {pin.isVerified && (

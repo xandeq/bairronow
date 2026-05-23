@@ -149,7 +149,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
           </div>
           <div onClick={(e) => e.preventDefault()}>
             <WhatsAppShareButton
-              url={`https://bairronow.com.br/m/${listing.id}`}
+              url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://bairronow.com.br"}/m/${listing.id}`}
               text="Veja esta oferta no BairroNow"
             />
           </div>
