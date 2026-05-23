@@ -292,7 +292,7 @@ export default function LoginForm() {
       <div className="animate-slide-up stagger-slide-4">
         <a
           href={`${API_BASE_URL}/api/v1/auth/google`}
-          className="w-full flex items-center justify-center gap-3 px-4 h-12 border border-border rounded-xl bg-card hover:bg-muted hover:border-border-strong hover:-translate-y-px active:translate-y-0 active:scale-[0.98] transition-all duration-200 font-semibold text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
+          className="w-full flex items-center justify-center gap-3 px-4 h-12 border border-border/50 rounded-xl bg-card hover:bg-muted hover:border-border-strong hover:-translate-y-px active:translate-y-0 active:scale-[0.98] transition-all duration-200 font-semibold text-sm text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
         >
           <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />

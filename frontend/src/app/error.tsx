@@ -24,7 +24,7 @@ export default function GlobalError({
         </button>
         <Link
           href="/"
-          className="rounded-lg border border-border px-4 py-2 font-medium text-fg hover:bg-muted"
+          className="rounded-xl border border-border/50 px-4 py-2 font-medium text-fg hover:bg-muted"
         >
           Pagina inicial
         </Link>

@@ -132,7 +132,7 @@ export default function ModerationPage() {
               "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200",
               filter === f.code
                 ? "bg-primary text-white border-primary shadow-sm"
-                : "bg-muted text-muted-fg border-border hover:border-primary/30 hover:text-primary",
+                : "bg-muted text-muted-fg border-border/50 hover:border-primary/30 hover:text-primary",
             ].join(" ")}
           >
             {f.label}
@@ -246,7 +246,7 @@ export default function ModerationPage() {
 
       {banTarget !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-card rounded-2xl border border-border shadow-xl p-6 w-full max-w-sm mx-4">
+          <div className="bg-card rounded-2xl border border-border/50 shadow-xl p-6 w-full max-w-sm mx-4">
             <h3 className="text-base font-semibold text-fg mb-2">Confirmar ação</h3>
             <p className="text-sm text-muted-fg mb-5">
               Banir este usuário? Esta ação irá desativar a conta permanentemente.

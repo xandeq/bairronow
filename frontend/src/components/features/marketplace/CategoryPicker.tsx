@@ -36,7 +36,7 @@ export default function CategoryPicker({
                 className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200 ${
                   selected
                     ? "bg-primary text-white border-primary"
-                    : "bg-bg text-fg border-border hover:bg-muted"
+                    : "bg-bg text-fg border-border/50 hover:bg-muted"
                 }`}
               >
                 {c.displayName}
@@ -62,7 +62,7 @@ export default function CategoryPicker({
                   className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200 ${
                     selected
                       ? "bg-primary text-white border-primary"
-                      : "bg-bg text-fg border-border hover:bg-muted"
+                      : "bg-bg text-fg border-border/50 hover:bg-muted"
                   }`}
                 >
                   {s.displayName}

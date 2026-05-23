@@ -298,7 +298,7 @@ export default function GroupClient() {
           {/* Composer */}
           <form
             onSubmit={handleSubmit}
-            className="bg-card rounded-xl border border-border shadow-sm p-4 mb-4"
+            className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 mb-4"
           >
             <textarea
               value={composerBody}
@@ -321,7 +321,7 @@ export default function GroupClient() {
           {/* Posts */}
           <div className="space-y-3">
             {posts.map((p) => (
-              <div key={p.id} className="bg-card rounded-xl border border-border shadow-sm p-4">
+              <div key={p.id} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-fg text-xs">
                     {p.author.displayName?.[0] ?? '?'}
@@ -383,7 +383,7 @@ export default function GroupClient() {
           {pendingLoading && (
             <div className="space-y-3">
               {[0, 1, 2].map((i) => (
-                <div key={i} className="bg-card rounded-xl border border-border shadow-sm p-4 flex items-center gap-3 animate-pulse">
+                <div key={i} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 flex items-center gap-3 animate-pulse">
                   <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
                   <div className="flex-1 space-y-2">
                     <div className="h-3 bg-muted rounded w-32" />
@@ -411,7 +411,7 @@ export default function GroupClient() {
 
           {/* Pending list */}
           {!pendingLoading && pending.map((m) => (
-            <div key={m.userId} className="bg-card rounded-xl border border-border shadow-sm p-4 flex items-center gap-3">
+            <div key={m.userId} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 flex items-center gap-3">
               <Avatar src={m.photoUrl} name={m.displayName} size="sm" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
@@ -460,7 +460,7 @@ export default function GroupClient() {
           {membersLoading && (
             <div className="space-y-3">
               {[0, 1, 2].map((i) => (
-                <div key={i} className="bg-card rounded-xl border border-border shadow-sm p-4 flex items-center gap-3 animate-pulse">
+                <div key={i} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 flex items-center gap-3 animate-pulse">
                   <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
                   <div className="flex-1 space-y-2">
                     <div className="h-3 bg-muted rounded w-32" />
@@ -478,7 +478,7 @@ export default function GroupClient() {
 
           {/* Members list */}
           {!membersLoading && members.map((m) => (
-            <div key={m.userId} className="bg-card rounded-xl border border-border shadow-sm p-4 flex items-center gap-3">
+            <div key={m.userId} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 flex items-center gap-3">
               <Avatar src={m.photoUrl} name={m.displayName} size="sm" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-fg truncate">
@@ -673,7 +673,7 @@ function GroupPollsTab({
 
       {/* Creation form */}
       {creating && (
-        <div className="bg-card rounded-xl border border-border shadow-sm p-4 space-y-3">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 space-y-3">
           <p className="font-semibold text-fg text-sm">Nova enquete</p>
 
           <div>
@@ -683,7 +683,7 @@ function GroupPollsTab({
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="Ex: Qual horário preferem para o evento?"
               maxLength={200}
-              className="w-full text-sm rounded-lg border border-border bg-bg px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
+              className="w-full text-sm rounded-xl border border-border/50 bg-muted px-3 py-2 outline-none focus:border-primary focus:bg-card focus:ring-2 focus:ring-primary/10"
             />
             <p className="text-right text-xs text-muted-fg mt-0.5">{question.length}/200</p>
           </div>
@@ -698,7 +698,7 @@ function GroupPollsTab({
                     onChange={(e) => updateOption(opt.id, e.target.value)}
                     placeholder={`Opção ${i + 1}`}
                     maxLength={100}
-                    className="flex-1 text-sm rounded-lg border border-border bg-bg px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
+                    className="flex-1 text-sm rounded-xl border border-border/50 bg-muted px-3 py-2 outline-none focus:border-primary focus:bg-card focus:ring-2 focus:ring-primary/10"
                   />
                   {options.length > 2 && (
                     <button
@@ -733,7 +733,7 @@ function GroupPollsTab({
               type="datetime-local"
               value={expiresAt}
               onChange={(e) => setExpiresAt(e.target.value)}
-              className="text-sm rounded-lg border border-border bg-bg px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
+              className="text-sm rounded-xl border border-border/50 bg-muted px-3 py-2 outline-none focus:border-primary focus:bg-card focus:ring-2 focus:ring-primary/10"
             />
           </div>
 
@@ -759,11 +759,11 @@ function GroupPollsTab({
       {pollsLoading && (
         <div className="space-y-4">
           {[0, 1].map((i) => (
-            <div key={i} className="bg-card rounded-xl border border-border shadow-sm p-4 animate-pulse space-y-3">
+            <div key={i} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 animate-pulse space-y-3">
               <div className="h-4 bg-muted rounded w-3/4" />
               <div className="space-y-2">
                 {[0, 1, 2].map((j) => (
-                  <div key={j} className="h-9 bg-muted rounded-lg" />
+                  <div key={j} className="h-9 bg-muted rounded-xl" />
                 ))}
               </div>
               <div className="h-3 bg-muted rounded w-20" />
@@ -790,7 +790,7 @@ function GroupPollsTab({
         const closed = poll.isClosed || isPollExpired(poll);
         const isVoting = votingId === poll.id;
         return (
-          <div key={poll.id} className="bg-card rounded-xl border border-border shadow-sm p-4">
+          <div key={poll.id} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4">
             {/* Header */}
             <div className="flex items-start justify-between gap-2 mb-3">
               <div className="flex-1">
@@ -849,7 +849,7 @@ function GroupPollsTab({
                     onClick={() => handleVote(poll, opt.id)}
                     disabled={closed || isVoting}
                     className={[
-                      'relative w-full text-left rounded-lg border overflow-hidden transition-all',
+                      'relative w-full text-left rounded-xl border overflow-hidden transition-all',
                       closed || isVoting ? 'cursor-default' : 'hover:border-primary/50',
                       isMyVote ? 'border-primary bg-primary/5' : 'border-border',
                     ].join(' ')}
@@ -935,7 +935,7 @@ function GroupEventsTab({ groupId }: { groupId: number }) {
     return (
       <div className="space-y-3">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="bg-card rounded-xl border border-border shadow-sm p-4 animate-pulse space-y-2">
+          <div key={i} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 animate-pulse space-y-2">
             <div className="h-4 bg-muted rounded w-2/3" />
             <div className="h-3 bg-muted rounded w-1/3" />
             <div className="h-3 bg-muted rounded w-1/4" />
@@ -973,7 +973,7 @@ function GroupEventsTab({ groupId }: { groupId: number }) {
   return (
     <div className="space-y-3">
       {events.map((ev) => (
-        <div key={ev.id} className="bg-card rounded-xl border border-border shadow-sm p-4">
+        <div key={ev.id} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4">
           <p className="font-medium text-fg">{ev.title}</p>
           {ev.location && <p className="text-sm text-muted-fg">{ev.location}</p>}
           <p className="text-sm text-muted-fg">{new Date(ev.startsAt).toLocaleString('pt-BR')}</p>

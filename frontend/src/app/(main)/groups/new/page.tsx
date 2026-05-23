@@ -50,7 +50,7 @@ export default function NewGroupPage() {
           <label className="block text-sm font-medium text-muted-fg mb-1">Nome</label>
           <input
             {...register('name')}
-            className="w-full border border-border rounded-xl px-3 py-2 text-sm"
+            className="w-full border border-border/50 rounded-xl px-3 py-2 text-sm bg-muted focus:bg-card focus:border-primary outline-none"
           />
           {errors.name && <p className="text-danger text-xs mt-1">{errors.name.message}</p>}
         </div>
@@ -59,7 +59,7 @@ export default function NewGroupPage() {
           <textarea
             {...register('description')}
             rows={3}
-            className="w-full border border-border rounded-xl px-3 py-2 text-sm resize-none"
+            className="w-full border border-border/50 rounded-xl px-3 py-2 text-sm resize-none bg-muted focus:bg-card focus:border-primary outline-none"
           />
           {errors.description && <p className="text-danger text-xs mt-1">{errors.description.message}</p>}
         </div>
@@ -67,7 +67,7 @@ export default function NewGroupPage() {
           <label className="block text-sm font-medium text-muted-fg mb-1">Categoria</label>
           <select
             {...register('category')}
-            className="w-full border border-border rounded-xl px-3 py-2 text-sm"
+            className="w-full border border-border/50 rounded-xl px-3 py-2 text-sm bg-muted focus:bg-card focus:border-primary outline-none"
           >
             {['Esportes', 'Animais', 'Pais', 'Seguranca', 'Jardinagem', 'Negocios', 'Cultura', 'Outros'].map(
               (c) => (

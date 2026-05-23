@@ -27,7 +27,7 @@ export default function Chip({
         "active:scale-[0.96]",
         selected
           ? "bg-primary text-white border-primary shadow-blue"
-          : "bg-card text-muted-fg border-border hover:border-border-strong hover:text-fg hover:bg-muted",
+          : "bg-card text-muted-fg border-border/50 hover:border-border-strong hover:text-fg hover:bg-muted",
         className,
       ]
         .filter(Boolean)

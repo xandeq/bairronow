@@ -61,7 +61,7 @@ export default function ReportDialog({
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value as ReportReason)}
-              className="border border-border rounded-md px-3 py-2 w-full"
+              className="border border-border/50 rounded-xl px-3 py-2 w-full bg-muted focus:bg-card focus:border-primary outline-none"
             >
               {REASONS.map((r) => (
                 <option key={r.value} value={r.value}>
@@ -79,7 +79,7 @@ export default function ReportDialog({
               onChange={(e) => setNote(e.target.value)}
               maxLength={500}
               rows={3}
-              className="border border-border rounded-md px-3 py-2 w-full"
+              className="border border-border/50 rounded-xl px-3 py-2 w-full bg-muted focus:bg-card focus:border-primary outline-none resize-none"
             />
           </div>
           {error && <p className="text-sm text-danger font-semibold">{error}</p>}

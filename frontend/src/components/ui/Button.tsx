@@ -30,7 +30,7 @@ const variants: Record<ButtonVariant, string> = {
   ].join(" "),
 
   secondary: [
-    "bg-muted text-fg border border-border",
+    "bg-muted text-fg border border-border/50",
     "hover:bg-card hover:border-border-strong hover:shadow-sm",
   ].join(" "),
 

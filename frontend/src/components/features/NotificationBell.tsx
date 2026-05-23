@@ -232,9 +232,9 @@ export default function NotificationBell() {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 mt-2 w-80 max-h-96 bg-card rounded-2xl border border-border shadow-lg z-50 flex flex-col overflow-hidden animate-fade-up">
+        <div className="absolute right-0 mt-2 w-80 max-h-96 bg-card rounded-2xl border border-border/50 shadow-lg z-50 flex flex-col overflow-hidden animate-fade-up">
           {/* Header */}
-          <div className="px-4 py-3 border-b border-border flex items-center justify-between shrink-0">
+          <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between shrink-0">
             <p className="text-sm font-bold text-fg">Notificações</p>
           </div>
 
@@ -285,7 +285,7 @@ export default function NotificationBell() {
 
           {/* Footer — mark all read */}
           {unread > 0 && (
-            <div className="px-4 py-2.5 border-t border-border shrink-0">
+            <div className="px-4 py-2.5 border-t border-border/50 shrink-0">
               <button
                 type="button"
                 onClick={() => void markAllRead()}

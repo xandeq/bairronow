@@ -90,7 +90,7 @@ function AvatarCircle({
       <img
         src={photoUrl}
         alt={name}
-        className="w-12 h-12 rounded-full object-cover border border-border shrink-0"
+        className="w-12 h-12 rounded-full object-cover border border-border/50 shrink-0"
       />
     );
   }
@@ -200,7 +200,7 @@ export default function BusinessesPage() {
               "px-3 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 border",
               selectedCategory === cat
                 ? "bg-primary text-white border-primary shadow-sm"
-                : "bg-card text-muted-fg border-border hover:border-primary/40 hover:text-fg",
+                : "bg-card text-muted-fg border-border/50 hover:border-primary/40 hover:text-fg",
             ].join(" ")}
           >
             {cat}

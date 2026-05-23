@@ -74,7 +74,7 @@ export default function MapClient() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-2 text-sm rounded-full border ${filter === f ? 'bg-primary text-white border-primary' : 'bg-card text-muted-fg border-border'}`}
+              className={`px-3 py-2 text-sm rounded-full border ${filter === f ? 'bg-primary text-white border-primary' : 'bg-card text-muted-fg border-border/50'}`}
             >
               {f === 'all' ? 'Todos' : f === 'verified' ? 'Verificados' : 'Novos'}
             </button>
@@ -96,7 +96,7 @@ export default function MapClient() {
       <MapContainer
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}
-        className="h-[65vh] w-full rounded-xl border border-border"
+        className="h-[65vh] w-full rounded-xl border border-border/50"
         style={{ zIndex: 0 }}
       >
         <TileLayer
@@ -172,7 +172,7 @@ export default function MapClient() {
       </MapContainer>
 
       {loading && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-2 bg-bg/90 backdrop-blur-sm border border-border rounded-full px-4 py-2 shadow-md">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-2 bg-bg/90 backdrop-blur-sm border border-border/50 rounded-full px-4 py-2 shadow-md">
           <div className="w-3.5 h-3.5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
           <span className="text-xs font-semibold text-fg">Carregando pins...</span>
         </div>

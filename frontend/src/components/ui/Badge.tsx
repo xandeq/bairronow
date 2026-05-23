@@ -25,13 +25,13 @@ const variants: Record<BadgeVariant, string> = {
   accent:
     "bg-accent-light text-accent border border-accent/25",
   muted:
-    "bg-muted text-muted-fg border border-border",
+    "bg-muted text-muted-fg border border-border/50",
   verified:
     "bg-secondary-light text-secondary border border-secondary/25",
   danger:
     "bg-danger-light text-danger border border-danger/25",
   outline:
-    "bg-transparent text-muted-fg border border-border",
+    "bg-transparent text-muted-fg border border-border/50",
 };
 
 const dotColors: Record<BadgeVariant, string> = {

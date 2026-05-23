@@ -131,7 +131,7 @@ function CommentItem({
                 onChange={(e) => setEditBody(e.target.value)}
                 maxLength={500}
                 rows={2}
-                className="w-full px-3 py-2 rounded-xl bg-card border border-border text-sm focus:border-primary focus:outline-none transition-colors"
+                className="w-full px-3 py-2 rounded-xl bg-muted border border-border/50 text-sm focus:bg-card focus:border-primary focus:outline-none transition-colors"
               />
               <div className="flex gap-2">
                 <button
@@ -144,7 +144,7 @@ function CommentItem({
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-muted border border-border hover:border-border-strong transition-colors text-fg"
+                  className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-muted border border-border/50 hover:border-border-strong transition-colors text-fg"
                 >
                   Cancelar
                 </button>

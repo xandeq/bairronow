@@ -28,7 +28,7 @@ export default function FilterChips({ filters, onChange }: FilterChipsProps) {
             "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200",
             !filters.category
               ? "bg-primary text-white border-primary shadow-sm"
-              : "bg-muted text-muted-fg border-border hover:border-primary/30 hover:text-primary",
+              : "bg-muted text-muted-fg border-border/50 hover:border-primary/30 hover:text-primary",
           ].join(" ")}
         >
           Todas
@@ -44,7 +44,7 @@ export default function FilterChips({ filters, onChange }: FilterChipsProps) {
               "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200",
               filters.category === c.code
                 ? "bg-primary text-white border-primary shadow-sm"
-                : "bg-muted text-muted-fg border-border hover:border-primary/30 hover:text-primary",
+                : "bg-muted text-muted-fg border-border/50 hover:border-primary/30 hover:text-primary",
             ].join(" ")}
           >
             {c.displayName}

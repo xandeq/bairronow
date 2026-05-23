@@ -10,7 +10,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const baseClasses = [
   "w-full rounded-xl bg-muted text-fg text-sm",
-  "border border-border",
+  "border border-border/50",
   "placeholder:text-muted-fg/50",
   "outline-none transition-all duration-200",
   "focus:bg-card focus:border-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.10)]",

@@ -100,7 +100,7 @@ export default function ProofDropzone({ onFile }: ProofDropzoneProps) {
             <img
               src={preview}
               alt="Pre-visualizacao"
-              className="mt-2 max-h-48 rounded-md border border-border"
+              className="mt-2 max-h-48 rounded-xl border border-border/50"
             />
           )}
         </div>

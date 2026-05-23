@@ -177,7 +177,7 @@ function EventCard({ event, token, onRsvpChange }: EventCardProps) {
             "disabled:opacity-50 disabled:cursor-not-allowed",
             event.isCallerAttending
               ? "bg-primary text-white hover:bg-primary/90"
-              : "bg-muted text-fg border border-border hover:border-primary/40 hover:text-primary",
+              : "bg-muted text-fg border border-border/50 hover:border-primary/40 hover:text-primary",
           ].join(" ")}
         >
           {event.isCallerAttending ? "Vou! ✓" : "Confirmar"}

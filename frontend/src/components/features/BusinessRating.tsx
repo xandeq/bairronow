@@ -131,7 +131,7 @@ export default function BusinessRating({
                 onChange={(e) => setMyComment(e.target.value)}
                 placeholder="Comentário opcional..."
                 rows={2}
-                className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-fg resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="w-full rounded-xl border border-border/50 bg-muted px-3 py-2 text-sm text-fg resize-none focus:bg-card focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
               <button
                 onClick={handleSubmit}
