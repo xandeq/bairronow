@@ -3,16 +3,13 @@
 import { CATEGORIES } from "@/lib/categories";
 import type { MarketplaceFilters } from "@/stores/marketplace-store";
 
-// D-08: Top chips filter bar (category, sort, verified, price range).
-// D-10: "Verified seller" filter defaults ON; when OFF, emit warning per card.
-
 export interface FilterChipsProps {
   filters: MarketplaceFilters;
   onChange: (patch: Partial<MarketplaceFilters>) => void;
 }
 
 const SORT_OPTIONS = [
-  { value: "recent",     label: "Mais recentes" },
+  { value: "recent",     label: "Recentes" },
   { value: "price_asc",  label: "Menor preço" },
   { value: "price_desc", label: "Maior preço" },
 ] as const;
@@ -21,17 +18,18 @@ export default function FilterChips({ filters, onChange }: FilterChipsProps) {
   const activeSort = filters.sort ?? "recent";
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {/* Category chips */}
-      <div className="flex flex-wrap gap-2 items-center">
+      <div className="flex flex-wrap gap-1.5 items-center">
         <button
           type="button"
           onClick={() => onChange({ category: undefined })}
-          className={`px-3 py-1.5 rounded-full text-xs font-semibold border-2 ${
+          className={[
+            "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200",
             !filters.category
-              ? "bg-primary text-white border-primary"
-              : "bg-bg text-fg border-border"
-          }`}
+              ? "bg-primary text-white border-primary shadow-sm"
+              : "bg-muted text-muted-fg border-border hover:border-primary/30 hover:text-primary",
+          ].join(" ")}
         >
           Todas
         </button>
@@ -40,15 +38,14 @@ export default function FilterChips({ filters, onChange }: FilterChipsProps) {
             key={c.code}
             type="button"
             onClick={() =>
-              onChange({
-                category: filters.category === c.code ? undefined : c.code,
-              })
+              onChange({ category: filters.category === c.code ? undefined : c.code })
             }
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold border-2 ${
+            className={[
+              "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200",
               filters.category === c.code
-                ? "bg-primary text-white border-primary"
-                : "bg-bg text-fg border-border"
-            }`}
+                ? "bg-primary text-white border-primary shadow-sm"
+                : "bg-muted text-muted-fg border-border hover:border-primary/30 hover:text-primary",
+            ].join(" ")}
           >
             {c.displayName}
           </button>
@@ -56,57 +53,56 @@ export default function FilterChips({ filters, onChange }: FilterChipsProps) {
       </div>
 
       {/* Sort + verified + price row */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         {/* Sort chips */}
-        <div className="flex items-center gap-1" role="group" aria-label="Ordenar por">
+        <div className="flex items-center gap-1 bg-muted rounded-xl p-1" role="group" aria-label="Ordenar por">
           {SORT_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               type="button"
               aria-pressed={activeSort === opt.value}
               onClick={() => onChange({ sort: opt.value })}
-              className={`px-3 py-1.5 rounded text-xs font-semibold border-2 ${
+              className={[
+                "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200",
                 activeSort === opt.value
-                  ? "bg-fg text-bg border-fg"
-                  : "bg-bg text-fg/70 border-border"
-              }`}
+                  ? "bg-card text-primary shadow-xs"
+                  : "text-muted-fg hover:text-fg",
+              ].join(" ")}
             >
               {opt.label}
             </button>
           ))}
         </div>
 
-        <span className="text-border">|</span>
+        <div className="w-px h-4 bg-border/60" />
 
         {/* Verified seller toggle */}
-        <label className="flex items-center gap-2 text-sm font-semibold text-fg">
+        <label className="flex items-center gap-1.5 text-xs font-semibold text-fg cursor-pointer">
           <input
             type="checkbox"
             checked={filters.verifiedOnly}
             onChange={(e) => onChange({ verifiedOnly: e.target.checked })}
-            className="w-4 h-4 accent-primary"
+            className="w-3.5 h-3.5 accent-primary rounded"
           />
-          Apenas verificados
+          Só verificados
         </label>
         {!filters.verifiedOnly && (
-          <span className="text-xs text-accent font-semibold">
-            ⚠️ Vendedor não verificado pode aparecer
+          <span className="text-xs text-accent font-semibold bg-accent/10 px-2 py-0.5 rounded-full">
+            ⚠ inclui não verificados
           </span>
         )}
 
         {/* Price range */}
-        <div className="flex items-center gap-1 text-sm">
-          <span className="font-semibold text-fg">R$</span>
+        <div className="flex items-center gap-1 text-xs font-semibold text-muted-fg">
+          <span>R$</span>
           <input
             type="number"
             placeholder="mín"
             value={filters.minPrice ?? ""}
             onChange={(e) =>
-              onChange({
-                minPrice: e.target.value ? Number(e.target.value) : undefined,
-              })
+              onChange({ minPrice: e.target.value ? Number(e.target.value) : undefined })
             }
-            className="w-20 border-2 border-border rounded px-2 py-1 text-sm"
+            className="w-16 border border-border/50 rounded-lg px-2 py-1.5 text-xs bg-muted text-fg focus:border-primary focus:outline-none transition-colors"
           />
           <span>–</span>
           <input
@@ -114,11 +110,9 @@ export default function FilterChips({ filters, onChange }: FilterChipsProps) {
             placeholder="máx"
             value={filters.maxPrice ?? ""}
             onChange={(e) =>
-              onChange({
-                maxPrice: e.target.value ? Number(e.target.value) : undefined,
-              })
+              onChange({ maxPrice: e.target.value ? Number(e.target.value) : undefined })
             }
-            className="w-20 border-2 border-border rounded px-2 py-1 text-sm"
+            className="w-16 border border-border/50 rounded-lg px-2 py-1.5 text-xs bg-muted text-fg focus:border-primary focus:outline-none transition-colors"
           />
         </div>
       </div>
