@@ -5,7 +5,7 @@ import { ptBR } from 'date-fns/locale';
 import { getHubConnection } from '@/lib/signalr';
 import { useGroupStore } from '@/stores/group-store';
 import { useAuthStore } from '@/lib/auth';
-import { getGroup, getGroupPosts, createGroupPost, getGroupEvents, rsvpEvent, getGroupMembers, toggleGroupPostLike } from '@/lib/api/groups';
+import { getGroup, getGroupPosts, createGroupPost, getGroupEvents, rsvpEvent, getGroupMembers, toggleGroupPostLike, createGroupEvent } from '@/lib/api/groups';
 import type { GroupMember } from '@/lib/api/groups';
 import type { GroupPost, GroupEvent, GroupPoll } from '@/lib/types/groups';
 import Avatar from '@/components/ui/Avatar';
@@ -955,6 +955,12 @@ function GroupEventsTab({ groupId, isMember, joinPolicy }: { groupId: number; is
   const [events, setEvents] = useState<GroupEvent[]>([]);
   const [eventsLoading, setEventsLoading] = useState(false);
   const [eventsError, setEventsError] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newStartsAt, setNewStartsAt] = useState('');
+  const [newLocation, setNewLocation] = useState('');
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!groupId) return;
@@ -979,6 +985,31 @@ function GroupEventsTab({ groupId, isMember, joinPolicy }: { groupId: number; is
         )
       )
       .catch(console.error);
+  };
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const title = newTitle.trim();
+    if (!title) { setCreateError('O título é obrigatório.'); return; }
+    if (new Date(newStartsAt) <= new Date()) { setCreateError('A data de início deve ser no futuro.'); return; }
+    setCreating(true);
+    setCreateError(null);
+    try {
+      const created = await createGroupEvent(groupId, {
+        title,
+        startsAt: new Date(newStartsAt).toISOString(),
+        location: newLocation.trim() || undefined,
+      });
+      setEvents((prev) => [created, ...prev]);
+      setShowCreate(false);
+      setNewTitle('');
+      setNewStartsAt('');
+      setNewLocation('');
+    } catch {
+      setCreateError('Não foi possível criar o evento. Tente novamente.');
+    } finally {
+      setCreating(false);
+    }
   };
 
   if (eventsLoading) {
@@ -1023,6 +1054,87 @@ function GroupEventsTab({ groupId, isMember, joinPolicy }: { groupId: number; is
 
   return (
     <div className="space-y-3">
+      {/* Create event button */}
+      {isMember && !showCreate && (
+        <button
+          type="button"
+          onClick={() => setShowCreate(true)}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-border/60 text-sm font-semibold text-muted-fg hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-all duration-200"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/>
+          </svg>
+          Criar evento
+        </button>
+      )}
+
+      {/* Event creation form */}
+      {showCreate && (
+        <form onSubmit={handleCreate} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4 space-y-3">
+          <p className="font-semibold text-fg text-sm">Novo evento</p>
+
+          {createError && (
+            <p className="text-xs text-danger bg-danger/10 border border-danger/20 rounded-xl px-3 py-2">{createError}</p>
+          )}
+
+          <div>
+            <label className="text-xs font-medium text-muted-fg mb-1 block">Título *</label>
+            <input
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value.slice(0, 120))}
+              placeholder="Ex: Churrasco do bairro"
+              maxLength={120}
+              required
+              className="w-full text-sm rounded-xl border border-border/50 bg-muted px-3 py-2 outline-none focus:border-primary focus:bg-card focus:ring-2 focus:ring-primary/10"
+            />
+            <p className="text-right text-xs text-muted-fg mt-0.5">{newTitle.length}/120</p>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-muted-fg mb-1 block">Data e hora *</label>
+            <input
+              type="datetime-local"
+              value={newStartsAt}
+              onChange={(e) => setNewStartsAt(e.target.value)}
+              required
+              min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+              className="w-full text-sm rounded-xl border border-border/50 bg-muted px-3 py-2 outline-none focus:border-primary focus:bg-card focus:ring-2 focus:ring-primary/10"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-muted-fg mb-1 block">Local (opcional)</label>
+            <input
+              value={newLocation}
+              onChange={(e) => setNewLocation(e.target.value.slice(0, 200))}
+              placeholder="Ex: Praça central, Casa do João"
+              maxLength={200}
+              className="w-full text-sm rounded-xl border border-border/50 bg-muted px-3 py-2 outline-none focus:border-primary focus:bg-card focus:ring-2 focus:ring-primary/10"
+            />
+          </div>
+
+          <div className="flex gap-2 justify-end pt-1">
+            <button
+              type="button"
+              onClick={() => { setShowCreate(false); setCreateError(null); setNewTitle(''); setNewStartsAt(''); setNewLocation(''); }}
+              className="text-sm px-4 py-2 rounded-xl text-muted-fg hover:bg-muted transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={creating || !newTitle.trim() || !newStartsAt}
+              className="text-sm px-4 py-2 rounded-xl bg-primary text-white font-medium disabled:opacity-40 hover:bg-primary/90 transition-colors"
+            >
+              {creating ? 'Criando...' : 'Criar evento'}
+            </button>
+          </div>
+        </form>
+      )}
+
       {events.map((ev) => (
         <div key={ev.id} className="bg-card rounded-2xl border border-border/50 shadow-sm p-4">
           <p className="font-medium text-fg">{ev.title}</p>
