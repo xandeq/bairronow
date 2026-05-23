@@ -1004,6 +1004,7 @@ function GroupEventsTab({ groupId, isMember, joinPolicy }: { groupId: number; is
         </svg>
         <p className="text-sm text-danger font-medium">{eventsError}</p>
         <button
+          type="button"
           onClick={() => {
             setEventsLoading(true);
             setEventsError(null);
@@ -1030,6 +1031,7 @@ function GroupEventsTab({ groupId, isMember, joinPolicy }: { groupId: number; is
           <p className="text-xs text-muted-fg">{ev.rsvpCount} confirmados</p>
           {(joinPolicy !== 'Closed' || isMember) && (
             <button
+              type="button"
               onClick={() => handleRsvp(ev)}
               className={`mt-2 text-sm px-3 py-2.5 rounded-xl min-h-[44px] ${
                 ev.myRsvp ? 'bg-secondary text-secondary-fg' : 'bg-muted text-muted-fg'
