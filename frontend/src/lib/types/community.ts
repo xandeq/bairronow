@@ -78,6 +78,34 @@ export interface CondominiumDetail {
   isMySindico: boolean;
 }
 
+// ─── Moderação (admin) ──────────────────────────────────────────────────────
+
+export interface PendingWhatsAppGroup {
+  id: number;
+  bairroId: number;
+  name: string;
+  description: string | null;
+  kind: WhatsAppGroupKind;
+  inviteUrl: string;
+  memberCountApprox: number | null;
+  condominiumId: number | null;
+  submittedBy: string | null;
+  createdAt: string;
+}
+
+export interface PendingClaim {
+  id: number;
+  condominiumId: number;
+  condominiumName: string;
+  userId: string;
+  claimantName: string | null;
+  claimantVerified: boolean;
+  requestedRole: CondominiumRole;
+  justification: string;
+  evidenceUrl: string | null;
+  createdAt: string;
+}
+
 export const WHATSAPP_KIND_LABELS: Record<WhatsAppGroupKind, string> = {
   Predio: 'Prédio',
   Condominio: 'Condomínio',

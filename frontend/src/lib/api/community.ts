@@ -2,6 +2,7 @@ import api from '@/lib/api';
 import type {
   WhatsAppGroupSummary, WhatsAppGroupDetail, WhatsAppGroupKind,
   CondominiumSummary, CondominiumDetail, CondominiumRole,
+  PendingWhatsAppGroup, PendingClaim,
 } from '@/lib/types/community';
 
 // ─── Diretório de grupos de WhatsApp ────────────────────────────────────────
@@ -75,4 +76,36 @@ export async function claimCondominium(
 ): Promise<{ id: number; status: string }> {
   const { data } = await api.post(`/api/v1/condominiums/${id}/claims`, body);
   return data;
+}
+
+// ─── Moderação (admin) ──────────────────────────────────────────────────────
+
+export async function getPendingWhatsAppGroups(bairroId?: number): Promise<PendingWhatsAppGroup[]> {
+  const { data } = await api.get<PendingWhatsAppGroup[]>('/api/v1/whatsapp-groups/pending', {
+    params: bairroId ? { bairroId } : {},
+  });
+  return data;
+}
+
+export async function verifyWhatsAppGroup(id: number, isManagedByPlatform?: boolean): Promise<void> {
+  await api.post(`/api/v1/whatsapp-groups/${id}/verify`, { isManagedByPlatform });
+}
+
+export async function rejectWhatsAppGroup(id: number, reason: string): Promise<void> {
+  await api.post(`/api/v1/whatsapp-groups/${id}/reject`, { reason });
+}
+
+export async function getPendingClaims(bairroId?: number): Promise<PendingClaim[]> {
+  const { data } = await api.get<PendingClaim[]>('/api/v1/condominiums/claims/pending', {
+    params: bairroId ? { bairroId } : {},
+  });
+  return data;
+}
+
+export async function approveClaim(claimId: number): Promise<void> {
+  await api.post(`/api/v1/condominiums/claims/${claimId}/approve`);
+}
+
+export async function rejectClaim(claimId: number, note?: string): Promise<void> {
+  await api.post(`/api/v1/condominiums/claims/${claimId}/reject`, { note });
 }
