@@ -654,6 +654,7 @@ public class AppDbContext : DbContext
             entity.HasOne(e => e.Bairro).WithMany().HasForeignKey(e => e.BairroId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne(e => e.SindicoUser).WithMany().HasForeignKey(e => e.SindicoUserId).OnDelete(DeleteBehavior.SetNull);
             entity.HasIndex(e => new { e.BairroId, e.Status });
+            entity.HasIndex(e => new { e.BairroId, e.Name }).IsUnique().HasFilter("[DeletedAt] IS NULL");
         });
 
         // ─── Wave P: WhatsAppGroup (diretório verificado) ───
@@ -673,6 +674,7 @@ public class AppDbContext : DbContext
             entity.HasOne(e => e.SubmittedByUser).WithMany().HasForeignKey(e => e.SubmittedByUserId).OnDelete(DeleteBehavior.SetNull);
             entity.HasIndex(e => new { e.BairroId, e.Status });
             entity.HasIndex(e => e.CondominiumId);
+            entity.HasIndex(e => new { e.BairroId, e.InviteUrl }).IsUnique().HasFilter("[DeletedAt] IS NULL");
         });
 
         // ─── Wave P: CondominiumClaim (reivindicação de síndico) ───

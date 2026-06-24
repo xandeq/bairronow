@@ -110,6 +110,10 @@ public partial class AddWhatsAppDirectoryAndCondominiums : Migration
         migrationBuilder.CreateIndex("IX_WhatsAppGroups_SubmittedByUserId", "WhatsAppGroups", "SubmittedByUserId");
         migrationBuilder.CreateIndex("IX_CondominiumClaims_CondominiumId_Status", "CondominiumClaims", new[] { "CondominiumId", "Status" });
         migrationBuilder.CreateIndex("IX_CondominiumClaims_UserId", "CondominiumClaims", "UserId");
+
+        // Índices únicos de integridade (backstop contra duplicidade sob concorrência).
+        migrationBuilder.CreateIndex("IX_Condominiums_BairroId_Name", "Condominiums", new[] { "BairroId", "Name" }, unique: true, filter: "[DeletedAt] IS NULL");
+        migrationBuilder.CreateIndex("IX_WhatsAppGroups_BairroId_InviteUrl", "WhatsAppGroups", new[] { "BairroId", "InviteUrl" }, unique: true, filter: "[DeletedAt] IS NULL");
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

@@ -60,7 +60,11 @@ export default function CondominiumsPage() {
   };
 
   useEffect(() => {
-    if (!user?.bairroId) return;
+    if (!user?.bairroId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(false);
+      return;
+    }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     getCondominiums(user.bairroId, { search: debouncedSearch || undefined })

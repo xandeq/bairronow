@@ -299,6 +299,10 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("BairroId", "Status");
 
+                    b.HasIndex("BairroId", "Name")
+                        .IsUnique()
+                        .HasFilter("[DeletedAt] IS NULL");
+
                     b.ToTable("Condominiums");
                 });
 
@@ -1787,6 +1791,10 @@ namespace BairroNow.Api.Migrations
                     b.HasIndex("SubmittedByUserId");
 
                     b.HasIndex("BairroId", "Status");
+
+                    b.HasIndex("BairroId", "InviteUrl")
+                        .IsUnique()
+                        .HasFilter("[DeletedAt] IS NULL");
 
                     b.ToTable("WhatsAppGroups");
                 });

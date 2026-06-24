@@ -139,10 +139,11 @@ public class WhatsAppGroupsController : ControllerBase
         if (req.Description != null && req.Description.Length > 500)
             return BadRequest(new { error = "A descrição deve ter no máximo 500 caracteres." });
 
-        // Evita duplicidade do mesmo link no mesmo bairro.
+        // Evita duplicidade do mesmo link no mesmo bairro (rejeitados podem reenviar).
         var normalized = req.InviteUrl.Trim();
         var dup = await _db.WhatsAppGroups
-            .AnyAsync(g => g.BairroId == req.BairroId && g.InviteUrl == normalized && g.DeletedAt == null, ct);
+            .AnyAsync(g => g.BairroId == req.BairroId && g.InviteUrl == normalized
+                        && g.DeletedAt == null && g.Status != WhatsAppGroupStatus.Rejected, ct);
         if (dup) return Conflict(new { error = "Este grupo já foi cadastrado." });
 
         if (req.CondominiumId.HasValue)
@@ -166,7 +167,15 @@ public class WhatsAppGroupsController : ControllerBase
             CreatedAt = DateTime.UtcNow
         };
         _db.WhatsAppGroups.Add(group);
-        await _db.SaveChangesAsync(ct);
+        try
+        {
+            await _db.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException)
+        {
+            // Backstop do índice único (BairroId, InviteUrl) contra corrida TOCTOU.
+            return Conflict(new { error = "Este grupo já foi cadastrado." });
+        }
 
         return Created($"/api/v1/whatsapp-groups/{group.Id}", new { group.Id, Status = group.Status.ToString() });
     }
@@ -175,14 +184,21 @@ public class WhatsAppGroupsController : ControllerBase
     [HttpPost("{id:int}/click")]
     public async Task<IActionResult> Click(int id, CancellationToken ct = default)
     {
-        var group = await _db.WhatsAppGroups
-            .FirstOrDefaultAsync(g => g.Id == id && g.DeletedAt == null && g.Status == WhatsAppGroupStatus.Verified, ct);
-        if (group == null) return NotFound();
+        var inviteUrl = await _db.WhatsAppGroups.AsNoTracking()
+            .Where(g => g.Id == id && g.DeletedAt == null && g.Status == WhatsAppGroupStatus.Verified)
+            .Select(g => g.InviteUrl)
+            .FirstOrDefaultAsync(ct);
+        if (inviteUrl == null) return NotFound();
 
-        group.ClickCount += 1;
-        await _db.SaveChangesAsync(ct);
+        // Incremento atômico — não perde cliques sob concorrência (vs. read-modify-write).
+        await _db.WhatsAppGroups
+            .Where(g => g.Id == id)
+            .ExecuteUpdateAsync(s => s.SetProperty(g => g.ClickCount, g => g.ClickCount + 1), ct);
 
-        return Ok(new { inviteUrl = group.InviteUrl, clickCount = group.ClickCount });
+        var clickCount = await _db.WhatsAppGroups.AsNoTracking()
+            .Where(g => g.Id == id).Select(g => g.ClickCount).FirstAsync(ct);
+
+        return Ok(new { inviteUrl, clickCount });
     }
 
     // PUT /api/v1/whatsapp-groups/{id} — autor ou admin.
@@ -212,12 +228,17 @@ public class WhatsAppGroupsController : ControllerBase
         {
             if (!IsValidInviteUrl(req.InviteUrl)) return BadRequest(new { error = "Link do WhatsApp inválido." });
             group.InviteUrl = req.InviteUrl.Trim();
-            // Alteração do link re-exige verificação, exceto se for admin.
-            if (!isAdmin) group.Status = WhatsAppGroupStatus.PendingReview;
         }
         if (req.Kind.HasValue) group.Kind = req.Kind.Value;
         if (req.CoverImageUrl != null) group.CoverImageUrl = req.CoverImageUrl;
         if (req.MemberCountApprox.HasValue) group.MemberCountApprox = req.MemberCountApprox;
+
+        // Qualquer edição de conteúdo por não-admin re-exige verificação — evita
+        // publicar conteúdo abusivo editando um grupo já aprovado (bypass de moderação).
+        var contentChanged = req.Name != null || req.Description != null
+                          || req.InviteUrl != null || req.CoverImageUrl != null;
+        if (!isAdmin && contentChanged)
+            group.Status = WhatsAppGroupStatus.PendingReview;
 
         await _db.SaveChangesAsync(ct);
         return NoContent();
@@ -304,6 +325,9 @@ public class WhatsAppGroupsController : ControllerBase
 
         group.Status = WhatsAppGroupStatus.Rejected;
         group.RejectionReason = string.IsNullOrWhiteSpace(req?.Reason) ? "Não atende às diretrizes." : req!.Reason!.Trim();
+        // Limpa marcas de verificação para não deixar estado inconsistente.
+        group.VerifiedAt = null;
+        group.VerifiedByUserId = null;
         await _db.SaveChangesAsync(ct);
 
         return Ok(new { rejected = true });

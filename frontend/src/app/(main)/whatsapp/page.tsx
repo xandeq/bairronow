@@ -86,7 +86,11 @@ export default function WhatsAppDirectoryPage() {
   };
 
   useEffect(() => {
-    if (!user?.bairroId) return;
+    if (!user?.bairroId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(false);
+      return;
+    }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     getWhatsAppGroups(user.bairroId, { search: debouncedSearch || undefined, kind: kind || undefined })

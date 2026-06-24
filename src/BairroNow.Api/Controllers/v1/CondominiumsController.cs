@@ -166,7 +166,15 @@ public class CondominiumsController : ControllerBase
             CreatedAt = DateTime.UtcNow
         };
         _db.Condominiums.Add(condo);
-        await _db.SaveChangesAsync(ct);
+        try
+        {
+            await _db.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException)
+        {
+            // Backstop do índice único (BairroId, Name) contra corrida TOCTOU.
+            return Conflict(new { error = "Já existe um condomínio com esse nome neste bairro." });
+        }
 
         return Created($"/api/v1/condominiums/{condo.Id}", new { condo.Id, condo.Name });
     }
@@ -258,7 +266,7 @@ public class CondominiumsController : ControllerBase
             .Select(cl => new
             {
                 cl.Id,
-                cl.UserId,
+                // UserId omitido de propósito: síndico (não-admin) não precisa do GUID do reivindicante.
                 ClaimantName = cl.User != null ? cl.User.DisplayName : null,
                 ClaimantVerified = cl.User != null && cl.User.IsVerified,
                 RequestedRole = cl.RequestedRole.ToString(),
