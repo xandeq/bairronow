@@ -17,14 +17,10 @@ export default function AdminGroupsPage() {
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.isAdmin === true;
   const [flaggedPosts, setFlaggedPosts] = useState<FlaggedPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => isAdmin && !!user?.bairroId);
 
   useEffect(() => {
-    if (!isAdmin || !user?.bairroId) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
+    if (!isAdmin || !user?.bairroId) return;
     api
       .get(`/api/v1/groups/flagged-posts?bairroId=${user.bairroId}`)
       .then((r) => setFlaggedPosts(r.data as FlaggedPost[]))
@@ -47,10 +43,10 @@ export default function AdminGroupsPage() {
       {loading ? (
         <div className="space-y-2">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="flex items-center gap-4 border-b border-border py-3 animate-pulse">
-              <div className="h-4 bg-muted rounded w-28" />
-              <div className="h-4 bg-muted rounded w-20" />
-              <div className="h-4 bg-muted rounded w-48" />
+            <div key={i} className="flex items-center gap-4 border-b border-border py-3">
+              <div className="h-4 animate-shimmer rounded w-28" />
+              <div className="h-4 animate-shimmer rounded w-20" />
+              <div className="h-4 animate-shimmer rounded w-48" />
             </div>
           ))}
         </div>
