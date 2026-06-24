@@ -770,9 +770,7 @@ namespace BairroNow.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsClosed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Question")
                         .IsRequired()
@@ -1163,6 +1161,36 @@ namespace BairroNow.Api.Migrations
                     b.HasIndex("CreatedByUserId");
 
                     b.ToTable("PointsOfInterest");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.ProfileView", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("BusinessUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ViewerIp")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<Guid?>("ViewerUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessUserId", "ViewedAt");
+
+                    b.ToTable("ProfileViews");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Post", b =>
@@ -2253,6 +2281,17 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("Bairro");
 
                     b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.ProfileView", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "BusinessUser")
+                        .WithMany()
+                        .HasForeignKey("BusinessUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BusinessUser");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Post", b =>
