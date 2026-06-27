@@ -1938,8 +1938,7 @@ namespace BairroNow.Api.Migrations
                     b.HasOne("BairroNow.Api.Models.Entities.Listing", "Listing")
                         .WithMany()
                         .HasForeignKey("ListingId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BairroNow.Api.Models.Entities.User", "Seller")
                         .WithMany()
