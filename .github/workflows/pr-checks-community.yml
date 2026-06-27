@@ -77,7 +77,7 @@ jobs:
 
       - name: Install EF tools
         run: |
-          dotnet tool install --global dotnet-ef
+          dotnet tool install --global dotnet-ef --version 8.0.25
           echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
       # SQL Server rejeita o login (18456, state 38) quando a database especificada
