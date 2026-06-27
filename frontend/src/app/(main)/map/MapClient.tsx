@@ -2,7 +2,6 @@
 
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import Link from 'next/link';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useEffect, useState } from 'react';

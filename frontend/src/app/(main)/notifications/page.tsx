@@ -130,7 +130,8 @@ function ActorAvatar({ actor }: { actor: NotificationDto["actor"] }) {
   const initial = ((actor.displayName ?? "?")[0] ?? "?").toUpperCase();
   if (actor.photoUrl && !failed) {
     return (
-      <img
+      // eslint-disable-next-line @next/next/no-img-element
+    <img
         src={actor.photoUrl}
         alt={actor.displayName ?? "Usuário"}
         className="w-10 h-10 rounded-full object-cover shrink-0"
