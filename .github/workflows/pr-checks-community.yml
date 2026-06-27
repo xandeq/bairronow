@@ -157,7 +157,8 @@ jobs:
           dotnet run \
             --project src/BairroNow.Api/BairroNow.Api.csproj \
             --configuration Release \
-            --no-build &
+            --no-build \
+            --no-launch-profile &
           echo "KESTREL_PID=$!" >> $GITHUB_ENV
 
       - name: Aguardar API pronta (/health/ready com banco real)
