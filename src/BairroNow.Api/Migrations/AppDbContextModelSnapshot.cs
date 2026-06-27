@@ -126,23 +126,23 @@ namespace BairroNow.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<int>("DisplayOrder")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -648,6 +648,104 @@ namespace BairroNow.Api.Migrations
                     b.ToTable("GroupMembers");
                 });
 
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPoll", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("GroupId", "CreatedAt");
+
+                    b.ToTable("GroupPolls");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPollOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupPollId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupPollId");
+
+                    b.ToTable("GroupPollOptions");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPollVote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GroupPollId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupPollOptionId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupPollOptionId");
+
+                    b.HasIndex("GroupPollId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("GroupPollVotes");
+                });
+
             modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPost", b =>
                 {
                     b.Property<int>("Id")
@@ -749,104 +847,6 @@ namespace BairroNow.Api.Migrations
                     b.ToTable("GroupPostLikes");
                 });
 
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPoll", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsClosed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Question")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("GroupId", "CreatedAt");
-
-                    b.ToTable("GroupPolls");
-                });
-
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPollOption", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GroupPollId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupPollId");
-
-                    b.ToTable("GroupPollOptions");
-                });
-
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPollVote", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GroupPollId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GroupPollOptionId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupPollOptionId");
-
-                    b.HasIndex("GroupPollId", "UserId")
-                        .IsUnique();
-
-                    b.ToTable("GroupPollVotes");
-                });
-
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Listing", b =>
                 {
                     b.Property<int>("Id")
@@ -882,6 +882,12 @@ namespace BairroNow.Api.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(12,2)");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<Guid>("SellerId")
                         .HasColumnType("uniqueidentifier");
 
@@ -904,12 +910,6 @@ namespace BairroNow.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -1082,13 +1082,13 @@ namespace BairroNow.Api.Migrations
                     b.Property<int?>("CommentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsRead")
                         .ValueGeneratedOnAdd()
@@ -1162,36 +1162,6 @@ namespace BairroNow.Api.Migrations
                     b.HasIndex("CreatedByUserId");
 
                     b.ToTable("PointsOfInterest");
-                });
-
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.ProfileView", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("BusinessUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ViewerIp")
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<Guid?>("ViewerUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ViewedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BusinessUserId", "ViewedAt");
-
-                    b.ToTable("ProfileViews");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Post", b =>
@@ -1300,6 +1270,36 @@ namespace BairroNow.Api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PostLikes");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.ProfileView", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("BusinessUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("ViewerIp")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<Guid?>("ViewerUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessUserId", "ViewedAt");
+
+                    b.ToTable("ProfileViews");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.RefreshToken", b =>
@@ -1477,6 +1477,26 @@ namespace BairroNow.Api.Migrations
                         .HasMaxLength(160)
                         .HasColumnType("nvarchar(160)");
 
+                    b.Property<string>("BusinessCategory")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("BusinessDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("BusinessName")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<string>("BusinessPhone")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("BusinessWebsite")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -1542,26 +1562,6 @@ namespace BairroNow.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<string>("BusinessName")
-                        .HasMaxLength(120)
-                        .HasColumnType("nvarchar(120)");
-
-                    b.Property<string>("BusinessCategory")
-                        .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<string>("BusinessDescription")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("BusinessPhone")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("BusinessWebsite")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("IsVerified")
                         .ValueGeneratedOnAdd()
@@ -2062,55 +2062,6 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPost", b =>
-                {
-                    b.HasOne("BairroNow.Api.Models.Entities.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("BairroNow.Api.Models.Entities.Group", "Group")
-                        .WithMany("Posts")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Group");
-                });
-
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPostImage", b =>
-                {
-                    b.HasOne("BairroNow.Api.Models.Entities.GroupPost", "GroupPost")
-                        .WithMany("Images")
-                        .HasForeignKey("GroupPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("GroupPost");
-                });
-
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPostLike", b =>
-                {
-                    b.HasOne("BairroNow.Api.Models.Entities.GroupPost", "GroupPost")
-                        .WithMany("Likes")
-                        .HasForeignKey("GroupPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BairroNow.Api.Models.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("GroupPost");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPoll", b =>
                 {
                     b.HasOne("BairroNow.Api.Models.Entities.User", "CreatedByUser")
@@ -2164,6 +2115,55 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("Option");
 
                     b.Navigation("Poll");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPost", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BairroNow.Api.Models.Entities.Group", "Group")
+                        .WithMany("Posts")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPostImage", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.GroupPost", "GroupPost")
+                        .WithMany("Images")
+                        .HasForeignKey("GroupPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupPost");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPostLike", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.GroupPost", "GroupPost")
+                        .WithMany("Likes")
+                        .HasForeignKey("GroupPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("GroupPost");
 
                     b.Navigation("User");
                 });
@@ -2285,17 +2285,6 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("CreatedByUser");
                 });
 
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.ProfileView", b =>
-                {
-                    b.HasOne("BairroNow.Api.Models.Entities.User", "BusinessUser")
-                        .WithMany()
-                        .HasForeignKey("BusinessUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BusinessUser");
-                });
-
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Post", b =>
                 {
                     b.HasOne("BairroNow.Api.Models.Entities.User", "Author")
@@ -2313,6 +2302,17 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Bairro");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.ProfileView", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "BusinessUser")
+                        .WithMany()
+                        .HasForeignKey("BusinessUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BusinessUser");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.PostImage", b =>
@@ -2441,9 +2441,41 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("Voucher");
                 });
 
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.WhatsAppGroup", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.Bairro", "Bairro")
+                        .WithMany()
+                        .HasForeignKey("BairroId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BairroNow.Api.Models.Entities.Condominium", "Condominium")
+                        .WithMany("WhatsAppGroups")
+                        .HasForeignKey("CondominiumId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "SubmittedByUser")
+                        .WithMany()
+                        .HasForeignKey("SubmittedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Bairro");
+
+                    b.Navigation("Condominium");
+
+                    b.Navigation("SubmittedByUser");
+                });
+
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Comment", b =>
                 {
                     b.Navigation("Replies");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.Condominium", b =>
+                {
+                    b.Navigation("Claims");
+
+                    b.Navigation("WhatsAppGroups");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Conversation", b =>
@@ -2486,38 +2518,6 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("Images");
 
                     b.Navigation("Likes");
-                });
-
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.WhatsAppGroup", b =>
-                {
-                    b.HasOne("BairroNow.Api.Models.Entities.Bairro", "Bairro")
-                        .WithMany()
-                        .HasForeignKey("BairroId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("BairroNow.Api.Models.Entities.Condominium", "Condominium")
-                        .WithMany("WhatsAppGroups")
-                        .HasForeignKey("CondominiumId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("BairroNow.Api.Models.Entities.User", "SubmittedByUser")
-                        .WithMany()
-                        .HasForeignKey("SubmittedByUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Bairro");
-
-                    b.Navigation("Condominium");
-
-                    b.Navigation("SubmittedByUser");
-                });
-
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.Condominium", b =>
-                {
-                    b.Navigation("Claims");
-
-                    b.Navigation("WhatsAppGroups");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.Listing", b =>
