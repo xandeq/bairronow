@@ -380,7 +380,7 @@ namespace BairroNow.Api.Migrations
                     b.Property<DateTime>("LastMessageAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ListingId")
+                    b.Property<int?>("ListingId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("SellerId")
@@ -395,7 +395,12 @@ namespace BairroNow.Api.Migrations
                     b.HasIndex("SellerId");
 
                     b.HasIndex("ListingId", "BuyerId", "SellerId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ListingId] IS NOT NULL");
+
+                    b.HasIndex("BuyerId", "SellerId")
+                        .IsUnique()
+                        .HasFilter("[ListingId] IS NULL");
 
                     b.ToTable("Conversations");
                 });
@@ -1709,6 +1714,8 @@ namespace BairroNow.Api.Migrations
                     b.HasIndex("ProofSha256");
 
                     b.HasIndex("UserId", "Status");
+
+                    b.HasIndex("Status", "ReviewedAt");
 
                     b.ToTable("Verifications");
                 });

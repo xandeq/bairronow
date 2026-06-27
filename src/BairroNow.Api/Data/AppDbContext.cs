@@ -286,6 +286,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
             entity.HasIndex(e => new { e.BairroId, e.Status, e.CreatedAt });
             entity.HasIndex(e => e.SellerId);
+            entity.HasIndex(e => new { e.Status, e.ExpiresAt }).HasDatabaseName("IX_Listings_Status_ExpiresAt");
             entity.HasQueryFilter(l => l.DeletedAt == null);
             entity.Property(e => e.RowVersion).IsRowVersion();
         });
