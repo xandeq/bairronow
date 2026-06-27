@@ -86,6 +86,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.BusinessDescription).HasMaxLength(500);
             entity.Property(e => e.BusinessPhone).HasMaxLength(30);
             entity.Property(e => e.BusinessWebsite).HasMaxLength(200);
+            entity.Property(e => e.ExpoPushToken).HasMaxLength(200);
             entity.HasOne(e => e.Bairro)
                 .WithMany()
                 .HasForeignKey(e => e.BairroId)

@@ -388,8 +388,6 @@ namespace BairroNow.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BuyerId");
-
                     b.HasIndex("LastMessageAt");
 
                     b.HasIndex("SellerId");
@@ -788,8 +786,7 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.HasIndex("GroupId", "CreatedAt")
-                        .HasDatabaseName("IX_GroupPolls_GroupId_CreatedAt");
+                    b.HasIndex("GroupId", "CreatedAt");
 
                     b.ToTable("GroupPolls");
                 });
@@ -815,8 +812,7 @@ namespace BairroNow.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupPollId")
-                        .HasDatabaseName("IX_GroupPollOptions_GroupPollId");
+                    b.HasIndex("GroupPollId");
 
                     b.ToTable("GroupPollOptions");
                 });
@@ -843,12 +839,10 @@ namespace BairroNow.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupPollOptionId")
-                        .HasDatabaseName("IX_GroupPollVotes_GroupPollOptionId");
+                    b.HasIndex("GroupPollOptionId");
 
                     b.HasIndex("GroupPollId", "UserId")
-                        .IsUnique()
-                        .HasDatabaseName("IX_GroupPollVotes_GroupPollId_UserId");
+                        .IsUnique();
 
                     b.ToTable("GroupPollVotes");
                 });
