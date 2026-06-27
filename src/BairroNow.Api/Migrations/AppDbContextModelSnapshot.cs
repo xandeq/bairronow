@@ -297,11 +297,11 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("SindicoUserId");
 
-                    b.HasIndex("BairroId", "Status");
-
                     b.HasIndex("BairroId", "Name")
                         .IsUnique()
                         .HasFilter("[DeletedAt] IS NULL");
+
+                    b.HasIndex("BairroId", "Status");
 
                     b.ToTable("Condominiums");
                 });
@@ -392,13 +392,13 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.HasIndex("ListingId", "BuyerId", "SellerId")
-                        .IsUnique()
-                        .HasFilter("[ListingId] IS NOT NULL");
-
                     b.HasIndex("BuyerId", "SellerId")
                         .IsUnique()
                         .HasFilter("[ListingId] IS NULL");
+
+                    b.HasIndex("ListingId", "BuyerId", "SellerId")
+                        .IsUnique()
+                        .HasFilter("[ListingId] IS NOT NULL");
 
                     b.ToTable("Conversations");
                 });
@@ -740,6 +740,8 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("GroupPollOptionId");
 
+                    b.HasIndex("UserId");
+
                     b.HasIndex("GroupPollId", "UserId")
                         .IsUnique();
 
@@ -918,10 +920,10 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.HasIndex("BairroId", "Status", "CreatedAt");
-
                     b.HasIndex("Status", "ExpiresAt")
                         .HasDatabaseName("IX_Listings_Status_ExpiresAt");
+
+                    b.HasIndex("BairroId", "Status", "CreatedAt");
 
                     b.ToTable("Listings");
                 });
@@ -1709,9 +1711,9 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("ProofSha256");
 
-                    b.HasIndex("UserId", "Status");
-
                     b.HasIndex("Status", "ReviewedAt");
+
+                    b.HasIndex("UserId", "Status");
 
                     b.ToTable("Verifications");
                 });
@@ -1821,11 +1823,11 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("SubmittedByUserId");
 
-                    b.HasIndex("BairroId", "Status");
-
                     b.HasIndex("BairroId", "InviteUrl")
                         .IsUnique()
                         .HasFilter("[DeletedAt] IS NULL");
+
+                    b.HasIndex("BairroId", "Status");
 
                     b.ToTable("WhatsAppGroups");
                 });
@@ -2094,16 +2096,16 @@ namespace BairroNow.Api.Migrations
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.GroupPollVote", b =>
                 {
-                    b.HasOne("BairroNow.Api.Models.Entities.GroupPollOption", "Option")
-                        .WithMany("Votes")
-                        .HasForeignKey("GroupPollOptionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("BairroNow.Api.Models.Entities.GroupPoll", "Poll")
                         .WithMany("Votes")
                         .HasForeignKey("GroupPollId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BairroNow.Api.Models.Entities.GroupPollOption", "Option")
+                        .WithMany("Votes")
+                        .HasForeignKey("GroupPollOptionId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("BairroNow.Api.Models.Entities.User", "User")
@@ -2304,17 +2306,6 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("Bairro");
                 });
 
-            modelBuilder.Entity("BairroNow.Api.Models.Entities.ProfileView", b =>
-                {
-                    b.HasOne("BairroNow.Api.Models.Entities.User", "BusinessUser")
-                        .WithMany()
-                        .HasForeignKey("BusinessUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BusinessUser");
-                });
-
             modelBuilder.Entity("BairroNow.Api.Models.Entities.PostImage", b =>
                 {
                     b.HasOne("BairroNow.Api.Models.Entities.Post", "Post")
@@ -2343,6 +2334,17 @@ namespace BairroNow.Api.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BairroNow.Api.Models.Entities.ProfileView", b =>
+                {
+                    b.HasOne("BairroNow.Api.Models.Entities.User", "BusinessUser")
+                        .WithMany()
+                        .HasForeignKey("BusinessUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BusinessUser");
                 });
 
             modelBuilder.Entity("BairroNow.Api.Models.Entities.RefreshToken", b =>
