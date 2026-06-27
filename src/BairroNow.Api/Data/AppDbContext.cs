@@ -80,6 +80,12 @@ public class AppDbContext : DbContext
             entity.Property(e => e.IsVerified).HasDefaultValue(false);
             entity.Property(e => e.IsAdmin).HasDefaultValue(false);
             entity.Property(e => e.AcceptedTermsVersion).HasMaxLength(20);
+            entity.Property(e => e.IsBusinessAccount).HasDefaultValue(false);
+            entity.Property(e => e.BusinessName).HasMaxLength(120);
+            entity.Property(e => e.BusinessCategory).HasMaxLength(80);
+            entity.Property(e => e.BusinessDescription).HasMaxLength(500);
+            entity.Property(e => e.BusinessPhone).HasMaxLength(30);
+            entity.Property(e => e.BusinessWebsite).HasMaxLength(200);
             entity.HasOne(e => e.Bairro)
                 .WithMany()
                 .HasForeignKey(e => e.BairroId)

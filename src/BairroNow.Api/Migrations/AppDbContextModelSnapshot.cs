@@ -573,6 +573,8 @@ namespace BairroNow.Api.Migrations
 
                     b.HasIndex("GroupId");
 
+                    b.HasIndex("ReminderSent", "ReminderAt");
+
                     b.ToTable("GroupEvents");
                 });
 
