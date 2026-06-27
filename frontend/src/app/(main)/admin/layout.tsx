@@ -11,6 +11,7 @@ const adminNav = [
   { href: "/admin/verifications/", label: "Verificações" },
   { href: "/admin/categories/", label: "Categorias" },
   { href: "/admin/groups/", label: "Grupos" },
+  { href: "/admin/community/", label: "Comunidade" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

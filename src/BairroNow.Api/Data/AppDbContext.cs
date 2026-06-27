@@ -58,6 +58,11 @@ public class AppDbContext : DbContext
     public DbSet<GroupPollOption> GroupPollOptions => Set<GroupPollOption>();
     public DbSet<GroupPollVote> GroupPollVotes => Set<GroupPollVote>();
 
+    // Wave P — WhatsApp Directory + Condominiums (diferencial Meu Vizinho)
+    public DbSet<WhatsAppGroup> WhatsAppGroups => Set<WhatsAppGroup>();
+    public DbSet<Condominium> Condominiums => Set<Condominium>();
+    public DbSet<CondominiumClaim> CondominiumClaims => Set<CondominiumClaim>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -75,6 +80,13 @@ public class AppDbContext : DbContext
             entity.Property(e => e.IsVerified).HasDefaultValue(false);
             entity.Property(e => e.IsAdmin).HasDefaultValue(false);
             entity.Property(e => e.AcceptedTermsVersion).HasMaxLength(20);
+            entity.Property(e => e.IsBusinessAccount).HasDefaultValue(false);
+            entity.Property(e => e.BusinessName).HasMaxLength(120);
+            entity.Property(e => e.BusinessCategory).HasMaxLength(80);
+            entity.Property(e => e.BusinessDescription).HasMaxLength(500);
+            entity.Property(e => e.BusinessPhone).HasMaxLength(30);
+            entity.Property(e => e.BusinessWebsite).HasMaxLength(200);
+            entity.Property(e => e.ExpoPushToken).HasMaxLength(200);
             entity.HasOne(e => e.Bairro)
                 .WithMany()
                 .HasForeignKey(e => e.BairroId)
@@ -281,6 +293,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
             entity.HasIndex(e => new { e.BairroId, e.Status, e.CreatedAt });
             entity.HasIndex(e => e.SellerId);
+            entity.HasIndex(e => new { e.Status, e.ExpiresAt }).HasDatabaseName("IX_Listings_Status_ExpiresAt");
             entity.HasQueryFilter(l => l.DeletedAt == null);
             entity.Property(e => e.RowVersion).IsRowVersion();
         });
@@ -633,6 +646,59 @@ public class AppDbContext : DbContext
             .HasIndex(u => u.GoogleId)
             .IsUnique()
             .HasFilter("[GoogleId] IS NOT NULL");
+
+        // ─── Wave P: Condominium ───
+        modelBuilder.Entity<Condominium>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).UseIdentityColumn();
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(120);
+            entity.Property(e => e.Description).HasMaxLength(1000);
+            entity.Property(e => e.AddressLine).HasMaxLength(250);
+            entity.Property(e => e.Cep).HasMaxLength(9);
+            entity.Property(e => e.CoverImageUrl).HasMaxLength(500);
+            entity.Property(e => e.Status).HasConversion<string>().HasMaxLength(20);
+            entity.Property(e => e.SindicoRole).HasConversion<string>().HasMaxLength(20);
+            entity.HasOne(e => e.Bairro).WithMany().HasForeignKey(e => e.BairroId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.SindicoUser).WithMany().HasForeignKey(e => e.SindicoUserId).OnDelete(DeleteBehavior.SetNull);
+            entity.HasIndex(e => new { e.BairroId, e.Status });
+            entity.HasIndex(e => new { e.BairroId, e.Name }).IsUnique().HasFilter("[DeletedAt] IS NULL");
+        });
+
+        // ─── Wave P: WhatsAppGroup (diretório verificado) ───
+        modelBuilder.Entity<WhatsAppGroup>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).UseIdentityColumn();
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(120);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.InviteUrl).IsRequired().HasMaxLength(300);
+            entity.Property(e => e.Kind).HasConversion<string>().HasMaxLength(20);
+            entity.Property(e => e.Status).HasConversion<string>().HasMaxLength(20);
+            entity.Property(e => e.CoverImageUrl).HasMaxLength(500);
+            entity.Property(e => e.RejectionReason).HasMaxLength(500);
+            entity.HasOne(e => e.Bairro).WithMany().HasForeignKey(e => e.BairroId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Condominium).WithMany(c => c.WhatsAppGroups).HasForeignKey(e => e.CondominiumId).OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.SubmittedByUser).WithMany().HasForeignKey(e => e.SubmittedByUserId).OnDelete(DeleteBehavior.SetNull);
+            entity.HasIndex(e => new { e.BairroId, e.Status });
+            entity.HasIndex(e => e.CondominiumId);
+            entity.HasIndex(e => new { e.BairroId, e.InviteUrl }).IsUnique().HasFilter("[DeletedAt] IS NULL");
+        });
+
+        // ─── Wave P: CondominiumClaim (reivindicação de síndico) ───
+        modelBuilder.Entity<CondominiumClaim>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).UseIdentityColumn();
+            entity.Property(e => e.RequestedRole).HasConversion<string>().HasMaxLength(20);
+            entity.Property(e => e.Justification).IsRequired().HasMaxLength(1000);
+            entity.Property(e => e.EvidenceUrl).HasMaxLength(500);
+            entity.Property(e => e.Status).HasConversion<string>().HasMaxLength(20);
+            entity.Property(e => e.ReviewNote).HasMaxLength(500);
+            entity.HasOne(e => e.Condominium).WithMany(c => c.Claims).HasForeignKey(e => e.CondominiumId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.User).WithMany().HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => new { e.CondominiumId, e.Status });
+        });
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

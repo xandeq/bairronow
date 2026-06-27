@@ -400,11 +400,14 @@ namespace BairroNow.Api.Migrations
                 table: "PointsOfInterest",
                 column: "CreatedByUserId");
 
-            // FTS index on Groups using existing ftListings DEFAULT catalog (created in Phase 4)
-            migrationBuilder.Sql(
-                "IF NOT EXISTS (SELECT * FROM sys.fulltext_indexes WHERE object_id = OBJECT_ID('Groups')) " +
-                "EXEC('CREATE FULLTEXT INDEX ON Groups(Name, Description) KEY INDEX PK_Groups ON ftListings;');",
-                suppressTransaction: true);
+            // FTS index on Groups — guarded the same as Phase4 (FTS unavailable on Docker/LocalDB)
+            migrationBuilder.Sql(@"
+IF SERVERPROPERTY('IsFullTextInstalled') = 1
+BEGIN
+    IF NOT EXISTS (SELECT * FROM sys.fulltext_indexes WHERE object_id = OBJECT_ID('Groups'))
+        EXEC('CREATE FULLTEXT INDEX ON Groups(Name, Description) KEY INDEX PK_Groups ON ftListings;');
+END
+", suppressTransaction: true);
         }
 
         /// <inheritdoc />
@@ -434,11 +437,14 @@ namespace BairroNow.Api.Migrations
             migrationBuilder.DropTable(
                 name: "GroupPosts");
 
-            // Drop FTS index before dropping Groups table
-            migrationBuilder.Sql(
-                "IF EXISTS (SELECT * FROM sys.fulltext_indexes WHERE object_id = OBJECT_ID('Groups')) " +
-                "EXEC('DROP FULLTEXT INDEX ON Groups;');",
-                suppressTransaction: true);
+            // Drop FTS index before dropping Groups table (guard matches Up())
+            migrationBuilder.Sql(@"
+IF SERVERPROPERTY('IsFullTextInstalled') = 1
+BEGIN
+    IF EXISTS (SELECT * FROM sys.fulltext_indexes WHERE object_id = OBJECT_ID('Groups'))
+        EXEC('DROP FULLTEXT INDEX ON Groups;');
+END
+", suppressTransaction: true);
 
             migrationBuilder.DropTable(
                 name: "Groups");

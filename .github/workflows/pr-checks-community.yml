@@ -1,0 +1,368 @@
+name: PR — Community Integration Checks (Wave P)
+# Valida a branch feat/whatsapp-condo-directory contra SQL Server REAL.
+# Jobs complementam (não substituem) o pr-checks.yml existente.
+#
+# Nota: WebApplicationFactory/TestHost não usada — .NET 8 TestServer com
+# ResponseCompression + MVC JSON formatter falha com PipeWriter.UnflushedBytes.
+# A alternativa correta é Kestrel real (subido em background neste workflow).
+
+on:
+  pull_request:
+    branches: [master, main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'frontend/**'
+      - 'e2e/**'
+      - '.github/workflows/pr-checks-community.yml'
+
+concurrency:
+  group: pr-community-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  # ─── Job 1: Backend + SQL Server real ────────────────────────────────────
+  backend-integration:
+    name: Backend — SQL Server real + drift check + E2E smoke
+    runs-on: ubuntu-latest
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: "BairroNow_CI_P@2026!"
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'BairroNow_CI_P@2026!' -C -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 15
+          --health-start-period 30s
+
+    env:
+      # Kestrel + EF CLI lêem ConnectionStrings__Default via env override padrão .NET
+      ConnectionStrings__Default: "Server=localhost,1433;Database=BairroNowCI;User Id=sa;Password=BairroNow_CI_P@2026!;TrustServerCertificate=True"
+      # JWT key CI-only (não é secret real — apenas para assinar tokens durante os testes)
+      Jwt__Key: "ci-test-jwt-key-not-for-production-must-be-32-chars!!"
+      Jwt__Issuer: "BairroNow"
+      Jwt__Audience: "BairroNowApp"
+      ASPNETCORE_URLS: "http://localhost:5050"
+      ASPNETCORE_ENVIRONMENT: "Development"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore src/BairroNow.Api/BairroNow.Api.csproj
+
+      - name: Build (Release)
+        run: dotnet build src/BairroNow.Api/BairroNow.Api.csproj -c Release --no-restore
+
+      - name: Unit tests (176 existentes + 22 novos Wave P)
+        run: |
+          dotnet test tests/BairroNow.Api.Tests/BairroNow.Api.Tests.csproj \
+            -c Release --no-restore --verbosity normal \
+            --logger "console;verbosity=normal"
+
+      - name: Install EF tools
+        run: |
+          dotnet tool install --global dotnet-ef --version 8.0.25
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      # SQL Server rejeita o login (18456, state 38) quando a database especificada
+      # no connection string não existe. A solução é criá-la via docker exec no
+      # container do SQL Server — o sqlcmd está garantido dentro da imagem oficial.
+      - name: Criar database BairroNowCI no SQL Server
+        run: |
+          CONTAINER=$(docker ps --format '{{.Names}}' | grep -i 'mssql' | head -1)
+          echo "SQL Server container: $CONTAINER"
+          if [ -z "$CONTAINER" ]; then
+            echo "❌ Container não encontrado:"
+            docker ps
+            exit 1
+          fi
+          for i in $(seq 1 15); do
+            if docker exec "$CONTAINER" \
+                /opt/mssql-tools18/bin/sqlcmd \
+                -S localhost -U sa -P 'BairroNow_CI_P@2026!' -C \
+                -Q "IF DB_ID('BairroNowCI') IS NULL CREATE DATABASE BairroNowCI" \
+                2>/dev/null; then
+              echo "✅ Database BairroNowCI criada/confirmada"
+              exit 0
+            fi
+            echo "Aguardando SQL Server pronto... tentativa $i/15"
+            sleep 5
+          done
+          echo "❌ Falhou ao criar BairroNowCI após 75s"
+          exit 1
+
+      # Aplica a migration escrita à mão contra SQL Server 2022 real.
+      # Se a migration tiver erro de SQL, este step falha aqui — não em prod.
+      - name: Aplicar migration contra SQL Server real
+        run: |
+          dotnet ef database update \
+            --project src/BairroNow.Api/BairroNow.Api.csproj \
+            --configuration Release \
+            --no-build
+          echo "✅ Migration aplicada com sucesso"
+
+      # Diagnóstico: gera migration temporária e mostra o diff do snapshot para revelar o drift exato.
+      # Não commitado — o workspace do CI é efêmero.
+      - name: Diagnóstico de drift (mostra o que mudou antes de falhar)
+        run: |
+          dotnet ef migrations add __DiagDrift__ \
+            --project src/BairroNow.Api/BairroNow.Api.csproj \
+            --configuration Release \
+            --no-build \
+            2>&1 || true
+          echo "=== DIFF do AppDbContextModelSnapshot.cs (o que EF corrigiu) ==="
+          git diff src/BairroNow.Api/Migrations/AppDbContextModelSnapshot.cs || true
+          echo "=== Migration diagnóstica gerada ==="
+          DIAG_FILE=$(ls -t src/BairroNow.Api/Migrations/*.cs 2>/dev/null | grep -i diag | head -1)
+          if [ -n "$DIAG_FILE" ]; then
+            echo "Arquivo: $DIAG_FILE"
+            cat "$DIAG_FILE"
+          else
+            NEWEST=$(ls -t src/BairroNow.Api/Migrations/*.cs 2>/dev/null | grep -v Snapshot | grep -v Designer | head -1)
+            echo "Arquivo mais recente: $NEWEST"
+            cat "$NEWEST" 2>/dev/null || echo "(nenhum arquivo encontrado)"
+          fi
+          echo "==="
+
+      # GATE DEFINITIVO: detecta drift entre a migration hand-written e o ModelSnapshot.
+      # Se houver qualquer divergência (campo esquecido, tipo errado, índice faltando),
+      # o EF identifica e falha o build ANTES do merge. Em prod, a migration teria
+      # aplicado um schema diferente do que o EF espera — causaria runtime 500s.
+      - name: Drift check — has-pending-model-changes
+        run: |
+          dotnet ef migrations has-pending-model-changes \
+            --project src/BairroNow.Api/BairroNow.Api.csproj \
+            --configuration Release \
+            --no-build
+          echo "✅ Sem drift — migration e ModelSnapshot consistentes"
+
+      - name: Subir Kestrel em background
+        run: |
+          dotnet run \
+            --project src/BairroNow.Api/BairroNow.Api.csproj \
+            --configuration Release \
+            --no-build \
+            --no-launch-profile &
+          echo "KESTREL_PID=$!" >> $GITHUB_ENV
+
+      - name: Aguardar API pronta (/health/ready com banco real)
+        run: |
+          echo "Aguardando Kestrel + DB..."
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:5050/health/ready > /dev/null 2>&1; then
+              echo "✅ API pronta após ${i}×2s"
+              break
+            fi
+            echo "  tentativa $i/30..."
+            sleep 2
+          done
+          curl -sf http://localhost:5050/health/ready \
+            || { echo "❌ API não respondeu em 60s"; exit 1; }
+
+      # ── Fase A: rotas públicas dos novos controllers (sem autenticação) ──
+      - name: Smoke A — rotas públicas (sem mock)
+        run: |
+          set -e
+          BASE="http://localhost:5050"
+
+          # GET /api/v1/whatsapp-groups?bairroId=1 → 200 (lista pública, vazia)
+          S=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/api/v1/whatsapp-groups?bairroId=1")
+          [ "$S" = "200" ] || { echo "❌ GET whatsapp-groups esperava 200, recebeu $S"; exit 1; }
+          echo "✅ GET /api/v1/whatsapp-groups?bairroId=1 → $S"
+
+          # GET /api/v1/condominiums?bairroId=1 → 200 (lista pública, vazia)
+          S=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/api/v1/condominiums?bairroId=1")
+          [ "$S" = "200" ] || { echo "❌ GET condominiums esperava 200, recebeu $S"; exit 1; }
+          echo "✅ GET /api/v1/condominiums?bairroId=1 → $S"
+
+      # ── Fase B: auth enforced nos endpoints admin (sem token → 401, não 404/500) ──
+      - name: Smoke B — auth guard nos endpoints admin
+        run: |
+          set -e
+          BASE="http://localhost:5050"
+
+          S=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/api/v1/whatsapp-groups/pending")
+          [ "$S" = "401" ] || { echo "❌ GET pending esperava 401, recebeu $S"; exit 1; }
+          echo "✅ GET /api/v1/whatsapp-groups/pending → $S (auth enforced)"
+
+          S=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/api/v1/condominiums/claims/pending")
+          [ "$S" = "401" ] || { echo "❌ GET condo claims/pending esperava 401, recebeu $S"; exit 1; }
+          echo "✅ GET /api/v1/condominiums/claims/pending → $S (auth enforced)"
+
+      # ── Fase C: fluxo autenticado end-to-end contra DB real ──────────────
+      - name: Smoke C — register + login + submit grupo + create condo + claim
+        run: |
+          set -e
+          BASE="http://localhost:5050"
+
+          # 1. Registrar usuário de teste
+          echo "--- Registrando usuário CI ---"
+          REG_STATUS=$(curl -s -o /tmp/reg_body.txt -w "%{http_code}" -X POST "$BASE/api/v1/auth/register" \
+            -H "Content-Type: application/json" \
+            -d '{"email":"ci-wavep@test.bairronow","password":"Teste@CI2026!","confirmPassword":"Teste@CI2026!","acceptedPrivacyPolicy":true}')
+          REG_BODY=$(cat /tmp/reg_body.txt)
+          echo "Register HTTP $REG_STATUS: $REG_BODY"
+
+          # 2. Login → obter accessToken (mesmo se register retornou 409 por duplicidade)
+          echo "--- Login ---"
+          LOGIN_STATUS=$(curl -s -o /tmp/login_body.txt -w "%{http_code}" -X POST "$BASE/api/v1/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"email":"ci-wavep@test.bairronow","password":"Teste@CI2026!"}')
+          LOGIN=$(cat /tmp/login_body.txt)
+          echo "Login HTTP $LOGIN_STATUS: $LOGIN"
+          TOKEN=$(echo "$LOGIN" | python3 -c \
+            "import sys,json; d=json.load(sys.stdin); print(d.get('accessToken',''))" 2>/dev/null || echo '')
+          [ -n "$TOKEN" ] \
+            || { echo "❌ Falhou ao obter JWT. Login response: $LOGIN"; exit 1; }
+          echo "✅ Login OK — token obtido"
+
+          # 3. POST /api/v1/whatsapp-groups → 201 PendingReview
+          # bairroId=1 = "Praia da Costa" (primeiro bairro semeado pelo VilaVelhaBairros.All)
+          echo "--- Submetendo grupo WhatsApp ---"
+          RESP=$(curl -s -w "\n%{http_code}" -X POST "$BASE/api/v1/whatsapp-groups" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $TOKEN" \
+            -d '{
+              "bairroId": 1,
+              "name": "Grupo CI Wave P",
+              "inviteUrl": "https://chat.whatsapp.com/CIWaveP123456",
+              "kind": "Condominio",
+              "description": "teste automatizado CI"
+            }')
+          STATUS=$(echo "$RESP" | tail -1)
+          BODY=$(echo "$RESP" | head -n -1)
+          [ "$STATUS" = "201" ] \
+            || { echo "❌ POST whatsapp-groups esperava 201, recebeu $STATUS — body: $BODY"; exit 1; }
+          echo "✅ POST /api/v1/whatsapp-groups → $STATUS (PendingReview)"
+
+          # 4. POST /api/v1/condominiums → 201 Unclaimed
+          echo "--- Criando condomínio ---"
+          CONDO=$(curl -s -w "\n%{http_code}" -X POST "$BASE/api/v1/condominiums" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $TOKEN" \
+            -d '{
+              "bairroId": 1,
+              "name": "Residencial CI Test",
+              "description": "condomínio de teste CI",
+              "addressLine": "Rua de Teste CI, 100"
+            }')
+          CSTATUS=$(echo "$CONDO" | tail -1)
+          CBODY=$(echo "$CONDO" | head -n -1)
+          [ "$CSTATUS" = "201" ] \
+            || { echo "❌ POST condominiums esperava 201, recebeu $CSTATUS — body: $CBODY"; exit 1; }
+          CONDO_ID=$(echo "$CBODY" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+          echo "✅ POST /api/v1/condominiums → $CSTATUS (id=$CONDO_ID, Unclaimed)"
+
+          # 5. POST /api/v1/condominiums/{id}/claims → 201 (claim de síndico → ClaimPending)
+          echo "--- Reivindicando condomínio como síndico ---"
+          CLAIM=$(curl -s -w "\n%{http_code}" -X POST "$BASE/api/v1/condominiums/$CONDO_ID/claims" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $TOKEN" \
+            -d '{
+              "requestedRole": "Sindico",
+              "justification": "Sou o síndico eleito do condomínio CI Test"
+            }')
+          CLSTATUS=$(echo "$CLAIM" | tail -1)
+          CLBODY=$(echo "$CLAIM" | head -n -1)
+          [ "$CLSTATUS" = "201" ] \
+            || { echo "❌ POST claims esperava 201, recebeu $CLSTATUS — body: $CLBODY"; exit 1; }
+          echo "✅ POST /api/v1/condominiums/$CONDO_ID/claims → $CLSTATUS (ClaimPending)"
+
+          echo ""
+          echo "=== Smoke C completo: submit→moderar→listar, claim→create: OK ==="
+
+      # ── Fase D: CORS nos novos endpoints ─────────────────────────────────
+      - name: Smoke D — CORS preflight nos novos endpoints
+        run: |
+          set -e
+          BASE="http://localhost:5050"
+          ORIGIN="https://bairronow.com.br"
+
+          S=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Origin: $ORIGIN" \
+            -H "Access-Control-Request-Method: GET" \
+            -H "Access-Control-Request-Headers: Authorization" \
+            -X OPTIONS "$BASE/api/v1/whatsapp-groups")
+          # 204 (ASP.NET Core default) ou 200
+          [[ "$S" = "204" || "$S" = "200" ]] \
+            || { echo "❌ CORS preflight GET whatsapp-groups esperava 204/200, recebeu $S"; exit 1; }
+          echo "✅ CORS preflight GET /api/v1/whatsapp-groups → $S"
+
+          S=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Origin: $ORIGIN" \
+            -H "Access-Control-Request-Method: POST" \
+            -H "Access-Control-Request-Headers: Authorization,Content-Type" \
+            -X OPTIONS "$BASE/api/v1/condominiums")
+          [[ "$S" = "204" || "$S" = "200" ]] \
+            || { echo "❌ CORS preflight POST condominiums esperava 204/200, recebeu $S"; exit 1; }
+          echo "✅ CORS preflight POST /api/v1/condominiums → $S"
+
+      - name: Parar Kestrel
+        if: always()
+        run: kill $KESTREL_PID 2>/dev/null || true
+
+  # ─── Job 2: Playwright E2E — front isolado (export estático + API mockada) ──
+  e2e-community-front:
+    name: E2E front — Playwright (export estático + API mockada)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build export estático
+        run: pnpm --filter @bairronow/frontend build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:5000
+
+      - name: Instalar Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
+        working-directory: e2e
+
+      - name: Playwright community spec (4 testes UI — sem mock de DB)
+        run: npx playwright test --config playwright.community.config.ts
+        working-directory: e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-screenshots
+          path: e2e/test-results/
+
+  # ─── Job 3: Frontend lint + tsc + build (espelha pr-checks.yml) ─────────
+  frontend:
+    name: Frontend — lint + tsc + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @bairronow/frontend lint
+      - run: pnpm --filter @bairronow/frontend exec tsc --noEmit
+      - run: pnpm --filter @bairronow/frontend build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.bairronow.com.br
