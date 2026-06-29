@@ -41,7 +41,7 @@ const stats = [
   { value: "4.8", label: "Avaliação" },
 ];
 
-function BairroNowPanel() {
+function MeuVizinhoPanel() {
   return (
     <div
       className="relative flex flex-col justify-between h-full min-h-[100dvh] p-10 xl:p-14 overflow-hidden text-white"
@@ -113,7 +113,7 @@ function BairroNowPanel() {
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
           </div>
-          <span className="text-xl font-extrabold tracking-tight text-white">BairroNow</span>
+          <span className="text-xl font-extrabold tracking-tight text-white">Meu Vizinho</span>
         </Link>
       </div>
 
@@ -189,7 +189,7 @@ export default function LoginPage() {
     <AuthLayout
       title="Bem-vindo de volta"
       subtitle="Entre na sua conta para continuar"
-      leftPanel={<BairroNowPanel />}
+      leftPanel={<MeuVizinhoPanel />}
     >
       <LoginForm />
     </AuthLayout>

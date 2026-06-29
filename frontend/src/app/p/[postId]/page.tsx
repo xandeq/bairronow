@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import PostPreviewClient from "./PostPreviewClient";
 
 export const metadata: Metadata = {
-  title: "BairroNow - Post do Bairro",
+  title: "Meu Vizinho - Post do Bairro",
   openGraph: {
-    title: "BairroNow - Veja o que esta acontecendo no bairro",
-    description: "Conecte-se com seus vizinhos no BairroNow.",
+    title: "Meu Vizinho - Veja o que esta acontecendo no bairro",
+    description: "Conecte-se com seus vizinhos no Meu Vizinho.",
     images: [
       {
-        url: "https://bairronow.com.br/og-default.png",
+        url: "/og-default.png",
         width: 1200,
         height: 630,
       },

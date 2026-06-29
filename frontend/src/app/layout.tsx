@@ -27,39 +27,39 @@ const apiOrigin = (() => {
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://bairronow.com.br"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://meuvizinho.com.br"
   ),
   title: {
-    default: "BairroNow — Conecte-se com seus vizinhos",
-    template: "%s | BairroNow",
+    default: "Meu Vizinho — Conecte-se com seus vizinhos",
+    template: "%s | Meu Vizinho",
   },
   description:
-    "Rede social de bairro para vizinhos verificados: feed local, marketplace, grupos, mapa e chat privado.",
-  applicationName: "BairroNow",
-  authors: [{ name: "BairroNow" }],
+    "Rede social de bairro: diretório verificado de grupos WhatsApp, condomínios com síndico reivindicável, marketplace e feed local para vizinhos verificados.",
+  applicationName: "Meu Vizinho",
+  authors: [{ name: "Meu Vizinho" }],
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://bairronow.com.br",
-    siteName: "BairroNow",
-    title: "BairroNow — Sua comunidade de bairro conectada",
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://meuvizinho.com.br",
+    siteName: "Meu Vizinho",
+    title: "Meu Vizinho — Sua comunidade de bairro conectada",
     description:
-      "Conecte-se com seus vizinhos, encontre servicos locais, compre e venda no seu bairro.",
+      "Diretório verificado de grupos WhatsApp, condomínios com síndico reivindicável, marketplace e feed local entre vizinhos verificados.",
     images: [
       {
-        url: "https://bairronow.com.br/icons/icon-512x512.png",
+        url: "/icons/icon-512x512.png",
         width: 512,
         height: 512,
-        alt: "BairroNow",
+        alt: "Meu Vizinho",
       },
     ],
   },
   twitter: {
     card: "summary",
-    title: "BairroNow — Sua comunidade de bairro conectada",
+    title: "Meu Vizinho — Sua comunidade de bairro conectada",
     description:
-      "Conecte-se com seus vizinhos, encontre servicos locais, compre e venda no seu bairro.",
-    images: ["https://bairronow.com.br/icons/icon-512x512.png"],
+      "Diretório verificado de grupos WhatsApp, condomínios com síndico reivindicável, marketplace e feed local entre vizinhos verificados.",
+    images: ["/icons/icon-512x512.png"],
   },
   robots: {
     index: true,
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'BairroNow',
+    title: 'Meu Vizinho',
   },
 };
 

@@ -154,8 +154,8 @@ export default function LandingPage() {
         {/* Nav */}
         <header className="relative z-10 px-6 py-5 max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-xl font-extrabold text-white">
-            <Image src="/brand/logo-icon.png" alt="BairroNow" width={32} height={32} priority />
-            BairroNow
+            <Image src="/brand/logo-icon.png" alt="Meu Vizinho" width={32} height={32} priority />
+            Meu Vizinho
           </Link>
           <nav className="flex items-center gap-4 text-sm font-semibold">
             <Link
@@ -193,8 +193,8 @@ export default function LandingPage() {
 
           {/* Sub */}
           <p className="mt-8 text-lg md:text-xl text-white/60 max-w-xl leading-relaxed font-medium">
-            Feed local, marketplace entre vizinhos e grupos de interesse —
-            tudo com identidade verificada. Sem algoritmo, sem anúncio, sem drama.
+            Diretório de grupos WhatsApp verificados, marketplace entre vizinhos
+            e feed local — tudo com identidade comprovada. Sem algoritmo, sem anúncio.
           </p>
 
           {/* CTAs */}
@@ -282,16 +282,90 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Grupos */}
+            {/* Grupos WhatsApp */}
             <div className="group bg-bg rounded-lg p-6 transition-all duration-200 hover:scale-[1.02] cursor-default">
-              <FeatureIcon bg="bg-violet-100 text-violet-600">
+              <FeatureIcon bg="bg-green-100 text-green-700">
                 <IconUsers />
               </FeatureIcon>
-              <h3 className="mt-5 text-xl font-extrabold text-fg">Grupos de Interesse</h3>
+              <h3 className="mt-5 text-xl font-extrabold text-fg">Grupos WhatsApp</h3>
               <p className="mt-2 text-sm text-muted-fg leading-relaxed">
-                Jardinagem, pets, esportes, segurança… crie ou entre em grupos com quem compartilha seus interesses.
+                Diretório verificado de grupos do bairro — link ativo, admin identificado e moderação real. Zero grupos fantasma.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════
+          WHATSAPP DIRECTORY — slate-900, green accent
+      ══════════════════════════════════════════════════════ */}
+      <section className="bg-slate-900 py-20 px-6 text-white">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Copy */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-green-400 mb-3">
+              Diferencial exclusivo
+            </p>
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
+              O diretório de grupos WhatsApp que o bairro precisava.
+            </h2>
+            <p className="text-white/60 text-lg leading-relaxed mb-10 max-w-lg">
+              Chega de buscar grupos perdidos. Aqui você encontra todos os grupos verificados do seu bairro — com link ativo, admin identificado e moderação real.
+            </p>
+            <ul className="space-y-5">
+              {[
+                "Grupos por bairro com link verificado e admin identificado",
+                "Perfis de condomínio com síndico reivindicável",
+                "@meuvizinho como co-admin permanente — sem grupos golpe",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-4">
+                  <span className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <IconCheck />
+                  </span>
+                  <p className="text-white/80 font-medium leading-relaxed">{item}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Visual — WhatsApp directory mockup */}
+          <div className="flex flex-col gap-3">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1">
+              Diretório — Vila Velha · ES
+            </p>
+            {[
+              { name: "Vila Velha — Moradores", members: "1.247 membros", tag: "Moradores" },
+              { name: "Pets Praia da Costa", members: "389 membros", tag: "Pets" },
+              { name: "Esporte & Saúde VV", members: "512 membros", tag: "Esporte" },
+              { name: "Cond. Marina Beach · Síndico", members: "243 membros", tag: "Condomínio" },
+            ].map(({ name, members, tag }) => (
+              <div
+                key={name}
+                className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4
+                           transition-all duration-200 hover:bg-white/10 cursor-pointer"
+              >
+                <div className="w-10 h-10 rounded-full bg-green-600/80 flex items-center justify-center shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white" aria-hidden>
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-white text-sm truncate">{name}</p>
+                  <p className="text-xs text-white/40 mt-0.5">{members}</p>
+                </div>
+                <span className="text-xs bg-white/10 text-white/60 rounded-full px-2.5 py-1 font-medium shrink-0">
+                  {tag}
+                </span>
+              </div>
+            ))}
+            <Link
+              href="/register/"
+              className="mt-2 h-12 rounded-xl bg-green-600 text-white font-semibold text-sm
+                         flex items-center justify-center gap-2 transition-all duration-200 hover:bg-green-500"
+            >
+              Ver diretório completo
+              <IconArrowRight />
+            </Link>
           </div>
         </div>
       </section>
@@ -438,7 +512,7 @@ export default function LandingPage() {
               Feito para o bairro,<br />não para o anunciante.
             </h2>
             <p className="text-lg text-muted-fg leading-relaxed">
-              O BairroNow existe para conectar vizinhos reais — não para vender sua atenção.
+              O Meu Vizinho existe para conectar vizinhos reais — não para vender sua atenção.
               Por isso não há anúncios, algoritmo de engajamento ou recomendação de conteúdo externo.
             </p>
           </div>
@@ -489,8 +563,8 @@ export default function LandingPage() {
       <footer className="bg-slate-900 text-white py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2 font-extrabold text-lg">
-            <Image src="/brand/logo-icon.png" alt="BairroNow" width={28} height={28} />
-            BairroNow
+            <Image src="/brand/logo-icon.png" alt="Meu Vizinho" width={28} height={28} />
+            Meu Vizinho
           </div>
 
           <nav className="flex flex-wrap items-center gap-6 text-sm font-medium text-white/60">
@@ -506,7 +580,7 @@ export default function LandingPage() {
           </nav>
 
           <p className="text-sm text-white/40 font-medium">
-            © {new Date().getFullYear()} BairroNow
+            © {new Date().getFullYear()} Meu Vizinho
           </p>
         </div>
       </footer>

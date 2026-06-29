@@ -1,7 +1,7 @@
 {
-  "name": "BairroNow",
-  "short_name": "BairroNow",
-  "description": "Sua comunidade de bairro conectada",
+  "name": "Meu Vizinho",
+  "short_name": "Meu Vizinho",
+  "description": "Diretório verificado de grupos WhatsApp, condomínios com síndico e feed local para vizinhos verificados.",
   "start_url": "/feed/",
   "scope": "/",
   "display": "standalone",

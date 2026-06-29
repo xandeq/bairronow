@@ -89,13 +89,13 @@ export default function PostPreviewClient({ postId }: { postId: string }) {
           href="/login/"
           className="text-primary font-semibold hover:underline"
         >
-          Ir para BairroNow
+          Ir para Meu Vizinho
         </Link>
       </div>
     );
   }
 
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://bairronow.com.br";
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meuvizinho.com.br";
   const shareUrl = `${SITE_URL}/p/${post.id}`;
 
   return (
@@ -103,7 +103,7 @@ export default function PostPreviewClient({ postId }: { postId: string }) {
       <header className="border-b-2 border-border px-6 py-4">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <Link href="/feed/" className="text-2xl font-extrabold text-primary">
-            BairroNow
+            Meu Vizinho
           </Link>
           {!isAuthenticated && (
             <div className="flex gap-2">
@@ -162,7 +162,7 @@ export default function PostPreviewClient({ postId }: { postId: string }) {
         {!isAuthenticated && (
           <div className="mt-8 bg-primary/10 border-2 border-primary/30 rounded-lg p-6 text-center space-y-3">
             <h2 className="text-lg font-bold text-fg">
-              Entre no BairroNow para interagir com seus vizinhos
+              Entre no Meu Vizinho para interagir com seus vizinhos
             </h2>
             <p className="text-sm text-fg/70">
               Curta, comente e compartilhe posts do seu bairro.

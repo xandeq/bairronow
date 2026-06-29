@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="text-xl font-semibold mb-3">Dados Coletados</h2>
           <p className="text-muted-fg">
             Coletamos os seguintes dados para o funcionamento da plataforma
-            BairroNow:
+            Meu Vizinho:
           </p>
           <ul className="list-disc pl-6 text-muted-fg space-y-1">
             <li>Nome e e-mail para identificacao da conta</li>
@@ -55,7 +55,7 @@ export default function PrivacyPolicyPage() {
           <p className="text-muted-fg">
             Para exercer seus direitos ou tirar duvidas sobre esta politica,
             entre em contato pelo e-mail:{" "}
-            <span className="font-medium">privacidade@bairronow.com.br</span>
+            <span className="font-medium">privacidade@meuvizinho.com.br</span>
           </p>
         </section>
       </div>
