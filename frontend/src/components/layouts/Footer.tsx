@@ -13,7 +13,7 @@ export default function Footer() {
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
           </div>
-          <span className="text-sm font-semibold text-fg">BairroNow</span>
+          <span className="text-sm font-semibold text-fg">Meu Vizinho</span>
           <span className="text-xs text-muted-fg">&copy; {year}</span>
         </div>
 

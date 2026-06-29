@@ -7,7 +7,7 @@ interface Props {
 
 export default function WhatsAppShareButton({
   url,
-  text = "Veja este post no BairroNow",
+  text = "Veja este post no Meu Vizinho",
 }: Props) {
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text}: ${url}`)}`;
 

@@ -182,7 +182,7 @@ export default function MainHeader() {
             </svg>
           </div>
           <span className="text-lg font-extrabold tracking-tight text-fg group-hover:text-primary transition-colors">
-            BairroNow
+            Meu Vizinho
           </span>
         </Link>
 
